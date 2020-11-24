@@ -29,7 +29,6 @@ import java.util.Iterator;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main_Activity";
     private Button btn_submit;
-    private ArrayList<String> sinnerAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -309,23 +308,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAddEditField(JSONObject jsonObjectQuesType) {
-            LinearLayout ll_parent=findViewById(R.id.ll_parent);
+        LinearLayout ll_parent=findViewById(R.id.ll_parent);
 
-            LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View rowView=inflater.inflate(R.layout.edit_text_layout, null);
-            TextView tv_question=rowView.findViewById(R.id.tv_question);
+        LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View rowView=inflater.inflate(R.layout.edit_text_layout, null);
+        /*here are fields*/
+        TextView tv_question=rowView.findViewById(R.id.tv_question);
         try {
             tv_question.setText(jsonObjectQuesType.getString("question_name"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         EditText edit_text=rowView.findViewById(R.id.et_answer);
-            edit_text.setHint("Edit Field");
-            // Add the new row before the add field button.
-            ll_parent.addView(rowView, ll_parent.getChildCount());
+        edit_text.setHint("Edit Field");
+
+        // Add the new row before the add field button.
+        ll_parent.addView(rowView, ll_parent.getChildCount());
     }
     public void onAddSpinner(JSONObject jsonObjectQuesType) {
         LinearLayout ll_parent=findViewById(R.id.ll_parent);
+        ArrayList<String> spinnerAL=new ArrayList<>();
 
         LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View rowView=inflater.inflate(R.layout.spinner_layout, null);
@@ -336,19 +338,19 @@ public class MainActivity extends AppCompatActivity {
             tv_question.setText(jsonObjectQuesType.getString("question_name"));
             if (jsonObjectQuesType.has("question_options")) {
                 JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
-                sinnerAL.clear();
+                spinnerAL.clear();
                 for (int i = 0; i < jsonArrayOptions.length(); i++) {
                     JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(i);
                     String spinnerOption=jsonObjectOptionValues.getString("option_value");
-                    sinnerAL.add(spinnerOption);
+                    spinnerAL.add(spinnerOption);
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        sinnerAL.add(0, getString(R.string.select_option));
-        ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.custom_spinner_dropdown, sinnerAL);
+        spinnerAL.add(0, getString(R.string.select_option));
+        ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.custom_spinner_dropdown, spinnerAL);
         spinner.setAdapter(arrayAdapter);
 
         // Add the new row before the add field button.
@@ -361,21 +363,21 @@ public class MainActivity extends AppCompatActivity {
         View rowView=inflater.inflate(R.layout.questions_layout, null);
         /*here are fields*/
         TextView tv_question=rowView.findViewById(R.id.tv_question);
-      //  RadioGroup radio_group=rowView.findViewById(R.id.radio_group);
-        //RadioButton radio_button=rowView.findViewById(R.id.radio_button);
+        LinearLayout ll_child=rowView.findViewById(R.id.ll_child);
         try {
             tv_question.setText(jsonObjectQuesType.getString("question_name"));
             if (jsonObjectQuesType.has("question_options")) {
                 JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                 for (int i = 0; i < jsonArrayOptions.length(); i++) {
-                    LayoutInflater inflaterz=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    View rowViews=inflaterz.inflate(R.layout.radio_button_layout, null);
+                    LayoutInflater inflaterRadio=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View radioButtonViews=inflaterRadio.inflate(R.layout.radio_button_layout, null);
                     /*here are fields*/
-                    RadioGroup radio_group=rowViews.findViewById(R.id.radio_group);
-                    RadioButton radio_button=rowViews.findViewById(R.id.radio_button);                    JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(i);
+                    RadioGroup radio_group=radioButtonViews.findViewById(R.id.radio_group);
+                    RadioButton radio_button=radioButtonViews.findViewById(R.id.radio_button);
+                    JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(i);
                     radio_button.setText(jsonObjectOptionValues.getString("option_value"));
-                    ll_parent.addView(rowViews, ll_parent.getChildCount());
 
+                    ll_child.addView(radioButtonViews, ll_child.getChildCount());
                 }
             }
         } catch (JSONException e) {
@@ -388,17 +390,23 @@ public class MainActivity extends AppCompatActivity {
     public void onAddCheckBox(JSONObject jsonObjectQuesType) {
         LinearLayout ll_parent=findViewById(R.id.ll_parent);
         LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View rowView=inflater.inflate(R.layout.check_box_layout, null);
+        final View rowView=inflater.inflate(R.layout.questions_layout, null);
         /*here are fields*/
         TextView tv_question=rowView.findViewById(R.id.tv_question);
-        CheckBox check_box=rowView.findViewById(R.id.check_box);
+        LinearLayout ll_child=rowView.findViewById(R.id.ll_child);
         try {
             tv_question.setText(jsonObjectQuesType.getString("question_name"));
             if (jsonObjectQuesType.has("question_options")) {
                 JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                 for (int i = 0; i < jsonArrayOptions.length(); i++) {
+                    LayoutInflater inflaterCheck=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View checkBoxViews=inflaterCheck.inflate(R.layout.check_box_layout, null);
+                    /*here are fields*/
+                    CheckBox check_box=checkBoxViews.findViewById(R.id.check_box);
                     JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(i);
                     check_box.setText(jsonObjectOptionValues.getString("option_value"));
+
+                    ll_child.addView(checkBoxViews, ll_child.getChildCount());
                 }
             }
         } catch (JSONException e) {
@@ -411,7 +419,5 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         btn_submit=findViewById(R.id.btn_submit);
-
-        sinnerAL=new ArrayList<>();
     }
 }
