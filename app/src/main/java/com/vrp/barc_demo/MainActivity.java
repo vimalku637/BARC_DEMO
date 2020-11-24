@@ -29,6 +29,7 @@ import java.util.Iterator;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main_Activity";
     private Button btn_submit;
+    private static String answerET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -305,6 +306,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        submitButtonClick();
     }
 
     public void onAddEditField(JSONObject jsonObjectQuesType) {
@@ -314,17 +317,17 @@ public class MainActivity extends AppCompatActivity {
         final View rowView=inflater.inflate(R.layout.edit_text_layout, null);
         /*here are fields*/
         TextView tv_question=rowView.findViewById(R.id.tv_question);
+        EditText et_answer=rowView.findViewById(R.id.et_answer);
         try {
             tv_question.setText(jsonObjectQuesType.getString("question_name"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        EditText edit_text=rowView.findViewById(R.id.et_answer);
-        edit_text.setHint("Edit Field");
 
         // Add the new row before the add field button.
         ll_parent.addView(rowView, ll_parent.getChildCount());
     }
+
     public void onAddSpinner(JSONObject jsonObjectQuesType) {
         LinearLayout ll_parent=findViewById(R.id.ll_parent);
         ArrayList<String> spinnerAL=new ArrayList<>();
@@ -419,5 +422,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         btn_submit=findViewById(R.id.btn_submit);
+    }
+    private void submitButtonClick() {
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Please get values first from all fields.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

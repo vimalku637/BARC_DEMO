@@ -3,4 +3,11 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <!--custom color-->
+    <color name="color_blue_google">#4285F4</color>
+    <color name="color_red_google">#DB4437</color>
+    <color name="color_yellow_google">#F4B400</color>
+    <color name="color_yellow_dark">#B1860C</color>
+    <color name="color_green_google">#0F9D58</color>
 </resources>
