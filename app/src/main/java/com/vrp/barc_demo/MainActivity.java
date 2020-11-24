@@ -336,6 +336,7 @@ public class MainActivity extends AppCompatActivity {
             tv_question.setText(jsonObjectQuesType.getString("question_name"));
             if (jsonObjectQuesType.has("question_options")) {
                 JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
+                sinnerAL.clear();
                 for (int i = 0; i < jsonArrayOptions.length(); i++) {
                     JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(i);
                     String spinnerOption=jsonObjectOptionValues.getString("option_value");
@@ -357,18 +358,24 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout ll_parent=findViewById(R.id.ll_parent);
 
         LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View rowView=inflater.inflate(R.layout.radio_button_layout, null);
+        View rowView=inflater.inflate(R.layout.questions_layout, null);
         /*here are fields*/
         TextView tv_question=rowView.findViewById(R.id.tv_question);
-        RadioGroup radio_group=rowView.findViewById(R.id.radio_group);
-        RadioButton radio_button=rowView.findViewById(R.id.radio_button);
+      //  RadioGroup radio_group=rowView.findViewById(R.id.radio_group);
+        //RadioButton radio_button=rowView.findViewById(R.id.radio_button);
         try {
             tv_question.setText(jsonObjectQuesType.getString("question_name"));
             if (jsonObjectQuesType.has("question_options")) {
                 JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                 for (int i = 0; i < jsonArrayOptions.length(); i++) {
-                    JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(i);
+                    LayoutInflater inflaterz=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View rowViews=inflaterz.inflate(R.layout.radio_button_layout, null);
+                    /*here are fields*/
+                    RadioGroup radio_group=rowViews.findViewById(R.id.radio_group);
+                    RadioButton radio_button=rowViews.findViewById(R.id.radio_button);                    JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(i);
                     radio_button.setText(jsonObjectOptionValues.getString("option_value"));
+                    ll_parent.addView(rowViews, ll_parent.getChildCount());
+
                 }
             }
         } catch (JSONException e) {
