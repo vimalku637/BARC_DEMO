@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main_Activity";
     private Button btn_submit;
     private static String answerET;
-
+    LinearLayout ll_parent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -290,16 +290,64 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < jsonArrayQuestions.length(); i++) {
                     JSONObject jsonObjectQuesType=jsonArrayQuestions.getJSONObject(i);
                     if (jsonObjectQuesType.getString("question_type").equals("1")) {
-                        onAddEditField(jsonObjectQuesType);
+                        TextView txtLabel = new TextView(this);
+                        EditText editText=new EditText(this);
+                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                        ll_parent.addView(txtLabel);
+                        ll_parent.addView(editText);
+
                     }
                     else if (jsonObjectQuesType.getString("question_type").equals("2")) {
-                        onAddRadioButton(jsonObjectQuesType);
+                        TextView txtLabel = new TextView(this);
+                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                        ll_parent.addView(txtLabel);
+                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
+                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
+                            RadioButton button=new RadioButton(this);
+                            JSONObject jsonObject1=jsonArrayOptions.getJSONObject(j);
+                            button.setText(jsonObject1.getString("option_value"));
+                            ll_parent.addView(button);
+
+                        }
+                        //onAddRadioButton(jsonObjectQuesType);
                     }
                     else if (jsonObjectQuesType.getString("question_type").equals("3")) {
-                        onAddCheckBox(jsonObjectQuesType);
+                        TextView txtLabel = new TextView(this);
+                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                        ll_parent.addView(txtLabel);
+                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
+                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
+                            JSONObject jsonObject1=jsonArrayOptions.getJSONObject(j);
+                            CheckBox checkBox=new CheckBox(this);
+                            checkBox.setText(jsonObject1.getString("option_value"));
+                            ll_parent.addView(checkBox);
+
+                        }
+
+                        //   onAddCheckBox(jsonObjectQuesType);
                     }
                     else if (jsonObjectQuesType.getString("question_type").equals("4")) {
-                        onAddSpinner(jsonObjectQuesType);
+                        TextView txtLabel = new TextView(this);
+                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                        ll_parent.addView(txtLabel);
+                        ArrayList<String> spinnerAL=new ArrayList<>();
+                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
+                        Spinner spinner=new Spinner(this);
+                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
+                            spinnerAL.clear();
+                            for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
+                                String spinnerOption=jsonObjectOptionValues.getString("option_value");
+                                spinnerAL.add(spinnerOption);
+                            }
+                            spinnerAL.add(0, getString(R.string.select_option));
+                            ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.custom_spinner_dropdown, spinnerAL);
+                            spinner.setAdapter(arrayAdapter);
+
+                        }
+                        ll_parent.addView(spinner);
+
+                       // onAddSpinner(jsonObjectQuesType);
                     }
                 }
             }
@@ -311,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAddEditField(JSONObject jsonObjectQuesType) {
-        LinearLayout ll_parent=findViewById(R.id.ll_parent);
+
 
         LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View rowView=inflater.inflate(R.layout.edit_text_layout, null);
@@ -329,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAddSpinner(JSONObject jsonObjectQuesType) {
-        LinearLayout ll_parent=findViewById(R.id.ll_parent);
+         ll_parent=findViewById(R.id.ll_parent);
         ArrayList<String> spinnerAL=new ArrayList<>();
 
         LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -360,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
         ll_parent.addView(rowView, ll_parent.getChildCount());
     }
     public void onAddRadioButton(JSONObject jsonObjectQuesType) {
-        LinearLayout ll_parent=findViewById(R.id.ll_parent);
+         ll_parent=findViewById(R.id.ll_parent);
 
         LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView=inflater.inflate(R.layout.questions_layout, null);
@@ -391,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
         ll_parent.addView(rowView, ll_parent.getChildCount());
     }
     public void onAddCheckBox(JSONObject jsonObjectQuesType) {
-        LinearLayout ll_parent=findViewById(R.id.ll_parent);
+         ll_parent=findViewById(R.id.ll_parent);
         LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View rowView=inflater.inflate(R.layout.questions_layout, null);
         /*here are fields*/
@@ -419,15 +467,51 @@ public class MainActivity extends AppCompatActivity {
         // Add the new row before the add field button.
         ll_parent.addView(rowView, ll_parent.getChildCount());
     }
-
     private void initViews() {
         btn_submit=findViewById(R.id.btn_submit);
+        ll_parent=findViewById(R.id.ll_parent);
     }
     private void submitButtonClick() {
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Please get values first from all fields.", Toast.LENGTH_LONG).show();
+                for (int i = 0; i < ll_parent.getChildCount(); i++) {
+                    final View viewss = ll_parent.getChildAt(i);
+                    if (viewss instanceof LinearLayout){
+                        LinearLayout linearLayout = (LinearLayout) viewss;
+                        for (int j = 0; j <linearLayout.getChildCount() ; j++) {
+                            View view1= linearLayout.getChildAt(j);
+                            if (view1 instanceof LinearLayout){
+                                LinearLayout linearLayout1=(LinearLayout) view1;
+                                for (int k = 0; k < linearLayout1.getChildCount() ; k++) {
+                                    View view2= linearLayout1.getChildAt(k);
+                                    if (view2 instanceof RadioGroup){
+                                        Toast.makeText(MainActivity.this, "Radio Group", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                    if (view2 instanceof CheckBox){
+                                        Toast.makeText(MainActivity.this, "Checkbox", Toast.LENGTH_SHORT).show();
+
+                                    }
+
+                                }
+                            }
+                             if(view1 instanceof EditText){
+                                Toast.makeText(MainActivity.this, "Edit text", Toast.LENGTH_SHORT).show();
+
+                            } if(view1 instanceof RadioButton){
+                                Toast.makeText(MainActivity.this, "Radio", Toast.LENGTH_SHORT).show();
+
+                            } if(view1 instanceof Spinner){
+                                Toast.makeText(MainActivity.this, "Spinner", Toast.LENGTH_SHORT).show();
+
+                            } if(view1 instanceof CheckBox){
+                                Toast.makeText(MainActivity.this, "Checkbox", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    }
+                }
             }
         });
     }
