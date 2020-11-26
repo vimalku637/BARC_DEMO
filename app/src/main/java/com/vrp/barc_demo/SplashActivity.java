@@ -29,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (isProgressBar) {
-                    Intent intentMainActivity=new Intent(context, MainActivity.class);
+                    Intent intentMainActivity=new Intent(context, HomeActivity.class);
                     startActivity(intentMainActivity);
                     finish();
                 }
