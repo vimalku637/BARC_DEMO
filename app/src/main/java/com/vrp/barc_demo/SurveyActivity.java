@@ -1,10 +1,14 @@
 package com.vrp.barc_demo;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +21,23 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.utils.CommonClass;
+import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class SurveyActivity extends AppCompatActivity {
@@ -36,345 +48,47 @@ public class SurveyActivity extends AppCompatActivity {
     private Context context=this;
     private LinearLayout ll_parent;
     private String survey_id;
-    private int count=3;
+    private int length=3;
+    private int startPosition;
+    private int startPositionBefore;
+    private int endPosition;
+    SharedPrefHelper sharedPrefHelper;
+    int totalQuestions;
+    JSONObject jsonQuestions = null;
+    JSONArray jsonArrayQuestions=null;
+    ArrayList<AnswerModel> answerModelList;
+    boolean back_status=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey);
-
+        sharedPrefHelper=new SharedPrefHelper(this);
+        endPosition=sharedPrefHelper.getInt("endPosition",0);
+        if(endPosition==0){
+            endPosition=length;
+        }
+        startPosition=sharedPrefHelper.getInt("startPosition",0);
+        answerModelList=new ArrayList<>();
         initViews();
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
             survey_id=bundle.getString("survey_id", "");
         }
-
-        JSONObject jsonObject = null;
         try {
-            jsonObject = new JSONObject("{\n" +
-                    "\t\"questions\": [\n" +
-                    "\t  {\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Question 1\",\n" +
-                    "\t\t\t\"question_type\": \"1\",\n" +
-                    "\t\t\t\"question_input_type\": \"1\",\n" +
-                    "\t\t\t\"validation_id\": \"1\",\n" +
-                    "\t\t\t\"question_options\": []\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Question 2\",\n" +
-                    "\t\t\t\"question_type\": \"1\",\n" +
-                    "\t\t\t\"question_input_type\": \"2\",\n" +
-                    "\t\t\t\"validation_id\": \"1,2\",\n" +
-                    "\t\t\t\"question_options\": []\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Question 3\",\n" +
-                    "\t\t\t\"question_type\": \"2\",\n" +
-                    "\t\t\t\"question_input_type\": \"0\",\n" +
-                    "\t\t\t\"validation_id\": \"\",\n" +
-                    "\t\t\t\"question_options\": [{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Yes\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"1\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"No\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"2\"\n" +
-                    "\t\t\t\t}\n" +
-                    "\t\t\t]\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Question 4\",\n" +
-                    "\t\t\t\"question_type\": \"3\",\n" +
-                    "\t\t\t\"question_input_type\": \"1\",\n" +
-                    "\t\t\t\"validation_id\": \"1\",\n" +
-                    "\t\t\t\"question_options\": [{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox11\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"1\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox12\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"2\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox13\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"3\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox14\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"4\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox15\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"5\"\n" +
-                    "\t\t\t\t}\n" +
-                    "\t\t\t]\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Question 5\",\n" +
-                    "\t\t\t\"question_type\": \"4\",\n" +
-                    "\t\t\t\"question_input_type\": \"1\",\n" +
-                    "\t\t\t\"validation_id\": \"\",\n" +
-                    "\t\t\t\"question_options\": [{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner11\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"1\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner12\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"2\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner13\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"3\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner14\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"4\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner15\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"5\"\n" +
-                    "\t\t\t\t}\n" +
-                    "\t\t\t]\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Question 6\",\n" +
-                    "\t\t\t\"question_type\": \"4\",\n" +
-                    "\t\t\t\"question_input_type\": \"1\",\n" +
-                    "\t\t\t\"validation_id\": \"1\",\n" +
-                    "\t\t\t\"question_options\": [{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner21\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"1\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner22\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"2\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner23\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"3\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner24\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"4\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Spinner25\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"5\"\n" +
-                    "\t\t\t\t}\n" +
-                    "\t\t\t]\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Question 7\",\n" +
-                    "\t\t\t\"question_type\": \"3\",\n" +
-                    "\t\t\t\"question_input_type\": \"1\",\n" +
-                    "\t\t\t\"validation_id\": \"\",\n" +
-                    "\t\t\t\"question_options\": [{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox21\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"1\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox22\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"2\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox23\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"3\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox24\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"4\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Checkbox25\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"5\"\n" +
-                    "\t\t\t\t}\n" +
-                    "\t\t\t]\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Question 8\",\n" +
-                    "\t\t\t\"question_type\": \"1\",\n" +
-                    "\t\t\t\"question_input_type\": \"1\",\n" +
-                    "\t\t\t\"validation_id\": \"\",\n" +
-                    "\t\t\t\"question_options\": []\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Question 9\",\n" +
-                    "\t\t\t\"question_type\": \"1\",\n" +
-                    "\t\t\t\"question_input_type\": \"2\",\n" +
-                    "\t\t\t\"validation_id\": \"1\",\n" +
-                    "\t\t\t\"question_options\": []\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_id\": \"1\",\n" +
-                    "\t\t\t\"language_id\": \"1\",\n" +
-                    "\t\t\t\"question_name\": \"Are sure to complete questionnaire\",\n" +
-                    "\t\t\t\"question_type\": \"2\",\n" +
-                    "\t\t\t\"question_input_type\": \"1\",\n" +
-                    "\t\t\t\"validation_id\": \"1\",\n" +
-                    "\t\t\t\"question_options\": [{\n" +
-                    "\t\t\t\t\t\"option_value\": \"Yes\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"1\"\n" +
-                    "\t\t\t\t},\n" +
-                    "\t\t\t\t{\n" +
-                    "\t\t\t\t\t\"option_value\": \"No\",\n" +
-                    "\t\t\t\t\t\"option_id\": \"2\"\n" +
-                    "\t\t\t\t}\n" +
-                    "\t\t\t]\n" +
-                    "\t\t}\n" +
-                    "\n" +
-                    "\t],\n" +
-                    "\t\"questions_type\": [\n" +
-                    "\t  {\n" +
-                    "\t\t\t\"question_type\": \"Text\",\n" +
-                    "\t\t\t\"question_type_id\": \"1\"\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_type\": \"Radio\",\n" +
-                    "\t\t\t\"question_type_id\": \"2\"\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_type\": \"Checkbox\",\n" +
-                    "\t\t\t\"question_type_id\": \"3\"\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"question_type\": \"spinner\",\n" +
-                    "\t\t\t\"question_type_id\": \"4\"\n" +
-                    "\t\t}\n" +
-                    "\t],\n" +
-                    "\t\"questions_input_type\": [\n" +
-                    "\t  {\n" +
-                    "\t\t\t\"questions_input_type\": \"Text\",\n" +
-                    "\t\t\t\"questions_input_type_id\": \"1\"\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"questions_input_type\": \"Integer\",\n" +
-                    "\t\t\t\"questions_input_type\": \"2\"\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"questions_input_type\": \"Multiple\",\n" +
-                    "\t\t\t\"questions_input_type\": \"3\"\n" +
-                    "\t\t}\n" +
-                    "\t],\n" +
-                    "\t\"validations\": [\n" +
-                    "\t  {\n" +
-                    "\t\t\t\"validation_type\": \"required\",\n" +
-                    "\t\t\t\"questions_input_type_id\": \"1\"\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"questions_input_type\": \"can't be less then 18\",\n" +
-                    "\t\t\t\"questions_input_type\": \"2\"\n" +
-                    "\t\t}\n" +
-                    "\t],\n" +
-                    "\t\"languages\": [\n" +
-                    "\t  {\n" +
-                    "\t\t\t\"language_name\": \"English\",\n" +
-                    "\t\t\t\"language_name_id\": \"1\"\n" +
-                    "\t\t},\n" +
-                    "\t\t{\n" +
-                    "\t\t\t\"language_name\": \"Hindi\",\n" +
-                    "\t\t\t\"language_name_id\": \"1\"\n" +
-                    "\t\t}\n" +
-                    "\t]\n" +
-                    "}");
-
-            if (jsonObject.has("questions")) {
-                JSONArray jsonArrayQuestions = jsonObject.getJSONArray("questions");
+            jsonQuestions = new JSONObject(loadJSONFromAsset());
+            if (jsonQuestions.has("questions")) {
+                jsonArrayQuestions = jsonQuestions.getJSONArray("questions");
+                totalQuestions = jsonArrayQuestions.length();
                 Log.e("questions", "onCreate: " + jsonArrayQuestions.toString());
-                for (int i = 0; i < count; i++) {
-                    JSONObject jsonObjectQuesType=jsonArrayQuestions.getJSONObject(i);
-                    if (jsonObjectQuesType.getString("question_type").equals("1")) {
-                        TextView txtLabel = new TextView(this);
-                        EditText editText=new EditText(this);
-                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
-                        ll_parent.addView(txtLabel);
-                        ll_parent.addView(editText);
-
-                        //onAddEditField(jsonObjectQuesType);
-
-                    }
-                    else if (jsonObjectQuesType.getString("question_type").equals("2")) {
-                        TextView txtLabel = new TextView(this);
-                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
-                        ll_parent.addView(txtLabel);
-                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
-                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
-                            RadioGroup radioGroup=new RadioGroup(this);
-                            RadioButton radioButton=new RadioButton(this);
-                            radioButton.setLayoutParams(new LinearLayout.LayoutParams
-                                    (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                            JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(j);
-                            radioButton.setText(jsonObjectOptionValues.getString("option_value"));
-                            if (radioGroup != null) {
-                                radioGroup.addView(radioButton);
-                            }
-                            ll_parent.addView(radioGroup);
-
-                        }
-                        //onAddRadioButton(jsonObjectQuesType);
-                    }
-                    else if (jsonObjectQuesType.getString("question_type").equals("3")) {
-                        TextView txtLabel = new TextView(this);
-                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
-                        ll_parent.addView(txtLabel);
-                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
-                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
-                            JSONObject jsonObject1=jsonArrayOptions.getJSONObject(j);
-                            CheckBox checkBox=new CheckBox(this);
-                            checkBox.setText(jsonObject1.getString("option_value"));
-                            ll_parent.addView(checkBox);
-
-                        }
-
-                        //   onAddCheckBox(jsonObjectQuesType);
-                    }
-                    else if (jsonObjectQuesType.getString("question_type").equals("4")) {
-                        TextView txtLabel = new TextView(this);
-                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
-                        ll_parent.addView(txtLabel);
-                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
-                        Spinner spinner=new Spinner(this);
-                        ArrayList<String> spinnerAL=new ArrayList<>();
-                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
-                            spinnerAL.clear();
-                            for (int k = 0; k < jsonArrayOptions.length(); k++) {
-                                JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
-                                String spinnerOption=jsonObjectOptionValues.getString("option_value");
-                                spinnerAL.add(spinnerOption);
-                            }
-                            spinnerAL.add(0, getString(R.string.select_option));
-                            ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.custom_spinner_dropdown, spinnerAL);
-                            spinner.setAdapter(arrayAdapter);
-
-                        }
-                        ll_parent.addView(spinner);
-
-                       // onAddSpinner(jsonObjectQuesType);
-                    }
+                if(totalQuestions>0){
+                    questionsPopulate();
                 }
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        }catch (JSONException ex){
+            Log.e("questions", "onCreate: " + ex.getMessage());
         }
-
         setButtonClick();
     }
 
@@ -498,45 +212,123 @@ public class SurveyActivity extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JSONArray jsonArray = new JSONArray();
-                final JSONObject jsonObject = new JSONObject();
-                for (int i = 0; i < ll_parent.getChildCount(); i++) {
-                    final View childView = ll_parent.getChildAt(i);
-                    try {
+                Button b = (Button)view;
+                String buttonText = b.getText().toString();
+                    JSONArray jsonArray = new JSONArray();
+                    final JSONObject jsonObject = new JSONObject();
+                    for (int i = 0; i < ll_parent.getChildCount(); i++) {
+                        final View childView = ll_parent.getChildAt(i);
+                        try {
                         /*JSONArray jsonArrayET = new JSONArray();
                         final JSONObject jsonObjectET = new JSONObject();*/
-                        if (childView instanceof EditText) {
-                            EditText editText = (EditText) childView;
-                            jsonArray.put(editText.getText().toString().trim());
-                            jsonObject.put("edit_text", jsonArray);
-                        }
+                            if (childView instanceof EditText) {
+                                EditText editText = (EditText) childView;
+                                int viewID=editText.getId();
+
+                                /*jsonArray.put(editText.getText().toString().trim());
+                                jsonObject.put("edit_text", jsonArray);*/
+                                if(back_status==true){
+                                    answerModelList.get(startPositionBefore).setOption_value(editText.getText().toString().trim());
+                                }else{
+                                    AnswerModel answerModel= new AnswerModel();
+                                    answerModel.setOption_id("");
+                                    answerModel.setOption_value(editText.getText().toString().trim());
+                                    answerModel.setSurveyID(survey_id);
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                    answerModelList.add(answerModel);
+                                }
+                                startPositionBefore++;
+                            }
                         /*JSONArray jsonArrayRG = new JSONArray();
                         final JSONObject jsonObjectRG = new JSONObject();*/
-                        if (childView instanceof RadioGroup) {
-                            RadioGroup radioGroup=(RadioGroup) childView;
-                            int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-                            android.widget.RadioButton selectedRadioButton = (android.widget.RadioButton) childView.findViewById(selectedRadioButtonId);
-                            if (selectedRadioButton!=null) {
-                                jsonArray.put(selectedRadioButton.getText().toString().trim());
-                                jsonObject.put("radio_button", jsonArray);
+                            else if (childView instanceof RadioGroup) {
+                                RadioGroup radioGroup = (RadioGroup) childView;
+                                int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                                android.widget.RadioButton selectedRadioButton = (android.widget.RadioButton) childView.findViewById(selectedRadioButtonId);
+                                if (selectedRadioButton != null) {
+                                    if(back_status==true){
+                                        answerModelList.get(startPositionBefore).setOption_id(Integer.toString(selectedRadioButton.getId()));
+                                    }else{
+                                        AnswerModel answerModel= new AnswerModel();
+                                        answerModel.setOption_id(Integer.toString(selectedRadioButton.getId()));
+                                        answerModel.setOption_value("");
+                                        answerModel.setSurveyID(survey_id);
+                                        answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                        answerModelList.add(answerModel);
+                                    }
+                                    startPositionBefore++;
+                                }
                             }
-                        }
                         /*JSONArray jsonArraySPN = new JSONArray();
                         final JSONObject jsonObjectSPN = new JSONObject();*/
-                        if (childView instanceof Spinner) {
-                            Spinner spinner = (Spinner) childView;
-                            jsonArray.put(spinner.getSelectedItem().toString().trim());
-                            jsonObject.put("spinner", jsonArray);
-                        }
+                            else if (childView instanceof Spinner) {
+                                Spinner spinner = (Spinner) childView;
+                                if(back_status==true){
+                                    answerModelList.get(startPositionBefore).setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                }else{
+                                    AnswerModel answerModel= new AnswerModel();
+                                    answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                    answerModel.setOption_value("");
+                                    answerModel.setSurveyID(survey_id);
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                    answerModelList.add(answerModel);
+                                }
+                                startPositionBefore++;
+                            }
                         /*JSONArray jsonArrayCHK = new JSONArray();
                         final JSONObject jsonObjectCHK = new JSONObject();*/
-                        if (childView instanceof CheckBox) {
-                            CheckBox checkBox = (CheckBox) childView;
-                            if (checkBox.isChecked()) {
-                                jsonArray.put(checkBox.getText().toString().trim());
-                                jsonObject.put("check_box", jsonArray);
-                            }
+                        else if(childView instanceof TableLayout){
+                                TableLayout tableLayout = (TableLayout) childView;
+                                String selectedOptions="";
+                                for (int k = 0; k < tableLayout.getChildCount(); k++) {
+                                    //final View childViewTable = tableLayout.getChildAt(k);
+                                    final TableRow row = (TableRow) tableLayout.getChildAt(k);
+                                    CheckBox checkBox = (CheckBox) row.getChildAt(0);
+                                    if (checkBox.isChecked()) {
+                                        jsonArray.put(checkBox.getText().toString().trim());
+                                        jsonObject.put("check_box", jsonArray);
+                                        if(selectedOptions.equals("")){
+                                            selectedOptions=Integer.toString(checkBox.getId());
+                                        }else{
+                                            selectedOptions=selectedOptions+","+Integer.toString(checkBox.getId());
+                                        }
+                                    }
+                                }
+                                if(back_status==true){
+                                    answerModelList.get(startPositionBefore).setOption_id(selectedOptions);
+                                }else{
+                                    AnswerModel answerModel= new AnswerModel();
+                                    answerModel.setOption_id(selectedOptions);
+                                    answerModel.setOption_value("");
+                                    answerModel.setSurveyID(survey_id);
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                    answerModelList.add(answerModel);
+                                }
+                                startPositionBefore++;
                         }
+                            /*else if (childView instanceof CheckBox) {
+                                CheckBox checkBox = (CheckBox) childView;
+                                String selectedOptions="";
+                                if (checkBox.isChecked()) {
+                                    jsonArray.put(checkBox.getText().toString().trim());
+                                    jsonObject.put("check_box", jsonArray);
+                                    if(selectedOptions.equals("")){
+                                        selectedOptions=Integer.toString(checkBox.getId());
+                                    }else{
+                                        selectedOptions=selectedOptions+","+Integer.toString(checkBox.getId());
+                                    }
+                                }
+                                AnswerModel answerModel= new AnswerModel();
+                                answerModel.setOption_id(selectedOptions);
+                                answerModel.setOption_value("");
+                                answerModel.setSurveyID(survey_id);
+                                answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                answerModelList.add(answerModel);
+                                startPositionBefore++;
+                            }*/
+                            else{
+                                childView.getRootView();
+                            }
 
                         /*JSONObject merged = new JSONObject();
                         JSONObject[] objects = new JSONObject[]
@@ -555,26 +347,70 @@ public class SurveyActivity extends AppCompatActivity {
 
                         Log.e(TAG, "onNextClick- "+merged.toString());*/
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                    String json = jsonObject.toString();
+                        String json = jsonObject.toString();
 
-                    Intent intentSurveyActivity1=new Intent(context, SurveyActivity1.class)
+                   /* Intent intentSurveyActivity1=new Intent(context, SurveyActivity1.class)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intentSurveyActivity1.putExtra("count", count);
                     intentSurveyActivity1.putExtra("survey_id", survey_id);
                     intentSurveyActivity1.putExtra("json", json);
                     startActivity(intentSurveyActivity1);
+                    finish();*/
+
+                    }
+                    //startPosition=startPosition+1;
+                if(buttonText.equals("Submit")){
+                    Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
+                    Intent intentSurveyActivity1=new Intent(context, HomeActivity.class);
+                    startActivity(intentSurveyActivity1);
                     finish();
-                    Log.e(TAG, "onNextClick- "+jsonObject.toString());
+                }else {
+                    //back_status=false;
+                    sharedPrefHelper.setInt("startPosition", startPosition);
+                    endPosition = endPosition + length;
+                    if (endPosition <= totalQuestions) {
+                        btn_next.setText("Next");
+                        sharedPrefHelper.setInt("endPosition", endPosition);
+                    }
+                    else {
+                        endPosition = totalQuestions;
+                        btn_next.setText("Submit");
+                        back_status=false;
+                        sharedPrefHelper.setInt("endPosition", totalQuestions);
+                    }
+                    Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);
+                    questionsPopulate();
+                    Log.e(TAG, "onNextClick- " + jsonObject.toString());
                 }
             }
         });
         btn_previous.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
+                if(endPosition==totalQuestions){
+                    startPosition=startPosition-1;
+                }else{
+                    startPosition=startPosition-length;
+                }
+                endPosition=startPosition;
+                startPosition=endPosition-length;
+                //endPosition = endPosition + length;
+                sharedPrefHelper.setInt("endPosition", endPosition);
+                Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);
+                back_status=true;
+                if(endPosition<=0){
+                Intent intentHom= new Intent(SurveyActivity.this,HomeActivity.class);
+                startActivity(intentHom);
+                finish();
+                }else{
+                    btn_next.setText("Next");
+                    questionsPopulate();
+                }
             }
         });
         btn_stop.setOnClickListener(new View.OnClickListener() {
@@ -583,5 +419,137 @@ public class SurveyActivity extends AppCompatActivity {
                 CommonClass.setPopupForStopSurvey(context);
             }
         });
+    }
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = context.getAssets().open("barc_question_json.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+    public void questionsPopulate(){
+       try{
+           ll_parent.removeAllViews();
+           startPositionBefore=startPosition;
+            for (int i = startPosition; i < endPosition; i++) {
+                JSONObject jsonObjectQuesType=jsonArrayQuestions.getJSONObject(i);
+                if (jsonObjectQuesType.getString("question_type").equals("1")) {
+                    TextView txtLabel = new TextView(this);
+                    EditText editText=new EditText(this);
+                    editText.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                    if(jsonObjectQuesType.getString("question_input_type").equals("2")){
+                        editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                    }else{
+                        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                    }
+                    editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
+                    if(back_status==true){
+                        editText.setText(answerModelList.get(i).getOption_value());
+                    }
+                    txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                    ll_parent.addView(txtLabel);
+                    ll_parent.addView(editText);
+
+                    //onAddEditField(jsonObjectQuesType);
+
+                }
+                else if (jsonObjectQuesType.getString("question_type").equals("2")) {
+                    TextView txtLabel = new TextView(this);
+                    txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                    ll_parent.addView(txtLabel);
+                    JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
+                    RadioGroup radioGroup=new RadioGroup(this);
+                    for (int j = 0; j <jsonArrayOptions.length() ; j++) {
+                        RadioButton radioButton=new RadioButton(this);
+                        radioButton.setLayoutParams(new LinearLayout.LayoutParams
+                                (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(j);
+                        radioButton.setText(jsonObjectOptionValues.getString("option_value"));
+                        radioButton.setId(Integer.parseInt(jsonObjectOptionValues.getString("option_id")));
+                        if(back_status==true){
+                            if(answerModelList.get(i).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
+                                radioButton.setChecked(true);
+                            }
+                        }
+                        if (radioGroup != null) {
+                            radioGroup.addView(radioButton);
+                        }
+                    }
+                    ll_parent.addView(radioGroup);
+                    //onAddRadioButton(jsonObjectQuesType);
+                }
+                else if (jsonObjectQuesType.getString("question_type").equals("3")) {
+                    TextView txtLabel = new TextView(this);
+                    txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                    ll_parent.addView(txtLabel);
+                    JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
+                    TableLayout linearLayoutCheckbox= new TableLayout(this);
+                    linearLayoutCheckbox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    String selectedOptions="";
+                    if(back_status==true){
+                        selectedOptions=answerModelList.get(i).getOption_id();
+                        String[] arraySelectedOptions = selectedOptions.split(",");
+                    }
+                    for (int j = 0; j <jsonArrayOptions.length() ; j++) {
+                        TableRow row =new TableRow(this);
+                        row.setId(j);
+                        row.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        JSONObject jsonObject1=jsonArrayOptions.getJSONObject(j);
+                        CheckBox checkBox=new CheckBox(this);
+                        checkBox.setText(jsonObject1.getString("option_value"));
+                        checkBox.setId(Integer.parseInt(jsonObject1.getString("option_id")));
+                        if(back_status==true){
+                            selectedOptions=answerModelList.get(i).getOption_id();
+                            String[] arraySelectedOptions = selectedOptions.split(",");
+                            boolean contains = Arrays.asList(arraySelectedOptions).contains(jsonObject1.getString("option_id"));
+                            if(contains){
+                                checkBox.setChecked(true);
+                            }
+                        }
+                        row.addView(checkBox);
+                        linearLayoutCheckbox.addView(row);
+                    }
+                    ll_parent.addView(linearLayoutCheckbox);
+
+                    //   onAddCheckBox(jsonObjectQuesType);
+                }
+                else if (jsonObjectQuesType.getString("question_type").equals("4")) {
+                    TextView txtLabel = new TextView(this);
+                    txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                    ll_parent.addView(txtLabel);
+                    JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
+                    Spinner spinner=new Spinner(this);
+                    ArrayList<String> spinnerAL=new ArrayList<>();
+                    for (int j = 0; j <jsonArrayOptions.length() ; j++) {
+                        spinnerAL.clear();
+                        for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                            JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
+                            String spinnerOption=jsonObjectOptionValues.getString("option_value");
+                            spinnerAL.add(spinnerOption);
+                        }
+                        spinnerAL.add(0, getString(R.string.select_option));
+                        ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.custom_spinner_dropdown, spinnerAL);
+                        spinner.setAdapter(arrayAdapter);
+                        if(back_status==true){
+                            spinner.setSelection(Integer.parseInt(answerModelList.get(i).getOption_id()));
+                        }
+                    }
+                    ll_parent.addView(spinner);
+
+                    // onAddSpinner(jsonObjectQuesType);
+                }
+                startPosition++;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

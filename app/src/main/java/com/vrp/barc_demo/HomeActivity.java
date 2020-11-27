@@ -9,17 +9,21 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vrp.barc_demo.utils.SharedPrefHelper;
+
 import java.util.UUID;
 
 public class HomeActivity extends AppCompatActivity {
     private TextView tv_start_survey, tv_edit_survey;
     /*normal widgets*/
     private Context context=this;
+    SharedPrefHelper sharedPrefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        sharedPrefHelper=new SharedPrefHelper(this);
         initViews();
 
         setButtonClick();
@@ -34,6 +38,9 @@ public class HomeActivity extends AppCompatActivity {
                 String uuid = aLong.toString();
                 Intent intentSurveyActivity=new Intent(context, SurveyActivity.class);
                 intentSurveyActivity.putExtra("survey_id", uuid);
+                sharedPrefHelper.setInt("startPosition",0);
+                sharedPrefHelper.setInt("endPosition",0);
+                //sharedPrefHelper.setInt("survey_screen_length",0);
                 startActivity(intentSurveyActivity);
                 Toast.makeText(HomeActivity.this, ""+uuid, Toast.LENGTH_LONG).show();
             }
