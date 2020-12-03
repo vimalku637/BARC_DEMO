@@ -2,8 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_screen"
     android:focusable="true"
     android:focusableInTouchMode="true"
     tools:context=".SurveyActivity">
@@ -16,7 +17,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin10">
 
             <LinearLayout
                 android:id="@+id/ll_parent"
@@ -29,33 +31,42 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_below="@+id/ll_parent">
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_previous"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/previous_btn_background"
                 android:text="@string/previous"
+                android:backgroundTint="@color/color_yellow_google"
+                android:paddingTop="@dimen/margin15"
+                android:paddingBottom="@dimen/margin15"
+                app:cornerRadius="@dimen/margin8"
                 android:layout_marginTop="30dp"
                 android:layout_weight="1"
                 android:textColor="@android:color/white" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_stop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/stop_btn_background"
                 android:text="@string/stop"
+                android:backgroundTint="@color/color_red_google"
+                android:paddingTop="@dimen/margin15"
+                android:paddingBottom="@dimen/margin15"
+                app:cornerRadius="@dimen/margin8"
                 android:layout_marginTop="30dp"
                 android:layout_weight="1"
                 android:layout_marginStart="5dp"
                 android:textColor="@android:color/white" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/next_btn_background"
                 android:text="@string/next"
+                android:backgroundTint="@color/color_green_google"
+                android:paddingTop="@dimen/margin15"
+                android:paddingBottom="@dimen/margin15"
+                app:cornerRadius="@dimen/margin8"
                 android:layout_marginTop="30dp"
                 android:layout_weight="1"
                 android:layout_marginStart="5dp"

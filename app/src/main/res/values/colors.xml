@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#DB4437</color>
+    <color name="colorPrimaryDark">#bf2726</color>
+    <color name="colorAccent">#bf2726</color>
 
     <!--custom color-->
     <color name="color_blue_google">#4285F4</color>
@@ -10,4 +10,8 @@
     <color name="color_yellow_google">#F4B400</color>
     <color name="color_yellow_dark">#B1860C</color>
     <color name="color_green_google">#0F9D58</color>
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_blue_facebook">#3B5998</color>
+    <color name="color_blue_twitter">#00ACEE</color>
+    <color name="color_red_light">#DF6D63</color>
 </resources>

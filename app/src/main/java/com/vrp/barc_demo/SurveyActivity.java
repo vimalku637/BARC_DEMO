@@ -26,6 +26,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.utils.CommonClass;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
@@ -40,13 +41,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class SurveyActivity extends AppCompatActivity {
     private static final String TAG = "Survey_Activity";
-    private Button btn_previous, btn_stop, btn_next;
+    @BindView(R.id.btn_previous)
+    MaterialButton btn_previous;
+    @BindView(R.id.btn_stop)
+    MaterialButton btn_stop;
+    @BindView(R.id.btn_next)
+    MaterialButton btn_next;
+    @BindView(R.id.ll_parent)
+    LinearLayout ll_parent;
 
     /*normal widgets*/
     private Context context=this;
-    private LinearLayout ll_parent;
     private String survey_id;
     private int length=3;
     private int startPosition;
@@ -63,14 +73,17 @@ public class SurveyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey);
-        sharedPrefHelper=new SharedPrefHelper(this);
+        ButterKnife.bind(this);
+        setTitle(R.string.survey);
+        initialization();
+
         endPosition=sharedPrefHelper.getInt("endPosition",0);
         if(endPosition==0){
             endPosition=length;
         }
         startPosition=sharedPrefHelper.getInt("startPosition",0);
         answerModelList=new ArrayList<>();
-        initViews();
+
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
@@ -93,8 +106,6 @@ public class SurveyActivity extends AppCompatActivity {
     }
 
     public void onAddEditField(JSONObject jsonObjectQuesType) {
-
-
         LayoutInflater inflater=(LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View rowView=inflater.inflate(R.layout.edit_text_layout, null);
         /*here are fields*/
@@ -201,11 +212,8 @@ public class SurveyActivity extends AppCompatActivity {
         ll_parent.addView(rowView, ll_parent.getChildCount());
     }
 
-    private void initViews() {
-        btn_previous=findViewById(R.id.btn_previous);
-        btn_stop=findViewById(R.id.btn_stop);
-        btn_next=findViewById(R.id.btn_next);
-        ll_parent=findViewById(R.id.ll_parent);
+    private void initialization() {
+        sharedPrefHelper=new SharedPrefHelper(this);
     }
 
     private void setButtonClick() {
@@ -353,7 +361,7 @@ public class SurveyActivity extends AppCompatActivity {
 
                         String json = jsonObject.toString();
 
-                   /* Intent intentSurveyActivity1=new Intent(context, SurveyActivity1.class)
+                   /* Intent intentSurveyActivity1=new Intent(context, LoginActivity.class)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intentSurveyActivity1.putExtra("count", count);
                     intentSurveyActivity1.putExtra("survey_id", survey_id);

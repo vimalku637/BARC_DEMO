@@ -13,8 +13,16 @@ import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import java.util.UUID;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class HomeActivity extends AppCompatActivity {
-    private TextView tv_start_survey, tv_edit_survey;
+    private static final String TAG = "Home_Activity";
+    @BindView(R.id.tv_start_survey)
+    TextView tv_start_survey;
+    @BindView(R.id.tv_edit_survey)
+    TextView tv_edit_survey;
+
     /*normal widgets*/
     private Context context=this;
     SharedPrefHelper sharedPrefHelper;
@@ -23,26 +31,28 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        sharedPrefHelper=new SharedPrefHelper(this);
-        initViews();
+        ButterKnife.bind(this);
+        setTitle(R.string.main_menu);
+        initialization();
 
         setButtonClick();
+    }
+
+    private void initialization() {
+        sharedPrefHelper=new SharedPrefHelper(this);
     }
 
     private void setButtonClick() {
         tv_start_survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String uuid = UUID.randomUUID().toString();
                 Long aLong = System.currentTimeMillis()/1000;
                 String uuid = aLong.toString();
                 Intent intentSurveyActivity=new Intent(context, SurveyActivity.class);
                 intentSurveyActivity.putExtra("survey_id", uuid);
                 sharedPrefHelper.setInt("startPosition",0);
                 sharedPrefHelper.setInt("endPosition",0);
-                //sharedPrefHelper.setInt("survey_screen_length",0);
                 startActivity(intentSurveyActivity);
-                Toast.makeText(HomeActivity.this, ""+uuid, Toast.LENGTH_LONG).show();
             }
         });
         tv_edit_survey.setOnClickListener(new View.OnClickListener() {
@@ -51,10 +61,5 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void initViews() {
-        tv_start_survey=findViewById(R.id.tv_start_survey);
-        tv_edit_survey=findViewById(R.id.tv_edit_survey);
     }
 }

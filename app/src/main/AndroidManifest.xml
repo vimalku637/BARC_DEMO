@@ -9,12 +9,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SurveyActivity3"></activity>
-        <activity android:name=".SurveyActivity2" />
-        <activity android:name=".SurveyActivity1" />
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".SurveyActivity3"/>
+        <activity
+            android:name=".DownloadSurvey"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomeActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SurveyActivity"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SplashActivity"
