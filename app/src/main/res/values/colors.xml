@@ -14,4 +14,5 @@
     <color name="color_blue_facebook">#3B5998</color>
     <color name="color_blue_twitter">#00ACEE</color>
     <color name="color_red_light">#DF6D63</color>
+    <color name="color_black">#000000</color>
 </resources>

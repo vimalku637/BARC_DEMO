@@ -27,8 +27,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.vrp.barc_demo.models.AnswerModel;
+import com.vrp.barc_demo.models.SurveyModel;
+import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.CommonClass;
+import com.vrp.barc_demo.utils.MyJSON;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import org.json.JSONArray;
@@ -52,12 +57,15 @@ public class SurveyActivity extends AppCompatActivity {
     MaterialButton btn_stop;
     @BindView(R.id.btn_next)
     MaterialButton btn_next;
+    @BindView(R.id.btn_save)
+    MaterialButton btn_save;
     @BindView(R.id.ll_parent)
     LinearLayout ll_parent;
 
     /*normal widgets*/
     private Context context=this;
-    private String survey_id;
+    private String survey_id="";
+    private String screen_type="";
     private int length=3;
     private int startPosition;
     private int startPositionBefore;
@@ -68,6 +76,8 @@ public class SurveyActivity extends AppCompatActivity {
     JSONArray jsonArrayQuestions=null;
     ArrayList<AnswerModel> answerModelList;
     boolean back_status=false;
+    private SqliteHelper sqliteHelper;
+    private String surveyObjectSON=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,15 +92,26 @@ public class SurveyActivity extends AppCompatActivity {
             endPosition=length;
         }
         startPosition=sharedPrefHelper.getInt("startPosition",0);
-        answerModelList=new ArrayList<>();
 
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
             survey_id=bundle.getString("survey_id", "");
+            screen_type=bundle.getString("screen_type", "");
         }
+        /*get survey data according to survey id*/
+        if (screen_type.equals("edit_survey")) {
+            surveyObjectSON = sqliteHelper.getSurveyData(survey_id);
+            try {
+                JSONObject jsonObject = new JSONObject(surveyObjectSON);
+                Log.e(TAG, "onCreate: " + jsonObject.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
-            jsonQuestions = new JSONObject(loadJSONFromAsset());
+            jsonQuestions = new JSONObject(MyJSON.loadJSONFromAsset(context));
             if (jsonQuestions.has("questions")) {
                 jsonArrayQuestions = jsonQuestions.getJSONArray("questions");
                 totalQuestions = jsonArrayQuestions.length();
@@ -103,6 +124,31 @@ public class SurveyActivity extends AppCompatActivity {
             Log.e("questions", "onCreate: " + ex.getMessage());
         }
         setButtonClick();
+        saveAllData();
+    }
+
+    private void saveAllData() {
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //save data in to local DB.
+                Gson gson = new Gson();
+                String listString = gson.toJson(
+                        answerModelList,
+                        new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+
+                try {
+                    JSONArray jsonArray =  new JSONArray(listString);
+                    JSONObject jsonObject=new JSONObject();
+                    jsonObject.put("survey_data", jsonArray);
+                    Log.e(TAG, "onClick: "+jsonObject.toString());
+
+                    sqliteHelper.saveSurveyDataInTable(jsonObject, survey_id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void onAddEditField(JSONObject jsonObjectQuesType) {
@@ -214,6 +260,8 @@ public class SurveyActivity extends AppCompatActivity {
 
     private void initialization() {
         sharedPrefHelper=new SharedPrefHelper(this);
+        sqliteHelper=new SqliteHelper(this);
+        answerModelList=new ArrayList<>();
     }
 
     private void setButtonClick() {
@@ -373,6 +421,21 @@ public class SurveyActivity extends AppCompatActivity {
                     //startPosition=startPosition+1;
                 if(buttonText.equals("Submit")){
                     Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
+                    //save data in to local DB.
+                    Gson gson = new Gson();
+                    String listString = gson.toJson(
+                            answerModelList,
+                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                    try {
+                        JSONArray json_array =  new JSONArray(listString);
+                        JSONObject json_object=new JSONObject();
+                        jsonObject.put("survey_data", json_array);
+                        Log.e(TAG, "onClick: "+json_object.toString());
+
+                        sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     Intent intentSurveyActivity1=new Intent(context, HomeActivity.class);
                     startActivity(intentSurveyActivity1);
                     finish();

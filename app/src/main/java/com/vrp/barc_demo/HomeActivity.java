@@ -22,6 +22,8 @@ public class HomeActivity extends AppCompatActivity {
     TextView tv_start_survey;
     @BindView(R.id.tv_edit_survey)
     TextView tv_edit_survey;
+    @BindView(R.id.tv_survey_list)
+    TextView tv_survey_list;
 
     /*normal widgets*/
     private Context context=this;
@@ -58,7 +60,14 @@ public class HomeActivity extends AppCompatActivity {
         tv_edit_survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Toast.makeText(context, "Edit Survey", Toast.LENGTH_SHORT).show();
+            }
+        });
+        tv_survey_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentSurveyList=new Intent(context, SurveyListActivity.class);
+                startActivity(intentSurveyList);
             }
         });
     }

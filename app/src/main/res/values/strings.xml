@@ -14,4 +14,8 @@
     <string name="main_menu">Main Menu</string>
     <string name="download_survey">Download Survey</string>
     <string name="survey">Survey</string>
+    <string name="save">Save</string>
+    <string name="survey_list">Survey List</string>
+    <string name="survey_id">Survey Id</string>
+    <string name="oops_no_data_found">Oops!...no data found.</string>
 </resources>
