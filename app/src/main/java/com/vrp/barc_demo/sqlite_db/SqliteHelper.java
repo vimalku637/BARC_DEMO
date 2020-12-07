@@ -132,8 +132,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
-                        SurveyModel surveyModel = new SurveyModel();
-                        surveyModel.setSurvey_id(cursor.getString(cursor.getColumnIndex("survey_data")));
+                        surveyJSON=cursor.getString(cursor.getColumnIndex("survey_data"));
 
                         cursor.moveToNext();
                     }
