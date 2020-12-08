@@ -305,6 +305,7 @@ public class SurveyActivity extends AppCompatActivity {
                                     answerModel.setOption_value(editText.getText().toString().trim());
                                     answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
                                     answerModelList.add(answerModel);
                                 }
                                 startPositionBefore++;
@@ -324,8 +325,7 @@ public class SurveyActivity extends AppCompatActivity {
                                         answerModel.setOption_value("");
                                         answerModel.setSurveyID(survey_id);
                                         answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
-                                        answerModel.setQuestion_name(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_name"));
-                                        answerModel.setQuestion_type(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_type"));
+                                        answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
                                         answerModelList.add(answerModel);
                                     }
                                     startPositionBefore++;
@@ -343,6 +343,7 @@ public class SurveyActivity extends AppCompatActivity {
                                     answerModel.setOption_value("");
                                     answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
                                     answerModelList.add(answerModel);
                                 }
                                 startPositionBefore++;
@@ -374,6 +375,7 @@ public class SurveyActivity extends AppCompatActivity {
                                     answerModel.setOption_value("");
                                     answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
                                     answerModelList.add(answerModel);
                                 }
                                 startPositionBefore++;
@@ -541,6 +543,9 @@ public class SurveyActivity extends AppCompatActivity {
                     editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
                     if(back_status==true || screen_type.equals("survey_list")){
                         editText.setText(answerModelList.get(i).getOption_value());
+                    }
+                    if (screen_type.equals("survey_list") && answerModelList.get(i).getPre_field().equals("false")) {
+                        editText.setEnabled(false);
                     }
                     txtLabel.setText(jsonObjectQuesType.getString("question_name"));
                     ll_parent.addView(txtLabel);

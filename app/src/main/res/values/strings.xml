@@ -20,4 +20,6 @@
     <string name="oops_no_data_found">Oops!...no data found.</string>
     <string name="home">Home</string>
     <string name="logout">Logout</string>
+    <string name="welcome_naresh">Welcome Naresh</string>
+    <string name="select_survey">Select Survey</string>
 </resources>

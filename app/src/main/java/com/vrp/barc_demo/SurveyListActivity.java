@@ -104,11 +104,10 @@ public class SurveyListActivity extends AppCompatActivity {
                 if(totalAnswers>0){
                     for (int i = 0; i < totalAnswers; i++) {
                         JSONObject jsonObjectAns=jsonArrayAnswers.getJSONObject(i);
-                        String optionValues=jsonObjectAns.getString("option_value");
-                        String optionID=jsonObjectAns.getString("option_id");
                         AnswerModel answerModel=new AnswerModel();
-                        answerModel.setOption_value(optionValues);
-                        answerModel.setOption_id(optionID);
+                        answerModel.setOption_value(jsonObjectAns.getString("option_value"));
+                        answerModel.setOption_id(jsonObjectAns.getString("option_id"));
+                        answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
                         answerModelList.add(answerModel);
                     }
                 }

@@ -9,6 +9,7 @@ public class AnswerModel implements Serializable {
     private String question_id;
     private String question_name;
     private String question_type;
+    private String pre_field;
 
     public String getOption_value() {
         return option_value;
@@ -55,5 +56,13 @@ public class AnswerModel implements Serializable {
 
     public void setQuestion_type(String question_type) {
         this.question_type = question_type;
+    }
+
+    public String getPre_field() {
+        return pre_field;
+    }
+
+    public void setPre_field(String pre_field) {
+        this.pre_field = pre_field;
     }
 }
