@@ -14,7 +14,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.UpdateQuestions"></activity>
+        <activity android:name=".StartingPointAcivity"></activity>
+        <activity android:name=".ClusterDetails" />
+        <activity android:name=".OptionScreen" />
+        <activity android:name=".SurveyStatus" />
+        <activity android:name=".Dashboard" />
+        <activity android:name=".MainMenuSecond" />
+        <activity android:name=".SelectSuervey" />
+        <activity android:name=".activities.UpdateQuestions" />
         <activity
             android:name=".SurveyListActivity"
             android:screenOrientation="portrait"
@@ -25,6 +32,10 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ForgotPassword"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity

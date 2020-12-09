@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/margin5"
+    tools:context=".OptionScreen">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Original Address"
+                android:textSize="@dimen/margin15" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin30"
+                    android:text="Naresh Kumar"
+                    android:textSize="17dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin30"
+                    android:text="D-105 Sector 125,Noida 201309"
+                    android:textSize="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin30"
+
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:layout_width="@dimen/margin260"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:layout_width="@dimen/margin60"
+                        android:layout_height="37dp"
+                        android:layout_gravity="end"
+                        android:background="@drawable/buttonshapyello"
+                        android:gravity="center"
+                        android:text="Start"
+                        android:textColor="@android:color/white"
+                        android:textSize="12dp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin5"
+                android:text="Next Address"
+                android:textSize="@dimen/margin15" />
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin5"
+                android:text="Previous Address"
+
+
+                android:textSize="@dimen/margin15" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin5"
+                android:text="Substituted Address"
+                android:textSize="@dimen/margin15" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginHorizontal="@dimen/margin60"
+                    android:layout_marginTop="@dimen/margin2"
+                    android:background="@drawable/addharbutton"
+                    android:orientation="vertical">
+
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin40"
+                        android:layout_marginLeft="@dimen/margin20" />
+
+
+                </LinearLayout>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginHorizontal="@dimen/margin50"
+                    android:layout_marginTop="@dimen/margin20"
+                    android:layout_marginBottom="@dimen/margin5"
+                    android:background="@drawable/buttondrakgray"
+                    android:hint="Reason of Selecting  Substitution Address"
+                    android:padding="@dimen/margin5" />
+
+
+                <EditText
+                    android:layout_width="@dimen/margin70"
+                    android:layout_height="40dp"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/margin10"
+                    android:layout_marginBottom="@dimen/margin5"
+                    android:background="@drawable/buttonshapyello"
+                    android:hint="Start"
+                    android:gravity="center"
+                    android:padding="@dimen/margin5" />
+            </LinearLayout>
+
+        </RadioGroup>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

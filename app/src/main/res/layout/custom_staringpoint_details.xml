@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/buttonzeroradioshap"
+            android:drawableLeft="@drawable/ic_baseline_arrow_drop_down_24"
+            android:gravity="center"
+            android:text="Cluster Id"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="37dp"
+
+            android:background="@drawable/buttonzeroradioshap"
+            android:drawableLeft="@drawable/ic_baseline_arrow_drop_down_24"
+            android:gravity="center"
+            android:text="Cluster Name"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/buttonzeroradioshap"
+            android:drawableLeft="@drawable/ic_baseline_arrow_drop_down_24"
+            android:gravity="center"
+            android:text="Action"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="CL-000011"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="37dp"
+
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="Shajahapur"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+             />
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="37dp"
+             android:background="@drawable/tableshape"
+             android:layout_weight="1"
+
+             android:orientation="vertical">
+             <TextView
+                 android:layout_width="@dimen/margin70"
+                 android:layout_height="20dp"
+                 android:layout_marginTop="8dp"
+                 android:gravity="center"
+                 android:text="L"
+                 android:layout_gravity="center"
+                 android:background="@color/color_red_google"
+                 android:textColor="@color/color_white"
+                 android:textSize="15dp"
+                 />
+         </LinearLayout>
+    </LinearLayout>
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/buttonshaplightdark"
+            android:gravity="center"
+            android:text="CL-000011"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="37dp"
+
+            android:background="@drawable/buttonshaplightdark"
+            android:gravity="center"
+            android:text="Shajahapur"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+             />
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="37dp"
+             android:background="@drawable/tableshape"
+             android:layout_weight="1"
+
+             android:orientation="vertical">
+             <TextView
+                 android:layout_width="@dimen/margin70"
+                 android:layout_height="20dp"
+                 android:layout_marginTop="8dp"
+                 android:gravity="center"
+                 android:text="L"
+                 android:layout_gravity="center"
+                 android:background="@color/color_red_google"
+                 android:textColor="@color/color_white"
+                 android:textSize="15dp"
+                 />
+         </LinearLayout>
+    </LinearLayout>
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="CL-000034"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="37dp"
+
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="RaiPur"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+             />
+
+
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="37dp"
+             android:background="@drawable/tableshape"
+             android:layout_weight="1"
+
+             android:orientation="vertical">
+             <TextView
+                 android:layout_width="@dimen/margin70"
+                 android:layout_height="20dp"
+                 android:layout_marginTop="8dp"
+                 android:gravity="center"
+                 android:text="O"
+                 android:layout_gravity="center"
+                  android:background="@color/color_green_google"
+                 android:textColor="@color/color_white"
+                 android:textSize="15dp"
+                 />
+         </LinearLayout>
+
+    </LinearLayout>
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/buttonshaplightdark"
+            android:gravity="center"
+            android:text="CL-000011"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="37dp"
+
+            android:background="@drawable/buttonshaplightdark"
+            android:gravity="center"
+            android:text="Raipur"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+             />
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="37dp"
+             android:background="@drawable/tableshape"
+             android:layout_weight="1"
+
+             android:orientation="vertical">
+             <TextView
+                 android:layout_width="@dimen/margin70"
+                 android:layout_height="20dp"
+                 android:layout_marginTop="8dp"
+                 android:gravity="center"
+                 android:text="O"
+                 android:layout_gravity="center"
+                 android:background="@color/color_green_google"
+                 android:textColor="@color/color_white"
+                 android:textSize="15dp"
+                 />
+         </LinearLayout>
+    </LinearLayout>
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="CL-000011"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="37dp"
+
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="Sajahpur"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+             />
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="37dp"
+             android:background="@drawable/tableshape"
+             android:layout_weight="1"
+
+             android:orientation="vertical">
+             <TextView
+                 android:layout_width="@dimen/margin70"
+                 android:layout_height="20dp"
+                 android:layout_marginTop="8dp"
+                 android:gravity="center"
+                 android:text="L"
+                 android:layout_gravity="center"
+                 android:background="@color/color_red_google"
+                 android:textColor="@color/color_white"
+                 android:textSize="15dp"
+                 />
+         </LinearLayout>
+    </LinearLayout>
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/buttonshaplightdark"
+            android:gravity="center"
+            android:text="CL-000011"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="37dp"
+
+            android:background="@drawable/buttonshaplightdark"
+            android:gravity="center"
+            android:text="Shaharnpur"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+             />
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="37dp"
+             android:background="@drawable/tableshape"
+             android:layout_weight="1"
+
+             android:orientation="vertical">
+             <TextView
+                 android:layout_width="@dimen/margin70"
+                 android:layout_height="20dp"
+                 android:layout_marginTop="8dp"
+                 android:gravity="center"
+                 android:text="L"
+                 android:layout_gravity="center"
+                 android:background="@color/color_red_google"
+                 android:textColor="@color/color_white"
+                 android:textSize="15dp"
+                 />
+         </LinearLayout>
+    </LinearLayout>
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="CL-000022"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="37dp"
+
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="Raipur"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+             />
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="37dp"
+             android:background="@drawable/tableshape"
+             android:layout_weight="1"
+
+             android:orientation="vertical">
+             <TextView
+                 android:layout_width="@dimen/margin70"
+                 android:layout_height="20dp"
+                 android:layout_marginTop="8dp"
+                 android:gravity="center"
+                 android:text="L"
+                 android:layout_gravity="center"
+                 android:background="@color/color_red_google"
+                 android:textColor="@color/color_white"
+                 android:textSize="15dp"
+                 />
+         </LinearLayout>
+    </LinearLayout> <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_weight="1"
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="CL-000022"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="37dp"
+
+            android:background="@drawable/tableshape"
+            android:gravity="center"
+            android:text="Raipur"
+            android:textColor="@color/color_black"
+            android:textSize="15dp"
+             />
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="37dp"
+             android:background="@drawable/tableshape"
+             android:layout_weight="1"
+
+             android:orientation="vertical">
+             <TextView
+                 android:layout_width="@dimen/margin70"
+                 android:layout_height="20dp"
+                 android:layout_marginTop="8dp"
+                 android:gravity="center"
+                 android:text="O"
+                 android:layout_gravity="center"
+                 android:background="@color/color_green_google"
+                 android:textColor="@color/color_white"
+                 android:textSize="15dp"
+                 />
+         </LinearLayout>
+    </LinearLayout>
+
+
+
+</LinearLayout>

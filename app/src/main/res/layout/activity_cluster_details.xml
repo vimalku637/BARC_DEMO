@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/margin8"
+    android:orientation="vertical"
+    android:padding="@dimen/margin5"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardElevation="@dimen/margin5"
+    tools:context=".ClusterDetails">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/margin8">
+
+
+        <LinearLayout
+            android:id="@+id/ll_main"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin100"
+            android:orientation="horizontal"
+            android:padding="3dp"
+            android:weightSum="3 ">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_partner_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/male_icon"
+                app:civ_border_width="@dimen/margin2" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin10"
+                    android:text="Cluster Id :"
+                    android:textSize="@dimen/margin15" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin10"
+                    android:text="Cluster Name :"
+                    android:textSize="@dimen/margin15" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin10"
+                    android:text="CL-000123"
+                    android:textSize="@dimen/margin15" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin10"
+                    android:text="Naresh Patel:"
+                    android:textSize="@dimen/margin15" />
+            </LinearLayout>
+        </LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin200"
+            android:layout_marginTop="@dimen/margin10"
+            android:src="@drawable/map" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_marginTop="@dimen/margin20"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Date :   "
+         />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="12/11/2020 12:13 PM" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="@dimen/margin20"
+            android:background="@drawable/addharbutton"
+            android:orientation="vertical">
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin40"
+                android:layout_marginLeft="@dimen/margin20" />
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="@dimen/margin120"
+            android:layout_height="@dimen/margin40"
+            android:gravity="center"
+            android:layout_gravity="end"
+            android:text="Take Survey"
+            android:background="@drawable/buttonshapyello"
+            android:layout_marginTop="@dimen/margin20"/>
+    </LinearLayout>
+
+
+
+
+</androidx.cardview.widget.CardView>
+
+
+
