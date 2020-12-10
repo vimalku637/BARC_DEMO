@@ -4,24 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
-
-import com.google.android.material.button.MaterialButton;
+import android.widget.LinearLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class OptionScreen extends AppCompatActivity {
-    @BindView(R.id.btn_start)
-    MaterialButton btn_start;
+public class StartingPointActivity extends AppCompatActivity {
+    @BindView(R.id.ll_open)
+    LinearLayout ll_open;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_option_screen);
+        setContentView(R.layout.activity_starting_point);
         ButterKnife.bind(this);
-        setTitle(R.string.view_starting_points);
+        setTitle(R.string.starting_points_details);
         initialization();
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
@@ -32,22 +30,15 @@ public class OptionScreen extends AppCompatActivity {
     }
 
     private void setButtonClick() {
-        btn_start.setOnClickListener(new View.OnClickListener() {
+        ll_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(OptionScreen.this, ClusterDetails.class);
+                Intent intent=new Intent(StartingPointActivity.this, OptionScreen.class);
                 startActivity(intent);
             }
         });
     }
 
     private void initialization() {
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
     }
 }

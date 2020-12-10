@@ -45,6 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/margin15"
                 android:layout_below="@+id/ll_parent">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_previous"

@@ -87,9 +87,6 @@ public class DownloadSurvey extends AppCompatActivity {
                 } else {
                     CommonClass.showPopupForNoInternet(context);
                 }
-                Intent intentMainActivity=new Intent(context, HomeActivity.class);
-                startActivity(intentMainActivity);
-                finish();
             }
         });
     }
@@ -101,11 +98,15 @@ public class DownloadSurvey extends AppCompatActivity {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
                     JsonObject jsonObject = response.body();
-                    mProgressDialog.dismiss();
                     Log.e(TAG, "onResponse: "+jsonObject.toString());
                     String surveyJSON=jsonObject.toString();
                     //to save all JSON into json file
-                    MyJSON.saveJSONToAsset(context, surveyJSON);
+                    if (surveyJSON.length()>0) {
+                        mProgressDialog.dismiss();
+                        MyJSON.saveJSONToAsset(context, surveyJSON);
+                        Intent intentMainActivity = new Intent(context, SelectSurvey.class);
+                        startActivity(intentMainActivity);
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();

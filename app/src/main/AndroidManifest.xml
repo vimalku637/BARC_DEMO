@@ -14,13 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".StartingPointAcivity"></activity>
+        <activity android:name=".StartingPointActivity"></activity>
         <activity android:name=".ClusterDetails" />
         <activity android:name=".OptionScreen" />
         <activity android:name=".SurveyStatus" />
         <activity android:name=".Dashboard" />
         <activity android:name=".MainMenuSecond" />
-        <activity android:name=".SelectSuervey" />
+        <activity android:name=".SelectSurvey" />
         <activity android:name=".activities.UpdateQuestions" />
         <activity
             android:name=".SurveyListActivity"

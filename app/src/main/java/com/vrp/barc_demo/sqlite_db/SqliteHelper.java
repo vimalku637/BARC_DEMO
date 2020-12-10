@@ -122,6 +122,25 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return inserted_id;
     }
 
+    public long updateSurveyDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
+        long inserted_id = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                ContentValues values = new ContentValues();
+                values.put("survey_data", String.valueOf(jsonObject));
+
+                inserted_id = db.update(table, values, whr + " = " + survey_id + "", null);
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return inserted_id;
+    }
+
     public String getSurveyData(String survey_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String surveyJSON="";

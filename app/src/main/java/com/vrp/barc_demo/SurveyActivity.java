@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -102,7 +104,9 @@ public class SurveyActivity extends AppCompatActivity {
         if (bundle!=null) {
             survey_id=bundle.getString("survey_id", "");
             screen_type=bundle.getString("screen_type", "");
-            answerModelList=(ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
+            if (screen_type.equals("survey_list")) {
+                answerModelList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
+            }
         }
         /*get survey data according to survey id*/
         /*if (screen_type.equals("survey_list")) {
@@ -157,7 +161,11 @@ public class SurveyActivity extends AppCompatActivity {
                     jsonObject.put("survey_data", jsonArray);
                     Log.e(TAG, "onClick: "+jsonObject.toString());
 
-                    sqliteHelper.saveSurveyDataInTable(jsonObject, survey_id);
+                    if (screen_type.equals("survey_list")) {
+                        sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, jsonObject);
+                    } else {
+                        sqliteHelper.saveSurveyDataInTable(jsonObject, survey_id);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -380,6 +388,25 @@ public class SurveyActivity extends AppCompatActivity {
                                 }
                                 startPositionBefore++;
                         }
+                        /*else if (childView instanceof TextView) {
+                                TextView textView = (TextView) childView;
+                                int viewID=textView.getId();
+
+                                *//*jsonArray.put(editText.getText().toString().trim());
+                                jsonObject.put("edit_text", jsonArray);*//*
+                                if(back_status==true || screen_type.equals("survey_list")){
+                                    answerModelList.get(startPositionBefore).setOption_value(textView.getText().toString().trim());
+                                }else{
+                                    AnswerModel answerModel= new AnswerModel();
+                                    answerModel.setOption_id("");
+                                    answerModel.setOption_value(textView.getText().toString().trim());
+                                    answerModel.setSurveyID(survey_id);
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
+                                    answerModelList.add(answerModel);
+                                }
+                                startPositionBefore++;
+                            }*/
                             /*else if (childView instanceof CheckBox) {
                                 CheckBox checkBox = (CheckBox) childView;
                                 String selectedOptions="";
@@ -450,7 +477,11 @@ public class SurveyActivity extends AppCompatActivity {
                         json_object.put("survey_data", json_array);
                         Log.e(TAG, "onClick: "+json_object.toString());
 
-                        sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                        if (screen_type.equals("survey_list")) {
+                            sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
+                        } else {
+                            sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -544,9 +575,6 @@ public class SurveyActivity extends AppCompatActivity {
                     if(back_status==true || screen_type.equals("survey_list")){
                         editText.setText(answerModelList.get(i).getOption_value());
                     }
-                    if (screen_type.equals("survey_list") && answerModelList.get(i).getPre_field().equals("false")) {
-                        editText.setEnabled(false);
-                    }
                     txtLabel.setText(jsonObjectQuesType.getString("question_name"));
                     ll_parent.addView(txtLabel);
                     ll_parent.addView(editText);
@@ -638,6 +666,26 @@ public class SurveyActivity extends AppCompatActivity {
                     ll_parent.addView(spinner);
 
                     // onAddSpinner(jsonObjectQuesType);
+                }
+                else if (jsonObjectQuesType.getString("question_type").equals("5")) {
+                    Button button=new Button(this);
+                    TextView textView=new TextView(this);
+                    textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                    if(back_status==true || screen_type.equals("survey_list")){
+                        textView.setText("Latitude: " +"\n"+"Longitude: ");
+                    }
+                    button.setText(jsonObjectQuesType.getString("question_name"));
+                    button.setTypeface(null, Typeface.BOLD);
+                    button.setTextColor(Color.WHITE);
+                    button.setBackgroundResource(R.drawable.btn_background);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            textView.setText("Latitude: " +"\n"+"Longitude: ");
+                        }
+                    });
+                    ll_parent.addView(button);
+                    ll_parent.addView(textView);
                 }
                 startPosition++;
             }

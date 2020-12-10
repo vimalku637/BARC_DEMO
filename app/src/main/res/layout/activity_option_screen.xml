@@ -149,6 +149,20 @@
 
         </RadioGroup>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start"
+            android:backgroundTint="@color/color_blue_google"
+            android:paddingTop="@dimen/margin15"
+            android:paddingBottom="@dimen/margin15"
+            app:cornerRadius="@dimen/margin8"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/margin10"
+            android:layout_gravity="end"
+            android:textColor="@android:color/white" />
+
 
     </LinearLayout>
 

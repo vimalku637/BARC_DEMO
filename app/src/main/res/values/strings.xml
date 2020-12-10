@@ -23,4 +23,8 @@
     <string name="logout">Logout</string>
     <string name="welcome_naresh">Welcome Naresh</string>
     <string name="select_survey">Select Survey</string>
+    <string name="start">Start</string>
+    <string name="view_starting_points">View Starting Points</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="starting_points_details">Starting Points Details</string>
 </resources>

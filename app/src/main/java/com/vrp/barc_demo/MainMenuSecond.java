@@ -28,9 +28,8 @@ TextView Dashboard;
         Dashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainMenuSecond.this,SurveyStatus.class);
+                Intent intent=new Intent(MainMenuSecond.this, Dashboard.class);
                 startActivity(intent);
-                finish();
             }
         });
     }

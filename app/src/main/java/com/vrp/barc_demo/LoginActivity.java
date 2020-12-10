@@ -74,19 +74,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intentMainActivity=new Intent(context, DownloadSurvey.class);
                 startActivity(intentMainActivity);
-                finish();
             }
         });
-
-
         tv_forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentMainActivity=new Intent(context, ForgotPassword.class);
-                startActivity(intentMainActivity);
-                finish();
+                Intent intentForgotPassword=new Intent(context, ForgotPassword.class);
+                startActivity(intentForgotPassword);
             }
         });
-
     }
 }
