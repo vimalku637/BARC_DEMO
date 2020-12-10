@@ -12,9 +12,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vrp.barc_demo.activities.SurveyActivity;
+import com.vrp.barc_demo.activities.SurveyListActivity;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
-
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

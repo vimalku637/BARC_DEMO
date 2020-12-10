@@ -28,4 +28,7 @@
     <string name="dashboard">Dashboard</string>
     <string name="starting_points_details">Starting Points Details</string>
     <string name="synchronise">Synchronise</string>
+    <string name="bi_survey_app">BI Survey App</string>
+    <string name="new_password_will_be_send_to_the_email_id">New Password will be send to the email ID</string>
+    <string name="technology_partner_indev_consultancy_pvt_ltd">Technology Partner: Indev Consultancy Pvt. Ltd</string>
 </resources>

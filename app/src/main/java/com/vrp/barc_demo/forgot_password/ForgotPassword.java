@@ -1,9 +1,11 @@
 package com.vrp.barc_demo.forgot_password;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -14,13 +16,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ForgotPassword extends AppCompatActivity {
-    @BindView(R.id.btn_forget)
-    Button btn_forget;
+    @BindView(R.id.btn_submit)
+    Button btn_submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         ButterKnife.bind(this);
         setTitle(R.string.forgot_password);
         initialization();
@@ -33,15 +37,19 @@ public class ForgotPassword extends AppCompatActivity {
     }
 
     private void setButtonClick() {
-        btn_forget.setOnClickListener(new View.OnClickListener() {
+        btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(ForgotPassword.this, ClusterDetails.class);
-                startActivity(intent);
             }
         });
     }
 
     private void initialization() {
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) finish();
+        return super.onOptionsItemSelected(item);
     }
 }

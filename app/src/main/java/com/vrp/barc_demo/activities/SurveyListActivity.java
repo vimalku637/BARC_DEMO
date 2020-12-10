@@ -1,4 +1,4 @@
-package com.vrp.barc_demo;
+package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.textview.MaterialTextView;
+import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.adapters.SurveyListAdapter;
 import com.vrp.barc_demo.interfaces.ClickListener;
 import com.vrp.barc_demo.models.AnswerModel;

@@ -1,4 +1,4 @@
-package com.vrp.barc_demo;
+package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -34,8 +34,9 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.vrp.barc_demo.HomeActivity;
+import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.models.AnswerModel;
-import com.vrp.barc_demo.models.SurveyModel;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.CommonClass;
 import com.vrp.barc_demo.utils.MyJSON;
@@ -49,7 +50,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,7 +71,7 @@ public class SurveyActivity extends AppCompatActivity {
     private Context context=this;
     private String survey_id="";
     private String screen_type="";
-    private int length=3;
+    private int length=5;
     private int startPosition;
     private int startPositionBefore;
     private int endPosition;

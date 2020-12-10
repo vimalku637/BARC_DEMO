@@ -25,6 +25,7 @@
                 android:layout_width="@dimen/margin200"
                 android:layout_height="@dimen/margin200"
                 android:src="@drawable/logo"
+                android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

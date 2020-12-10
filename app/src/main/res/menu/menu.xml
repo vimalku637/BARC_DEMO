@@ -12,5 +12,11 @@
         android:icon="@drawable/ic_power"
         android:title="@string/logout"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/stop"
+        android:icon="@drawable/stop_survey"
+        android:visible="false"
+        android:title="@string/stop"
+        app:showAsAction="always" />
 
 </menu>
