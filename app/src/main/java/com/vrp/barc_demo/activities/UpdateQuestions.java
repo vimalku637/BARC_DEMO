@@ -3,11 +3,8 @@ package com.vrp.barc_demo.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.cazaea.sweetalert.SweetAlertDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.vrp.barc_demo.R;
@@ -114,7 +110,7 @@ public class UpdateQuestions extends AppCompatActivity {
                     String surveyJSON=jsonObject.toString();
                     //to save all JSON into json file
                     if (surveyJSON.length()>0) {
-                        AlertDialogClass.dismissProgressDialog(context);
+                        AlertDialogClass.dismissProgressDialog();
                         MyJSON.saveJSONToAsset(context, surveyJSON);
                         Intent intent=new Intent(UpdateQuestions.this, MainMenu.class);
                         startActivity(intent);
@@ -127,7 +123,7 @@ public class UpdateQuestions extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                AlertDialogClass.dismissProgressDialog(context);
+                AlertDialogClass.dismissProgressDialog();
             }
         });
     }

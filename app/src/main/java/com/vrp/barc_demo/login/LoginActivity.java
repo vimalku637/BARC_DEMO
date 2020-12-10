@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.vrp.barc_demo.forgot_password.ForgotPassword;
 import com.vrp.barc_demo.R;
@@ -28,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     MaterialButton btn_submit;
     @BindView(R.id.tv_forgot_password)
     MaterialTextView tv_forgot_password;
+    @BindView(R.id.til_user_name)
+    TextInputLayout til_user_name;
 
     /*normal widgets*/
     private Context context=this;
@@ -56,8 +59,10 @@ public class LoginActivity extends AppCompatActivity {
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentMainActivity=new Intent(context, UpdateQuestions.class);
-                startActivity(intentMainActivity);
+                //if (checkValidation()) {
+                    Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
+                    startActivity(intentMainActivity);
+                //}
             }
         });
         tv_forgot_password.setOnClickListener(new View.OnClickListener() {
@@ -68,4 +73,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    /*private boolean checkValidation() {
+    }*/
 }
