@@ -306,12 +306,26 @@ public class SurveyActivity extends AppCompatActivity {
 
                                 /*jsonArray.put(editText.getText().toString().trim());
                                 jsonObject.put("edit_text", jsonArray);*/
-                                if(back_status==true || screen_type.equals("survey_list")){
+                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
                                     answerModelList.get(startPositionBefore).setOption_value(editText.getText().toString().trim());
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id("");
                                     answerModel.setOption_value(editText.getText().toString().trim());
+                                    answerModel.setSurveyID(survey_id);
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
+                                    answerModelList.add(answerModel);
+                                }
+                                startPositionBefore++;
+                            }
+                            if (childView instanceof Button) {
+                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
+                                    answerModelList.get(startPositionBefore).setOption_value("");
+                                }else{
+                                    AnswerModel answerModel= new AnswerModel();
+                                    answerModel.setOption_id("");
+                                    answerModel.setOption_value("");
                                     answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
@@ -326,7 +340,7 @@ public class SurveyActivity extends AppCompatActivity {
                                 int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
                                 android.widget.RadioButton selectedRadioButton = (android.widget.RadioButton) childView.findViewById(selectedRadioButtonId);
                                 if (selectedRadioButton != null) {
-                                    if(back_status==true || screen_type.equals("survey_list")){
+                                    if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
                                         answerModelList.get(startPositionBefore).setOption_id(Integer.toString(selectedRadioButton.getId()));
                                     }else{
                                         AnswerModel answerModel= new AnswerModel();
@@ -344,7 +358,7 @@ public class SurveyActivity extends AppCompatActivity {
                         final JSONObject jsonObjectSPN = new JSONObject();*/
                             else if (childView instanceof Spinner) {
                                 Spinner spinner = (Spinner) childView;
-                                if(back_status==true || screen_type.equals("survey_list")){
+                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
                                     answerModelList.get(startPositionBefore).setOption_id(Long.toString(spinner.getSelectedItemId()));
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
@@ -376,7 +390,7 @@ public class SurveyActivity extends AppCompatActivity {
                                         }
                                     }
                                 }
-                                if(back_status==true || screen_type.equals("survey_list")){
+                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
                                     answerModelList.get(startPositionBefore).setOption_id(selectedOptions);
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
@@ -573,7 +587,7 @@ public class SurveyActivity extends AppCompatActivity {
                         editText.setInputType(InputType.TYPE_CLASS_TEXT);
                     }
                     editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
-                    if(back_status==true || screen_type.equals("survey_list")){
+                    if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                         editText.setText(answerModelList.get(i).getOption_value());
                     }
                     txtLabel.setText(jsonObjectQuesType.getString("question_name"));
@@ -596,7 +610,7 @@ public class SurveyActivity extends AppCompatActivity {
                         JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(j);
                         radioButton.setText(jsonObjectOptionValues.getString("option_value"));
                         radioButton.setId(Integer.parseInt(jsonObjectOptionValues.getString("option_id")));
-                        if(back_status==true  || screen_type.equals("survey_list")){
+                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                             if(answerModelList.get(i).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
                                 radioButton.setChecked(true);
                             }
@@ -616,7 +630,7 @@ public class SurveyActivity extends AppCompatActivity {
                     TableLayout linearLayoutCheckbox= new TableLayout(this);
                     linearLayoutCheckbox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                     String selectedOptions="";
-                    if(back_status==true){
+                    if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                         selectedOptions=answerModelList.get(i).getOption_id();
                         String[] arraySelectedOptions = selectedOptions.split(",");
                     }
@@ -628,7 +642,7 @@ public class SurveyActivity extends AppCompatActivity {
                         CheckBox checkBox=new CheckBox(this);
                         checkBox.setText(jsonObject1.getString("option_value"));
                         checkBox.setId(Integer.parseInt(jsonObject1.getString("option_id")));
-                        if(back_status==true){
+                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                             selectedOptions=answerModelList.get(i).getOption_id();
                             String[] arraySelectedOptions = selectedOptions.split(",");
                             boolean contains = Arrays.asList(arraySelectedOptions).contains(jsonObject1.getString("option_id"));
@@ -660,7 +674,7 @@ public class SurveyActivity extends AppCompatActivity {
                         spinnerAL.add(0, getString(R.string.select_option));
                         ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.custom_spinner_dropdown, spinnerAL);
                         spinner.setAdapter(arrayAdapter);
-                        if(back_status==true){
+                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                             spinner.setSelection(Integer.parseInt(answerModelList.get(i).getOption_id()));
                         }
                     }
@@ -672,7 +686,7 @@ public class SurveyActivity extends AppCompatActivity {
                     Button button=new Button(this);
                     TextView textView=new TextView(this);
                     textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
-                    if(back_status==true || screen_type.equals("survey_list")){
+                    if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                     }
                     button.setText(jsonObjectQuesType.getString("question_name"));
                     button.setTypeface(null, Typeface.BOLD);
