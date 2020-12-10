@@ -1,4 +1,4 @@
-package com.vrp.barc_demo;
+package com.vrp.barc_demo.splash;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +10,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
+import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 
 public class SplashActivity extends AppCompatActivity {

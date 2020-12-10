@@ -1,4 +1,4 @@
-package com.vrp.barc_demo;
+package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,23 +8,29 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.google.android.material.card.MaterialCardView;
+import com.vrp.barc_demo.Dashboard;
+import com.vrp.barc_demo.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StartingPointActivity extends AppCompatActivity {
-    @BindView(R.id.ll_open)
-    LinearLayout ll_open;
+public class MainMenu extends AppCompatActivity {
+    @BindView(R.id.cv_dashboard)
+    MaterialCardView cv_dashboard;
+    @BindView(R.id.cv_synchronise)
+    MaterialCardView cv_synchronise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_starting_point);
+        setContentView(R.layout.activity_main_menu);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         ButterKnife.bind(this);
-        setTitle(R.string.starting_points_details);
+        setTitle(R.string.main_menu);
         initialization();
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
@@ -35,10 +41,10 @@ public class StartingPointActivity extends AppCompatActivity {
     }
 
     private void setButtonClick() {
-        ll_open.setOnClickListener(new View.OnClickListener() {
+        cv_dashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(StartingPointActivity.this, OptionScreen.class);
+                Intent intent=new Intent(MainMenu.this, Dashboard.class);
                 startActivity(intent);
             }
         });

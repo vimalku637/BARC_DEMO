@@ -1,35 +1,19 @@
-package com.vrp.barc_demo;
+package com.vrp.barc_demo.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
-import com.vrp.barc_demo.utils.CommonClass;
+import com.vrp.barc_demo.forgot_password.ForgotPassword;
+import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.activities.UpdateQuestions;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentMainActivity=new Intent(context, DownloadSurvey.class);
+                Intent intentMainActivity=new Intent(context, UpdateQuestions.class);
                 startActivity(intentMainActivity);
             }
         });

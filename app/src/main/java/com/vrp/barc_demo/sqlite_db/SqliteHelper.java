@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.vrp.barc_demo.models.AnswerModel;
+import com.vrp.barc_demo.models.ClusterModel;
 import com.vrp.barc_demo.models.SurveyModel;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
@@ -21,8 +22,9 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class SqliteHelper extends SQLiteOpenHelper {
-    static final String DATABASE_NAME = "barc.db";
-    static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "barc.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String TAG = "SqLiteHelper";
     String DB_PATH_SUFFIX = "/databases/";
     int version;
     Context ctx;
@@ -38,11 +40,12 @@ public class SqliteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SurveyModel.CREATE_TABLE);
+        db.execSQL(ClusterModel.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        Log.d(TAG, "onUpgrade() from " + oldVersion + " to " + newVersion);
     }
 
     public SQLiteDatabase openDataBase() throws SQLException {

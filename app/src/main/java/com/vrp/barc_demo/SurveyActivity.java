@@ -14,6 +14,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -672,18 +673,12 @@ public class SurveyActivity extends AppCompatActivity {
                     TextView textView=new TextView(this);
                     textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                     if(back_status==true || screen_type.equals("survey_list")){
-                        textView.setText("Latitude: " +"\n"+"Longitude: ");
                     }
                     button.setText(jsonObjectQuesType.getString("question_name"));
                     button.setTypeface(null, Typeface.BOLD);
                     button.setTextColor(Color.WHITE);
                     button.setBackgroundResource(R.drawable.btn_background);
-                    button.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            textView.setText("Latitude: " +"\n"+"Longitude: ");
-                        }
-                    });
+
                     ll_parent.addView(button);
                     ll_parent.addView(textView);
                 }
@@ -698,5 +693,12 @@ public class SurveyActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
     }
 }

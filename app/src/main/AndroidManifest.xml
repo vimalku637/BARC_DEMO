@@ -19,23 +19,18 @@
         <activity android:name=".OptionScreen" />
         <activity android:name=".SurveyStatus" />
         <activity android:name=".Dashboard" />
-        <activity android:name=".MainMenuSecond" />
-        <activity android:name=".SelectSurvey" />
+        <activity android:name=".activities.MainMenu" />
         <activity android:name=".activities.UpdateQuestions" />
         <activity
             android:name=".SurveyListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".DownloadSurvey"
+            android:name=".login.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".LoginActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".ForgotPassword"
+            android:name=".forgot_password.ForgotPassword"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -47,7 +42,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".splash.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SplashScreen">
             <intent-filter>

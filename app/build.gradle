@@ -54,9 +54,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
-
     //progress-button
     implementation 'com.github.razir.progressbutton:progressbutton:2.1.0'
+    //sweet-alert
+    implementation 'com.github.cazaea:sweet-alert-dialog:1.0.0'
+
 }
 
 
