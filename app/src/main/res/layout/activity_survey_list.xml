@@ -208,10 +208,12 @@
             />
 
         <TableLayout
+            android:id="@+id/tb_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:stretchColumns="*"
-            android:layout_marginTop="@dimen/margin10">
+            android:layout_marginTop="@dimen/margin10"
+            android:visibility="gone">
 
             <TableRow
                 android:layout_width="match_parent"

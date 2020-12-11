@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TableLayout;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.adapters.SurveyListAdapter;
@@ -37,6 +39,10 @@ public class SurveyListActivity extends AppCompatActivity {
     RecyclerView rv_survey_List;
     @BindView(R.id.tv_oops_no_data)
     MaterialTextView tv_oops_no_data;
+    @BindView(R.id.btn_start_next_survey)
+    MaterialButton btn_start_next_survey;
+    @BindView(R.id.tb_layout)
+    TableLayout tb_layout;
 
     /*normal widgets*/
     private Context context=this;
@@ -65,11 +71,23 @@ public class SurveyListActivity extends AppCompatActivity {
         }
 
         setSurveyAdapter();
+        setButtonClick();
+    }
+
+    private void setButtonClick() {
+        btn_start_next_survey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentAddressSelection=new Intent(context, AddressSelection.class);
+                startActivity(intentAddressSelection);
+            }
+        });
     }
 
     private void setSurveyAdapter() {
         surveyModelAl=sqliteHelper.getSurveyList();
         if (surveyModelAl.size()>0) {
+            tb_layout.setVisibility(View.VISIBLE);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
             mSurveyListAdapter = new SurveyListAdapter(context, surveyModelAl);
             rv_survey_List.setLayoutManager(mLayoutManager);
@@ -90,7 +108,8 @@ public class SurveyListActivity extends AppCompatActivity {
             });
 
         } else {
-            tv_oops_no_data.setVisibility(View.VISIBLE);
+            //tv_oops_no_data.setVisibility(View.VISIBLE);
+            tb_layout.setVisibility(View.GONE);
         }
     }
 
