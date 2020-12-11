@@ -1,15 +1,12 @@
 package com.vrp.barc_demo.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
@@ -30,6 +27,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
@@ -54,7 +55,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SurveyActivity extends AppCompatActivity {
+public class HouseholdSurveyActivity extends AppCompatActivity {
     private static final String TAG = "Survey_Activity";
     @BindView(R.id.btn_previous)
     MaterialButton btn_previous;
@@ -73,10 +74,10 @@ public class SurveyActivity extends AppCompatActivity {
     private String screen_type="";
     private int length=5;
     private int startPosition;
-    private int startScreenPosition;
+    private int startScreenPosition=0;
     private int startPositionBefore;
     private int endPosition;
-    private int endScreenPosition;
+    private int endScreenPosition=1;
     SharedPrefHelper sharedPrefHelper;
     int totalQuestions;
     int totalScreen;
@@ -351,7 +352,7 @@ public class SurveyActivity extends AppCompatActivity {
                             else if (childView instanceof RadioGroup) {
                                 RadioGroup radioGroup = (RadioGroup) childView;
                                 int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-                                android.widget.RadioButton selectedRadioButton = (android.widget.RadioButton) childView.findViewById(selectedRadioButtonId);
+                                RadioButton selectedRadioButton = (RadioButton) childView.findViewById(selectedRadioButtonId);
                                 if (selectedRadioButton != null) {
                                     if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
                                         answerModelList.get(startPositionBefore).setOption_id(Integer.toString(selectedRadioButton.getId()));
@@ -521,7 +522,7 @@ public class SurveyActivity extends AppCompatActivity {
                     //back_status=false;
                     sharedPrefHelper.setInt("startPosition", startPosition);
                     endPosition = endPosition + length;
-                    if (endPosition <= totalQuestions) {
+                   if (endScreenPosition<= totalScreen) {
                         btn_next.setText("Next");
                         sharedPrefHelper.setInt("endPosition", endPosition);
                     }
@@ -532,6 +533,8 @@ public class SurveyActivity extends AppCompatActivity {
                         sharedPrefHelper.setInt("endPosition", totalQuestions);
                     }
                     Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);
+                    startScreenPosition++;
+                    endScreenPosition++;
                     questionsPopulate();
                     Log.e(TAG, "onNextClick- " + jsonObject.toString());
                 }
@@ -541,19 +544,21 @@ public class SurveyActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
-                if(endPosition==totalQuestions){
+                if(endScreenPosition==totalScreen){
                     startPosition=startPosition-1;
                 }else{
                     startPosition=startPosition-length;
                 }
+                startScreenPosition=startScreenPosition-1;
+                endScreenPosition=endScreenPosition-1;
                 endPosition=startPosition;
                 startPosition=endPosition-length;
                 //endPosition = endPosition + length;
                 sharedPrefHelper.setInt("endPosition", endPosition);
                 Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);
                 back_status=true;
-                if(endPosition<=0){
-                Intent intentHom= new Intent(SurveyActivity.this,HomeActivity.class);
+                if(endScreenPosition<=0){
+                Intent intentHom= new Intent(HouseholdSurveyActivity.this,HomeActivity.class);
                 startActivity(intentHom);
                 finish();
                 }else{
@@ -589,12 +594,15 @@ public class SurveyActivity extends AppCompatActivity {
            ll_parent.removeAllViews();
            startPositionBefore=startPosition;
            for(int l=startScreenPosition;l<endScreenPosition;l++){
-               for (int i = startPosition; i < endPosition; i++) {
+               JSONObject jsonObjectScreen=jsonArrayScreen.getJSONObject(l);
+               jsonArrayQuestions = jsonObjectScreen.getJSONArray("questions");
+               for (int i = 0; i < jsonArrayQuestions.length(); i++) {
                    JSONObject jsonObjectQuesType=jsonArrayQuestions.getJSONObject(i);
                    if (jsonObjectQuesType.getString("question_type").equals("1")) {
                        TextView txtLabel = new TextView(this);
                        EditText editText=new EditText(this);
                        editText.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                       editText.setTextSize(12);
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
                        }else{
@@ -605,6 +613,8 @@ public class SurveyActivity extends AppCompatActivity {
                            editText.setText(answerModelList.get(i).getOption_value());
                        }
                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                       txtLabel.setTypeface(null, Typeface.BOLD);
+                       txtLabel.setTextSize(14);
                        ll_parent.addView(txtLabel);
                        ll_parent.addView(editText);
 
@@ -614,6 +624,8 @@ public class SurveyActivity extends AppCompatActivity {
                    else if (jsonObjectQuesType.getString("question_type").equals("2")) {
                        TextView txtLabel = new TextView(this);
                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                       txtLabel.setTextSize(14);
+                       txtLabel.setTypeface(null, Typeface.BOLD);
                        ll_parent.addView(txtLabel);
                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                        RadioGroup radioGroup=new RadioGroup(this);
@@ -623,6 +635,7 @@ public class SurveyActivity extends AppCompatActivity {
                                    (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                            JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(j);
                            radioButton.setText(jsonObjectOptionValues.getString("option_value"));
+                           radioButton.setTextSize(12);
                            radioButton.setId(Integer.parseInt(jsonObjectOptionValues.getString("option_id")));
                            if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                                if(answerModelList.get(i).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
@@ -639,6 +652,8 @@ public class SurveyActivity extends AppCompatActivity {
                    else if (jsonObjectQuesType.getString("question_type").equals("3")) {
                        TextView txtLabel = new TextView(this);
                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                       txtLabel.setTextSize(14);
+                       txtLabel.setTypeface(null, Typeface.BOLD);
                        ll_parent.addView(txtLabel);
                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                        TableLayout linearLayoutCheckbox= new TableLayout(this);
@@ -655,6 +670,7 @@ public class SurveyActivity extends AppCompatActivity {
                            JSONObject jsonObject1=jsonArrayOptions.getJSONObject(j);
                            CheckBox checkBox=new CheckBox(this);
                            checkBox.setText(jsonObject1.getString("option_value"));
+                           checkBox.setTextSize(12);
                            checkBox.setId(Integer.parseInt(jsonObject1.getString("option_id")));
                            if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                                selectedOptions=answerModelList.get(i).getOption_id();
@@ -674,6 +690,8 @@ public class SurveyActivity extends AppCompatActivity {
                    else if (jsonObjectQuesType.getString("question_type").equals("4")) {
                        TextView txtLabel = new TextView(this);
                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                       txtLabel.setTextSize(14);
+                       txtLabel.setTypeface(null, Typeface.BOLD);
                        ll_parent.addView(txtLabel);
                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                        Spinner spinner=new Spinner(this);
@@ -710,6 +728,19 @@ public class SurveyActivity extends AppCompatActivity {
                        ll_parent.addView(button);
                        ll_parent.addView(textView);
                    }
+                   else if (jsonObjectQuesType.getString("question_type").equals("6")) {
+                       TextView textView=new TextView(this);
+                       textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                       if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
+                       }
+                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                           textView.setText(Html.fromHtml(jsonObjectQuesType.getString("question_name"), Html.FROM_HTML_MODE_COMPACT));
+                       } else {
+                           textView.setText(Html.fromHtml(jsonObjectQuesType.getString("question_name")));
+                       }
+                       //textView.setText(jsonObjectQuesType.getString("question_name"));
+                       ll_parent.addView(textView);
+                   }
                    startPosition++;
                }
            }
@@ -728,12 +759,6 @@ public class SurveyActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
-        /*hide and show toolbar items*/
-        if (screen_type.equalsIgnoreCase("survey")) {
-            MenuItem item = menu.findItem(R.id.stop_survey);
-            item.setVisible(true);
-        }
-
         return true;
     }
 }

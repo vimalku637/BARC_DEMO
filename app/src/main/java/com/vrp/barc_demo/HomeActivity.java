@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vrp.barc_demo.activities.HouseholdSurveyActivity;
 import com.vrp.barc_demo.activities.SurveyActivity;
 import com.vrp.barc_demo.activities.SurveyListActivity;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
@@ -55,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Long aLong = System.currentTimeMillis()/1000;
                 String uuid = aLong.toString();
-                Intent intentSurveyActivity=new Intent(context, SurveyActivity.class);
+                Intent intentSurveyActivity=new Intent(context, HouseholdSurveyActivity.class);
                 intentSurveyActivity.putExtra("survey_id", uuid);
                 sharedPrefHelper.setInt("startPosition",0);
                 sharedPrefHelper.setInt("endPosition",0);

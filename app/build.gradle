@@ -58,5 +58,6 @@ dependencies {
     implementation 'com.github.razir.progressbutton:progressbutton:2.1.0'
     //sweet-alert
     implementation 'com.github.f0ris.sweetalert:library:1.6.2'
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
 
 }
