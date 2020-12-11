@@ -37,6 +37,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.models.AnswerModel;
+import com.vrp.barc_demo.models.ScreenWiseQuestionModel;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.CommonClass;
 import com.vrp.barc_demo.utils.MyJSON;
@@ -72,7 +73,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
     private Context context=this;
     private String survey_id="";
     private String screen_type="";
-    private int length=5;
+    private int length=1;
     private int startPosition;
     private int startScreenPosition=0;
     private int startPositionBefore;
@@ -85,6 +86,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
     JSONArray jsonArrayQuestions=null;
     JSONArray jsonArrayScreen=null;
     ArrayList<AnswerModel> answerModelList;
+    ArrayList<ScreenWiseQuestionModel> arrayScreenWiseQuestionModel= new ArrayList<>();
+    String screen_id=null;
     boolean back_status=false;
     private SqliteHelper sqliteHelper;
     private String surveyObjectJSON=null;
@@ -294,7 +297,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         // Add the new row before the add field button.
         ll_parent.addView(rowView, ll_parent.getChildCount());
     }
-
     private void initialization() {
         sharedPrefHelper=new SharedPrefHelper(this);
         sqliteHelper=new SqliteHelper(this);
@@ -309,6 +311,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                 String buttonText = b.getText().toString();
                     JSONArray jsonArray = new JSONArray();
                     final JSONObject jsonObject = new JSONObject();
+                int count=0;
                     for (int i = 0; i < ll_parent.getChildCount(); i++) {
                         final View childView = ll_parent.getChildAt(i);
                         try {
@@ -327,25 +330,27 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     answerModel.setOption_id("");
                                     answerModel.setOption_value(editText.getText().toString().trim());
                                     answerModel.setSurveyID(survey_id);
-                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
-                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                     answerModelList.add(answerModel);
                                 }
                                 startPositionBefore++;
+                                count++;
                             }
                             if (childView instanceof Button) {
-                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
+                               /* if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
                                     answerModelList.get(startPositionBefore).setOption_value("");
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id("");
                                     answerModel.setOption_value("");
                                     answerModel.setSurveyID(survey_id);
-                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
-                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                     answerModelList.add(answerModel);
-                                }
-                                startPositionBefore++;
+                                }*/
+                                //startPositionBefore++;
+                                count++;
                             }
                         /*JSONArray jsonArrayRG = new JSONArray();
                         final JSONObject jsonObjectRG = new JSONObject();*/
@@ -361,11 +366,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                         answerModel.setOption_id(Integer.toString(selectedRadioButton.getId()));
                                         answerModel.setOption_value("");
                                         answerModel.setSurveyID(survey_id);
-                                        answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
-                                        answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
+                                        answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                        answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                         answerModelList.add(answerModel);
                                     }
                                     startPositionBefore++;
+                                    count++;
                                 }
                             }
                         /*JSONArray jsonArraySPN = new JSONArray();
@@ -379,11 +385,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
                                     answerModel.setOption_value("");
                                     answerModel.setSurveyID(survey_id);
-                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
-                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                     answerModelList.add(answerModel);
                                 }
                                 startPositionBefore++;
+                                count++;
                             }
                         /*JSONArray jsonArrayCHK = new JSONArray();
                         final JSONObject jsonObjectCHK = new JSONObject();*/
@@ -411,11 +418,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     answerModel.setOption_id(selectedOptions);
                                     answerModel.setOption_value("");
                                     answerModel.setSurveyID(survey_id);
-                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
-                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                     answerModelList.add(answerModel);
                                 }
                                 startPositionBefore++;
+                                count++;
                         }
                         /*else if (childView instanceof TextView) {
                                 TextView textView = (TextView) childView;
@@ -522,17 +530,28 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                     //back_status=false;
                     sharedPrefHelper.setInt("startPosition", startPosition);
                     endPosition = endPosition + length;
-                   if (endScreenPosition<= totalScreen) {
+                   if (endScreenPosition<totalScreen) {
                         btn_next.setText("Next");
                         sharedPrefHelper.setInt("endPosition", endPosition);
                     }
                     else {
-                        endPosition = totalQuestions;
+                        //endPosition = totalQuestions;
                         btn_next.setText("Submit");
                         back_status=false;
                         sharedPrefHelper.setInt("endPosition", totalQuestions);
                     }
-                    Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);
+                    Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition+"startPositionBefore >>>" + startPositionBefore);
+                    if(endPosition!=0)
+                        endPosition=endPosition-1;
+                    if(back_status==true && startScreenPosition<arrayScreenWiseQuestionModel.size()){
+                        arrayScreenWiseQuestionModel.get(startScreenPosition).setscreen_id(screen_id);
+                        arrayScreenWiseQuestionModel.get(startScreenPosition).setquestions(""+endPosition);
+                    }else{
+                        ScreenWiseQuestionModel screenWiseQuestionModel=new ScreenWiseQuestionModel();
+                        screenWiseQuestionModel.setscreen_id(screen_id);
+                        screenWiseQuestionModel.setquestions(""+endPosition);
+                        arrayScreenWiseQuestionModel.add(screenWiseQuestionModel);
+                    }
                     startScreenPosition++;
                     endScreenPosition++;
                     questionsPopulate();
@@ -544,25 +563,27 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
-                if(endScreenPosition==totalScreen){
+                /*if(endScreenPosition==totalScreen){
                     startPosition=startPosition-1;
                 }else{
                     startPosition=startPosition-length;
-                }
+                }*/
                 startScreenPosition=startScreenPosition-1;
                 endScreenPosition=endScreenPosition-1;
-                endPosition=startPosition;
+                /*endPosition=startPosition;
                 startPosition=endPosition-length;
                 //endPosition = endPosition + length;
                 sharedPrefHelper.setInt("endPosition", endPosition);
-                Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);
+                Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);*/
                 back_status=true;
+
                 if(endScreenPosition<=0){
                 Intent intentHom= new Intent(HouseholdSurveyActivity.this, ClusterDetails.class);
                 startActivity(intentHom);
                 finish();
                 }else{
                     btn_next.setText("Next");
+                    startPosition=startPosition-(endPosition+Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions()));
                     questionsPopulate();
                 }
             }
@@ -593,8 +614,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
        try{
            ll_parent.removeAllViews();
            startPositionBefore=startPosition;
+           endPosition=0;
            for(int l=startScreenPosition;l<endScreenPosition;l++){
                JSONObject jsonObjectScreen=jsonArrayScreen.getJSONObject(l);
+               screen_id=jsonObjectScreen.getString("screen_no");
                jsonArrayQuestions = jsonObjectScreen.getJSONArray("questions");
                for (int i = 0; i < jsonArrayQuestions.length(); i++) {
                    JSONObject jsonObjectQuesType=jsonArrayQuestions.getJSONObject(i);
@@ -609,17 +632,17 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                            editText.setInputType(InputType.TYPE_CLASS_TEXT);
                        }
                        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
-                       if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
-                           editText.setText(answerModelList.get(i).getOption_value());
+                       if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
+                           editText.setText(answerModelList.get(startPosition).getOption_value());
                        }
                        txtLabel.setText(jsonObjectQuesType.getString("question_name"));
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        txtLabel.setTextSize(14);
+                       startPosition++;
+                       endPosition++;
                        ll_parent.addView(txtLabel);
                        ll_parent.addView(editText);
-
                        //onAddEditField(jsonObjectQuesType);
-
                    }
                    else if (jsonObjectQuesType.getString("question_type").equals("2")) {
                        TextView txtLabel = new TextView(this);
@@ -637,8 +660,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                            radioButton.setText(jsonObjectOptionValues.getString("option_value"));
                            radioButton.setTextSize(12);
                            radioButton.setId(Integer.parseInt(jsonObjectOptionValues.getString("option_id")));
-                           if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
-                               if(answerModelList.get(i).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
+                           if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
+                               if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
                                    radioButton.setChecked(true);
                                }
                            }
@@ -646,6 +669,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                radioGroup.addView(radioButton);
                            }
                        }
+                       startPosition++;
+                       endPosition++;
                        ll_parent.addView(radioGroup);
                        //onAddRadioButton(jsonObjectQuesType);
                    }
@@ -659,10 +684,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                        TableLayout linearLayoutCheckbox= new TableLayout(this);
                        linearLayoutCheckbox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                        String selectedOptions="";
-                       if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
-                           selectedOptions=answerModelList.get(i).getOption_id();
+                       /*if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
+                           selectedOptions=answerModelList.get(startPosition).getOption_id();
                            String[] arraySelectedOptions = selectedOptions.split(",");
-                       }
+                       }*/
                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
                            TableRow row =new TableRow(this);
                            row.setId(j);
@@ -672,8 +697,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                            checkBox.setText(jsonObject1.getString("option_value"));
                            checkBox.setTextSize(12);
                            checkBox.setId(Integer.parseInt(jsonObject1.getString("option_id")));
-                           if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
-                               selectedOptions=answerModelList.get(i).getOption_id();
+                           if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
+                               selectedOptions=answerModelList.get(startPosition).getOption_id();
                                String[] arraySelectedOptions = selectedOptions.split(",");
                                boolean contains = Arrays.asList(arraySelectedOptions).contains(jsonObject1.getString("option_id"));
                                if(contains){
@@ -683,6 +708,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                            row.addView(checkBox);
                            linearLayoutCheckbox.addView(row);
                        }
+                       startPosition++;
+                       endPosition++;
                        ll_parent.addView(linearLayoutCheckbox);
 
                        //   onAddCheckBox(jsonObjectQuesType);
@@ -706,10 +733,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                            spinnerAL.add(0, getString(R.string.select_option));
                            ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.custom_spinner_dropdown, spinnerAL);
                            spinner.setAdapter(arrayAdapter);
-                           if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
-                               spinner.setSelection(Integer.parseInt(answerModelList.get(i).getOption_id()));
+                           if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
+                               spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
                            }
                        }
+                       startPosition++;
+                       endPosition++;
                        ll_parent.addView(spinner);
 
                        // onAddSpinner(jsonObjectQuesType);
@@ -741,12 +770,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                        //textView.setText(jsonObjectQuesType.getString("question_name"));
                        ll_parent.addView(textView);
                    }
-                   startPosition++;
                }
            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
