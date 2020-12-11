@@ -34,6 +34,7 @@
     <string name="cluster_id">Cluste id</string>
     <string name="cluster_name">Cluster Name</string>
     <string name="action">Action</string>
+    <string name="Please_wait">Please Wait</string>
     <string name="hh_name">HH Name</string>
     <string name="status">status</string>
     <string name="start_next_survey">Start Next Survey</string>

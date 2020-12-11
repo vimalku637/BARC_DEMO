@@ -169,10 +169,25 @@
                     android:layout_weight=".8"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/pia_chart" />
+<!--                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--                        xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--                        xmlns:tools="http://schemas.android.com/tools"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent">-->
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="@dimen/margin230"
+                        android:layout_marginTop="@dimen/margin25"
+                        android:layout_height="300dp">
+                    </com.github.mikephil.charting.charts.PieChart>
+
+
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/pia_chart" />-->
 
                 </LinearLayout>
 
