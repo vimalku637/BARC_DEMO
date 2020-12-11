@@ -34,7 +34,7 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.vrp.barc_demo.HomeActivity;
+import com.vrp.barc_demo.ClusterDetails;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
@@ -53,6 +53,7 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class SurveyActivity extends AppCompatActivity {
     private static final String TAG = "Survey_Activity";
@@ -513,7 +514,7 @@ public class SurveyActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Intent intentSurveyActivity1=new Intent(context, HomeActivity.class);
+                    Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
                     startActivity(intentSurveyActivity1);
                     finish();
                 }
@@ -553,7 +554,7 @@ public class SurveyActivity extends AppCompatActivity {
                 Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);
                 back_status=true;
                 if(endPosition<=0){
-                Intent intentHom= new Intent(SurveyActivity.this,HomeActivity.class);
+                Intent intentHom= new Intent(SurveyActivity.this,ClusterDetails.class);
                 startActivity(intentHom);
                 finish();
                 }else{
@@ -721,7 +722,34 @@ public class SurveyActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId()==R.id.stop_survey) {
+            showPopupForTerminateSurvey();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showPopupForTerminateSurvey() {
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Are you sure?")
+                .setContentText("Want to terminate the interview!")
+                .setConfirmText("Yes")
+                .setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        Intent intentTerminate=new Intent(context, TerminateActivity.class);
+                        intentTerminate.putExtra("screen_type", "terminate");
+                        startActivity(intentTerminate);
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -730,8 +758,10 @@ public class SurveyActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         /*hide and show toolbar items*/
         if (screen_type.equalsIgnoreCase("survey")) {
-            MenuItem item = menu.findItem(R.id.stop_survey);
-            item.setVisible(true);
+            MenuItem item_stop_survey=menu.findItem(R.id.stop_survey);
+            item_stop_survey.setVisible(true);
+            MenuItem item_logout=menu.findItem(R.id.logout);
+            item_logout.setVisible(false);
         }
 
         return true;

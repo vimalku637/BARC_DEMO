@@ -26,14 +26,41 @@ public class ClusterModel {
     private String cluster_id;
     private String cluster_name;
     private String action;
-    private String pincode;
+    private String original_address;
+    private String next_address;
+    private String previous_address;
+    private String substitute_address;
 
-    public String getPincode() {
-        return pincode;
+    public String getOriginal_address() {
+        return original_address;
     }
 
-    public void setPincode(String pincode) {
-        this.pincode = pincode;
+    public void setOriginal_address(String original_address) {
+        this.original_address = original_address;
+    }
+
+    public String getNext_address() {
+        return next_address;
+    }
+
+    public void setNext_address(String next_address) {
+        this.next_address = next_address;
+    }
+
+    public String getPrevious_address() {
+        return previous_address;
+    }
+
+    public void setPrevious_address(String previous_address) {
+        this.previous_address = previous_address;
+    }
+
+    public String getSubstitute_address() {
+        return substitute_address;
+    }
+
+    public void setSubstitute_address(String substitute_address) {
+        this.substitute_address = substitute_address;
     }
 
     public String getLocal_id() {

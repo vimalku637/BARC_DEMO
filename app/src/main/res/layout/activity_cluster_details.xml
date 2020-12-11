@@ -1,83 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/margin5"
-    app:cardElevation="@dimen/margin5"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_screen"
     tools:context=".ClusterDetails">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_screen"
-        android:orientation="vertical"
-        android:padding="@dimen/margin8">
-
+        android:layout_margin="@dimen/margin10"
+        android:orientation="vertical" >
 
         <LinearLayout
             android:id="@+id/ll_main"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin100"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="3dp"
-            android:weightSum="3 ">
+            >
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_partner_images"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/male_icon"
+                android:layout_width="@dimen/margin80"
+                android:layout_height="@dimen/margin80"
+                android:src="@drawable/blue_circle"
                 />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-
+                android:layout_marginStart="@dimen/margin10"
+                android:layout_gravity="center"
                 android:orientation="vertical">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_cluster_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/margin10"
-                    android:text="Cluster Id :"
-                    android:textSize="@dimen/margin15" />
+                    android:text="@string/cluster_id"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_16" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_cluster_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/margin10"
-                    android:text="Cluster Name :"
-                    android:textSize="@dimen/margin15" />
+                    android:text="@string/cluster_name"
+                    android:textSize="@dimen/text_16" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/margin10"
-                    android:text="CL-000123"
-                    android:textSize="@dimen/margin15" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/margin10"
-                    android:text="Naresh Patel:"
-                    android:textSize="@dimen/margin15" />
-            </LinearLayout>
         </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin200"
@@ -85,59 +60,40 @@
             android:src="@drawable/map" />
 
         <LinearLayout
+            android:id="@+id/ll_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:layout_marginTop="@dimen/margin20"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:text="Date :   "
-         />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="12/11/2020 12:13 PM" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="@dimen/margin10"
             android:background="@drawable/bg_spinner"
             android:orientation="vertical">
-
             <Spinner
+                android:id="@+id/spn_language"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin40"
-                android:layout_marginLeft="@dimen/margin20" />
-
-
+                android:layout_height="wrap_content"
+                />
         </LinearLayout>
 
 
-        <TextView
-            android:id="@+id/tv_take_survey"
-            android:layout_width="@dimen/margin120"
-            android:layout_height="@dimen/margin40"
-            android:gravity="center"
-            android:layout_gravity="end"
-            android:text="Take Survey"
-            android:background="@drawable/buttonshapyello"
-            android:layout_marginTop="@dimen/margin20"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_take_survey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/take_survey"
+            android:backgroundTint="@android:color/holo_orange_dark"
+            android:paddingTop="@dimen/margin15"
+            android:paddingBottom="@dimen/margin15"
+            app:cornerRadius="@dimen/margin8"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/til_reason"
+            android:textColor="@android:color/white" />
+        </RelativeLayout>
     </LinearLayout>
 
-
-
-
-</androidx.cardview.widget.CardView>
+</RelativeLayout>
 
 
 

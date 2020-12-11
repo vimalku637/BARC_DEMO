@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.vrp.barc_demo.activities.AddressSelection;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -38,7 +40,7 @@ public class StartingPointActivity extends AppCompatActivity {
         ll_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(StartingPointActivity.this, OptionScreen.class);
+                Intent intent=new Intent(StartingPointActivity.this, AddressSelection.class);
                 startActivity(intent);
             }
         });

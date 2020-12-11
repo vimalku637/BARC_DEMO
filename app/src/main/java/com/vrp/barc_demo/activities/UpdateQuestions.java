@@ -25,6 +25,8 @@ import com.vrp.barc_demo.utils.CommonClass;
 import com.vrp.barc_demo.utils.MyJSON;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -105,7 +107,7 @@ public class UpdateQuestions extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
-                    JsonObject jsonObject = response.body();
+                    JSONObject jsonObject = new JSONObject(response.body().toString());
                     Log.e(TAG, "onResponse: "+jsonObject.toString());
                     String surveyJSON=jsonObject.toString();
                     //to save all JSON into json file
