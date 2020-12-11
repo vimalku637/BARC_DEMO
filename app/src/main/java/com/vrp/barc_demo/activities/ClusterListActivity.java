@@ -138,6 +138,11 @@ public class ClusterListActivity extends AppCompatActivity {
                                                 .show();
                                     } else {
                                         Intent intentSurveyList = new Intent(context, SurveyListActivity.class);
+                                        intentSurveyList.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
+                                        intentSurveyList.putExtra("next_address", clusterModelAL.get(position).getNext_address());
+                                        intentSurveyList.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
+                                        intentSurveyList.putExtra("cluster_id", clusterModelAL.get(position).getCluster_id());
+                                        intentSurveyList.putExtra("cluster_name", clusterModelAL.get(position).getCluster_name());
                                         startActivity(intentSurveyList);
                                     }
                                 }

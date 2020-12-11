@@ -55,6 +55,7 @@ public class SurveyListActivity extends AppCompatActivity {
     JSONArray jsonArrayAnswers=null;
     int totalAnswers;
     ArrayList<AnswerModel> answerModelList;
+    private String original_address="", cluster_id="", cluster_name="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,9 @@ public class SurveyListActivity extends AppCompatActivity {
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
+            original_address=bundle.getString("original_address", "");
+            cluster_id=bundle.getString("cluster_id", "");
+            cluster_name=bundle.getString("cluster_name", "");
         }
 
         setSurveyAdapter();
@@ -79,6 +83,9 @@ public class SurveyListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intentAddressSelection=new Intent(context, AddressSelection.class);
+                intentAddressSelection.putExtra("original_address", original_address);
+                intentAddressSelection.putExtra("cluster_id", cluster_id);
+                intentAddressSelection.putExtra("cluster_name", cluster_name);
                 startActivity(intentAddressSelection);
             }
         });
