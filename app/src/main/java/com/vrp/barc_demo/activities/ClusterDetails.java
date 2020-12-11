@@ -1,4 +1,4 @@
-package com.vrp.barc_demo;
+package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.activities.HouseholdSurveyActivity;
 import com.vrp.barc_demo.activities.SurveyActivity;
 import com.vrp.barc_demo.utils.SharedPrefHelper;

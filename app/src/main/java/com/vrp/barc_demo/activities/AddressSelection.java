@@ -18,7 +18,6 @@ import android.widget.Spinner;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
-import com.vrp.barc_demo.ClusterDetails;
 import com.vrp.barc_demo.R;
 
 import java.util.ArrayList;

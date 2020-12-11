@@ -2,6 +2,7 @@ package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textview.MaterialTextView;
 import com.vrp.barc_demo.R;
 
 import butterknife.BindView;
@@ -19,8 +21,14 @@ import butterknife.ButterKnife;
 import retrofit2.http.Query;
 
 public class TerminateActivity extends AppCompatActivity {
+    @BindView(R.id.cl_terminate)
+    ConstraintLayout cl_terminate;
     @BindView(R.id.btn_next)
     MaterialButton btn_next;
+    @BindView(R.id.tv_survey_terminate)
+    MaterialTextView tv_survey_terminate;
+    @BindView(R.id.btn_start_new_survey)
+    MaterialButton btn_start_new_survey;
 
     /*normal widgets*/
     private Context context=this;
@@ -48,7 +56,16 @@ public class TerminateActivity extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Working...", Toast.LENGTH_SHORT).show();
+                cl_terminate.setVisibility(View.GONE);
+                tv_survey_terminate.setVisibility(View.VISIBLE);
+                btn_start_new_survey.setVisibility(View.VISIBLE);
+            }
+        });
+        btn_start_new_survey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentSurveyList = new Intent(context, SurveyListActivity.class);
+                startActivity(intentSurveyList);
             }
         });
     }

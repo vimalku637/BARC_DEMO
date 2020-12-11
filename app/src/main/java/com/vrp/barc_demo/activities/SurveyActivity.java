@@ -34,7 +34,6 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.vrp.barc_demo.ClusterDetails;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;

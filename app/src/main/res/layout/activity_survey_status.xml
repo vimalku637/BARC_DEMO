@@ -203,7 +203,6 @@
         android:layout_marginTop="@dimen/margin20"
         android:layout_marginRight="@dimen/margin10"
         android:background="@drawable/buttondrakgray"
-
         android:orientation="vertical">
 
         <TextView

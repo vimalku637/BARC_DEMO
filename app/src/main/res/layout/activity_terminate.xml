@@ -7,6 +7,39 @@
     android:background="@drawable/background_screen"
     tools:context=".activities.TerminateActivity">
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_survey_terminate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/survey_terminated"
+        android:textColor="@color/color_green_google"
+        android:drawableStart="@drawable/ok_verified"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/margin25"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/color_green_light"
+        android:padding="@dimen/margin8"
+        android:layout_margin="@dimen/margin10"
+        android:visibility="visible"
+        />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_start_new_survey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_new_survey"
+        android:backgroundTint="@color/color_blue_google"
+        app:cornerRadius="@dimen/margin8"
+        android:padding="@dimen/margin18"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="@dimen/margin10"
+        android:visibility="gone"
+        />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,20 +51,6 @@
         android:focusableInTouchMode="true"
         android:focusable="true"
         android:layout_margin="@dimen/margin10">
-
-        <!--<com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_survey_terminate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/survey_terminated"
-            android:textColor="@color/color_green_google"
-            android:drawableStart="@drawable/ok_verified"
-            android:drawableEnd=""
-            android:gravity="center"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />-->
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_reason_for_halt"
@@ -157,7 +176,8 @@
                 android:paddingTop="@dimen/margin15"
                 android:paddingBottom="@dimen/margin15"
                 app:cornerRadius="@dimen/margin8"
-                android:textColor="@android:color/black"
+                android:layout_marginBottom="@dimen/margin10"
+                android:textColor="@android:color/white"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_address"
                 />
