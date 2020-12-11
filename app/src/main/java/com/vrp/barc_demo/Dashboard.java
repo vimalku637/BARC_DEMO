@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.vrp.barc_demo.activities.ClusterListActivity;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -38,7 +40,7 @@ public class Dashboard extends AppCompatActivity {
         tv_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(Dashboard.this, StartingPointActivity.class);
+                Intent intent=new Intent(Dashboard.this, ClusterListActivity.class);
                 startActivity(intent);
             }
         });

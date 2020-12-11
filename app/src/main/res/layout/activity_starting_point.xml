@@ -7,7 +7,6 @@
     android:background="@drawable/background_screen"
     android:orientation="vertical"
     android:padding="@dimen/margin5"
-
     tools:context=".StartingPointActivity">
 
 
@@ -25,7 +24,6 @@
         android:layout_marginLeft="@dimen/margin20"
         android:layout_marginTop="@dimen/margin70"
         android:layout_weight="1"
-
         android:orientation="vertical">
 
         <LinearLayout
@@ -78,4 +76,5 @@
 
 
 </LinearLayout>
+
 </LinearLayout>

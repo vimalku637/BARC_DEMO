@@ -14,4 +14,6 @@ public interface BARC_API {
     Call<JsonObject> callLogin(@Body RequestBody body);
     @GET("questions.php")
     Call<JsonObject> getBarcDemoJson();
+    @POST("download_cluster.php")
+    Call<JsonObject> getClusterList(RequestBody body);
 }

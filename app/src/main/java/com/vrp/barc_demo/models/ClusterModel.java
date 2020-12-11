@@ -26,6 +26,15 @@ public class ClusterModel {
     private String cluster_id;
     private String cluster_name;
     private String action;
+    private String pincode;
+
+    public String getPincode() {
+        return pincode;
+    }
+
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
+    }
 
     public String getLocal_id() {
         return local_id;
