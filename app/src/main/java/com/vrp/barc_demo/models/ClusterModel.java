@@ -5,9 +5,27 @@ public class ClusterModel {
 
     public static final String COLUMN_LOCAL_ID="local_id";
     public static final String COLUMN_ID="id";
-    public static final String COLUMN_CLUSTER_ID="cluster_id";
-    public static final String COLUMN_CLUSTER_NAME="cluster_name";
-    public static final String COLUMN_ACTION="action";
+    public static final String COLUMN_CLUSTER_NO="cluster_no";
+    public static final String COLUMN_CENSUS_STATE_CODE="Census_State_Code";
+    public static final String COLUMN_STATE_NAME="State_Name";
+    public static final String COLUMN_TOWN_VILLAGE_CLASS="Town_Village_Class";
+    public static final String COLUMN_CENSUS_DISTRICT_CODE="Census_District_Code";
+    public static final String COLUMN_CENSUS_DISTRICT_NAME="Census_District_Name";
+    public static final String COLUMN_CENSUS_VILLAGE_TOWN_CODE="Census_Village_Town_Code";
+    public static final String COLUMN_CENSUS_VILLAGE_TOWN_NAME="Census_Village_Town_Name";
+    public static final String COLUMN_UA_COMPONENT="UA_Component";
+    public static final String COLUMN_UA_COMPONENT_CODE="UA_Component_code";
+    public static final String COLUMN_BARC_TOWN_CODE="BARC_Town_Code";
+    public static final String COLUMN_ORIGINAL_TOWN_VILLAGE="Original_Town_Village";
+    public static final String COLUMN_ORIGINAL_TOWN_VILLAGE_CODE="Original_Town_Village_Code";
+    public static final String COLUMN_SAMPLING_TOWN_CLASS="Sampling_town_class";
+    public static final String COLUMN_SP_NO="SP_No";
+    public static final String COLUMN_ORIGINAL_ADDRESS="Original_address";
+    public static final String COLUMN_AFTER_VOTER_ADDRESS="After_10_Voter_Address";
+    public static final String COLUMN_PREVIOUS_VOTER_ADDRESS="Previous_10_Voter_Address";
+    public static final String COLUMN_PINCODE="Pincode";
+    public static final String COLUMN_OPERATOR_AGENCY="Operator_Agency";
+    public static final String COLUMN_LOCK_STATUS="lock_status";
     public static final String COLUMN_FLAG="flag";
     public static final String COLUMN_STATUS="status";
 
@@ -15,9 +33,27 @@ public class ClusterModel {
             "CREATE TABLE " + TABLE_NAME + "("
                     + COLUMN_LOCAL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_ID + " INTEGER ,"
-                    + COLUMN_CLUSTER_ID + " TEXT ,"
-                    + COLUMN_CLUSTER_NAME + " TEXT ,"
-                    + COLUMN_ACTION + " TEXT ,"
+                    + COLUMN_CLUSTER_NO + " TEXT ,"
+                    + COLUMN_CENSUS_STATE_CODE + " TEXT ,"
+                    + COLUMN_STATE_NAME + " TEXT ,"
+                    + COLUMN_TOWN_VILLAGE_CLASS + " TEXT ,"
+                    + COLUMN_CENSUS_DISTRICT_CODE + " TEXT ,"
+                    + COLUMN_CENSUS_DISTRICT_NAME + " TEXT ,"
+                    + COLUMN_CENSUS_VILLAGE_TOWN_CODE + " TEXT ,"
+                    + COLUMN_CENSUS_VILLAGE_TOWN_NAME + " TEXT ,"
+                    + COLUMN_UA_COMPONENT + " TEXT ,"
+                    + COLUMN_UA_COMPONENT_CODE + " TEXT ,"
+                    + COLUMN_BARC_TOWN_CODE + " TEXT ,"
+                    + COLUMN_ORIGINAL_TOWN_VILLAGE + " TEXT ,"
+                    + COLUMN_ORIGINAL_TOWN_VILLAGE_CODE + " TEXT ,"
+                    + COLUMN_SAMPLING_TOWN_CLASS + " TEXT ,"
+                    + COLUMN_SP_NO + " TEXT ,"
+                    + COLUMN_AFTER_VOTER_ADDRESS + " TEXT ,"
+                    + COLUMN_ORIGINAL_ADDRESS + " TEXT ,"
+                    + COLUMN_PREVIOUS_VOTER_ADDRESS + " TEXT ,"
+                    + COLUMN_PINCODE + " TEXT ,"
+                    + COLUMN_OPERATOR_AGENCY + " TEXT ,"
+                    + COLUMN_LOCK_STATUS + " TEXT ,"
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
                     + COLUMN_STATUS + " INTEGER DEFAULT 0 "
                     + ")";

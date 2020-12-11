@@ -167,4 +167,12 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return surveyJSON;
     }
+
+    public void saveMasterTable(ContentValues contentValues, String table_name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        long idsds = db.insert(table_name, null, contentValues);
+        Log.d("LOG", idsds + " id");
+        db.close();
+    }
 }

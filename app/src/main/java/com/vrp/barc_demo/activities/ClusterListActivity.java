@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,6 +91,16 @@ public class ClusterListActivity extends AppCompatActivity {
                     if (jsonArray.length()>0) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject=jsonArray.getJSONObject(i);
+
+                            //save data cluster in table.
+                            Iterator keys = jsonObject.keys();
+                            ContentValues contentValues = new ContentValues();
+                            while (keys.hasNext()) {
+                                String currentDynamicKey = (String) keys.next();
+                                contentValues.put(currentDynamicKey, jsonObject.get(currentDynamicKey).toString());
+                            }
+                            sqliteHelper.saveMasterTable(contentValues, "cluster");
+
                             ClusterModel clusterModel=new ClusterModel();
                             clusterModel.setCluster_id(jsonObject.getString("cluster_no"));
                             clusterModel.setCluster_name(jsonObject.getString("Original_Town_Village"));
