@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface BARC_API {
-    @POST("login.php")
+    @POST("loginv2.php")
     Call<JsonObject> callLogin(@Body RequestBody body);
     @GET("questions.php")
     Call<JsonObject> getBarcDemoJson();

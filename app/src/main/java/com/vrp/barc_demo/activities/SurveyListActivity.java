@@ -105,7 +105,7 @@ public class SurveyListActivity extends AppCompatActivity {
                 public void onItemClick(int position) {
                     sharedPrefHelper.setInt("startPosition", 0);
                     sharedPrefHelper.setInt("endPosition", 0);
-                    Intent intentSurveyActivity=new Intent(context, SurveyActivity.class);
+                    Intent intentSurveyActivity=new Intent(context, HouseholdSurveyActivity.class);
                     intentSurveyActivity.putExtra("survey_id", surveyModelAl.get(position).getSurvey_id());
                     getAllSurveyDataFromTable(surveyModelAl.get(position).getSurvey_id());
                     intentSurveyActivity.putExtra("answerModelList", answerModelList);

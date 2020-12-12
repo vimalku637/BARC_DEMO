@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ ProgressDialog mprogressDialog;
     private Context context=this;
     SharedPrefHelper sharedPrefHelper;
 LoginModel loginModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,18 +131,23 @@ LoginModel loginModel;
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response.body().toString().trim());
+                    Log.e(TAG, "onResponse: "+jsonObject.toString());
                     String success = jsonObject.optString("success");
+                    String message = jsonObject.optString("message");
                     if (Integer.valueOf(success)==1) {
-                        String message = jsonObject.optString("message");
                         String user_id = jsonObject.optString("user_name");
-                        String name = jsonObject.optString("name");
+                        String interviewer_id = jsonObject.optString("interviewer_id");
+                        String interviewer_name = jsonObject.optString("interviewer_name");
                         String user_name = jsonObject.optString("user_name");
                         String user_type_id = jsonObject.optString("user_type_id");
+                        String mdl_id = jsonObject.optString("mdl_id");
+                        String supervisor_id = jsonObject.optString("supervisor_id");
+                        String supervisor_name = jsonObject.optString("supervisor_name");
+                        String agency_name = jsonObject.optString("agency_name");
 
-                        sharedPrefHelper.setString("user_type_id", user_type_id);
-                        sharedPrefHelper.setString("name", name);
-                        sharedPrefHelper.setString("user_id", user_id);
-                        sharedPrefHelper.setString("user_name", user_name);
+                        /*set preference data*/
+                        setAllDataInPreferences(user_id,interviewer_id,interviewer_name,user_name,
+                                user_type_id,mdl_id,supervisor_id,supervisor_name,agency_name);
 
                         Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
                         startActivity(intentMainActivity);
@@ -163,6 +170,21 @@ LoginModel loginModel;
                 }
             }
         });
+    }
+
+    private void setAllDataInPreferences(String user_id, String interviewer_id, String interviewer_name,
+                                         String user_name, String user_type_id, String mdl_id, String supervisor_id,
+                                         String supervisor_name, String agency_name) {
+        sharedPrefHelper.setString("user_id", user_id);
+        sharedPrefHelper.setString("interviewer_id", interviewer_id);
+        sharedPrefHelper.setString("interviewer_name", interviewer_name);
+        sharedPrefHelper.setString("user_name", user_name);
+        sharedPrefHelper.setString("user_type_id", user_type_id);
+        sharedPrefHelper.setString("mdl_id", mdl_id);
+        sharedPrefHelper.setString("supervisor_id", supervisor_id);
+        sharedPrefHelper.setString("supervisor_name", supervisor_name);
+        sharedPrefHelper.setString("agency_name", agency_name);
+
     }
 
     private boolean isInternetOn() {

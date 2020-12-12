@@ -626,6 +626,35 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                        EditText editText=new EditText(this);
                        editText.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                        editText.setTextSize(12);
+                       if (jsonObjectQuesType.getString("field_name").equals("mdl_id")) {
+                           editText.setText(sharedPrefHelper.getString("mdl_id", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("supervisor_id")) {
+                           editText.setText(sharedPrefHelper.getString("supervisor_id", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("supervisor_name")) {
+                           editText.setText(sharedPrefHelper.getString("supervisor_name", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("interviewer_id")) {
+                           editText.setText(sharedPrefHelper.getString("interviewer_id", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("interviewer_name")) {
+                           editText.setText(sharedPrefHelper.getString("interviewer_name", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("cluster_no")) {
+                           editText.setText(sharedPrefHelper.getString("cluster_no", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("state_name")) {
+                           editText.setText(sharedPrefHelper.getString("state_name", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("town_village_class")) {
+                           editText.setText(sharedPrefHelper.getString("town_village_class", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("census_district_name")) {
+                           editText.setText(sharedPrefHelper.getString("census_district_name", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("census_village_town_code")) {
+                           editText.setText(sharedPrefHelper.getString("census_village_town_code", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("census_village_town_name")) {
+                           editText.setText(sharedPrefHelper.getString("census_village_town_name", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("ua_component")) {
+                           editText.setText(sharedPrefHelper.getString("ua_component", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("ua_component_code")) {
+                           editText.setText(sharedPrefHelper.getString("ua_component_code", ""));
+                       } else if (jsonObjectQuesType.getString("field_name").equals("barc_town_code")) {
+                           editText.setText(sharedPrefHelper.getString("barc_town_code", ""));
+                       }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
                        }else{

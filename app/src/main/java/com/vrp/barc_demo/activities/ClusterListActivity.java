@@ -101,6 +101,20 @@ public class ClusterListActivity extends AppCompatActivity {
                             }
                             sqliteHelper.saveMasterTable(contentValues, "cluster");
 
+                            /*set preference data*/
+                            String cluster_no = jsonObject.getString("cluster_no");
+                            String State_Name = jsonObject.getString("State_Name");
+                            String Town_Village_Class = jsonObject.getString("Town_Village_Class");
+                            String Census_District_Name = jsonObject.getString("Census_District_Name");
+                            String Census_Village_Town_Code = jsonObject.getString("Census_Village_Town_Code");
+                            String Census_Village_Town_Name = jsonObject.getString("Census_Village_Town_Name");
+                            String UA_Component = jsonObject.getString("UA_Component");
+                            String UA_Component_code = jsonObject.getString("UA_Component_code");
+                            String BARC_Town_Code = jsonObject.getString("BARC_Town_Code");
+                            setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Name,
+                                    Census_Village_Town_Code,Census_Village_Town_Name,UA_Component,UA_Component_code,
+                                    BARC_Town_Code);
+
                             ClusterModel clusterModel=new ClusterModel();
                             clusterModel.setCluster_id(jsonObject.getString("cluster_no"));
                             clusterModel.setCluster_name(jsonObject.getString("Original_Town_Village"));
@@ -175,6 +189,21 @@ public class ClusterListActivity extends AppCompatActivity {
                 AlertDialogClass.dismissProgressDialog();
             }
         });
+    }
+
+    private void setAllDataInPreferences(String cluster_no, String state_name, String town_village_class,
+                                         String census_district_name, String census_village_town_code,
+                                         String census_village_town_name, String ua_component,
+                                         String ua_component_code, String barc_town_code) {
+        sharedPrefHelper.setString("cluster_no", cluster_no);
+        sharedPrefHelper.setString("state_name", state_name);
+        sharedPrefHelper.setString("town_village_class", town_village_class);
+        sharedPrefHelper.setString("census_district_name", census_district_name);
+        sharedPrefHelper.setString("census_village_town_code", census_village_town_code);
+        sharedPrefHelper.setString("census_village_town_name", census_village_town_name);
+        sharedPrefHelper.setString("ua_component", ua_component);
+        sharedPrefHelper.setString("ua_component_code", ua_component_code);
+        sharedPrefHelper.setString("barc_town_code", barc_town_code);
     }
 
     private void setClusterAdapter() {
