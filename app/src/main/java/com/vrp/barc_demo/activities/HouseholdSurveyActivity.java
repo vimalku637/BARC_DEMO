@@ -332,6 +332,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                                    answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                     answerModelList.add(answerModel);
                                 }
                                 startPositionBefore++;
@@ -368,6 +369,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                         answerModel.setSurveyID(survey_id);
                                         answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                         answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                                        answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                         answerModelList.add(answerModel);
                                     }
                                     startPositionBefore++;
@@ -387,6 +389,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                                    answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                     answerModelList.add(answerModel);
                                 }
                                 startPositionBefore++;
@@ -420,6 +423,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                                    answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                     answerModelList.add(answerModel);
                                 }
                                 startPositionBefore++;
