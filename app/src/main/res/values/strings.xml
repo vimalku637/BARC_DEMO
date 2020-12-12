@@ -67,4 +67,5 @@
     <string name="select_city">Select City</string>
     <string name="start_new_survey">Start New Survey</string>
     <string name="survey_status_in_your_cluster">Survey Status in Your Cluster</string>
+    <string name="completed">Completed</string>
 </resources>

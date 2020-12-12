@@ -66,6 +66,15 @@ public class ClusterModel {
     private String next_address;
     private String previous_address;
     private String substitute_address;
+    private String user_id;
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
 
     public String getOriginal_address() {
         return original_address;

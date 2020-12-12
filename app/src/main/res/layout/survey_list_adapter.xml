@@ -6,7 +6,63 @@
     android:layout_height="wrap_content"
     tools:context=".adapters.SurveyListAdapter">
 
-    <com.google.android.material.textview.MaterialTextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:stretchColumns="*">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin8"
+                android:background="@drawable/cell_border">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_survey_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/survey_id"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/text_16" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_hh_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/hh_name"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/text_16" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/completed"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/text_16"
+                    android:backgroundTint="@color/color_green_google"
+                    />
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+
+    <!--<com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_survey_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,6 +74,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

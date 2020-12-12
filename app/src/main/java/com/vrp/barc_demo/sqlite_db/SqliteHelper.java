@@ -121,13 +121,14 @@ public class SqliteHelper extends SQLiteOpenHelper {
         ArrayList<SurveyModel> arrayList = new ArrayList<>();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_id from survey";
+                String query = "select survey_id, status from survey";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
                         SurveyModel surveyModel = new SurveyModel();
                         surveyModel.setSurvey_id(cursor.getString(cursor.getColumnIndex("survey_id")));
+                        surveyModel.setStatus(cursor.getString(cursor.getColumnIndex("status")));
 
                         cursor.moveToNext();
                         arrayList.add(surveyModel);

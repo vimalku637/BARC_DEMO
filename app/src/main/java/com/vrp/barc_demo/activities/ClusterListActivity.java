@@ -13,7 +13,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.textview.MaterialTextView;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.adapters.ClusterAdapter;
 import com.vrp.barc_demo.interfaces.ClickListener;
@@ -22,6 +24,8 @@ import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.AlertDialogClass;
+import com.vrp.barc_demo.utils.CommonClass;
+import com.vrp.barc_demo.utils.MyJSON;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import org.json.JSONArray;
@@ -33,6 +37,8 @@ import java.util.Iterator;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -146,13 +152,21 @@ public class ClusterListActivity extends AppCompatActivity {
                                                     public void onClick(SweetAlertDialog sDialog) {
                                                         sDialog.dismiss();
                                                         //call api to lock cluster
-                                                        Intent intentAddressSelection=new Intent(context, AddressSelection.class);
-                                                        intentAddressSelection.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
-                                                        intentAddressSelection.putExtra("next_address", clusterModelAL.get(position).getNext_address());
-                                                        intentAddressSelection.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
-                                                        intentAddressSelection.putExtra("cluster_id", clusterModelAL.get(position).getCluster_id());
-                                                        intentAddressSelection.putExtra("cluster_name", clusterModelAL.get(position).getCluster_name());
-                                                        startActivity(intentAddressSelection);
+                                                        if (CommonClass.isInternetOn(context)) {
+                                                            ClusterModel clusterModel=new ClusterModel();
+                                                            clusterModel.setCluster_id(clusterModelAL.get(position).getCluster_id());
+                                                            clusterModel.setUser_id(sharedPrefHelper.getString("user_id", ""));
+
+                                                            Gson gson = new Gson();
+                                                            String data = gson.toJson(clusterModel);
+                                                            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                                            RequestBody body = RequestBody.create(JSON, data);
+
+                                                            callLockLusterApi(body, position);
+                                                        }
+                                                        else {
+                                                            CommonClass.showPopupForNoInternet(context);
+                                                        }
                                                     }
                                                 })
                                                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -185,6 +199,43 @@ public class ClusterListActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
+                Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                AlertDialogClass.dismissProgressDialog();
+            }
+        });
+    }
+
+    private void callLockLusterApi(RequestBody body, int position) {
+        AlertDialogClass.showProgressDialog(context);
+        ApiClient.getClient().create(BARC_API.class).lockCluster(body).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().toString());
+                    Log.e(TAG, "lock_cluster-: "+jsonObject.toString());
+                    String success=jsonObject.getString("success");
+                    String message=jsonObject.getString("message");
+                    if (success.equals("1")) {
+                        AlertDialogClass.dismissProgressDialog();
+                        Intent intentAddressSelection=new Intent(context, AddressSelection.class);
+                        intentAddressSelection.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
+                        intentAddressSelection.putExtra("next_address", clusterModelAL.get(position).getNext_address());
+                        intentAddressSelection.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
+                        intentAddressSelection.putExtra("cluster_id", clusterModelAL.get(position).getCluster_id());
+                        intentAddressSelection.putExtra("cluster_name", clusterModelAL.get(position).getCluster_name());
+                        startActivity(intentAddressSelection);
+                        Toast.makeText(context, ""+message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        AlertDialogClass.dismissProgressDialog();
+                        CommonClass.showPopupForNoInternet(context);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
                 Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
                 AlertDialogClass.dismissProgressDialog();
             }
