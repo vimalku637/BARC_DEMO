@@ -98,7 +98,7 @@ public class ClusterDetails extends AppCompatActivity {
                 intentSurveyActivity.putExtra("survey_id", uuid);
                 intentSurveyActivity.putExtra("screen_type", "survey");
                 sharedPrefHelper.setInt("startPosition",0);
-                sharedPrefHelper.setInt("endPosition",0);
+                sharedPrefHelper.setInt("endPosition",1);
                 startActivity(intentSurveyActivity);
             }
         });
