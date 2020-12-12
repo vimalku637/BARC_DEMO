@@ -137,8 +137,6 @@ LoginModel loginModel;
                         String user_name = jsonObject.optString("user_name");
                         String user_type_id = jsonObject.optString("user_type_id");
 
-
-
                         sharedPrefHelper.setString("user_type_id", user_type_id);
                         sharedPrefHelper.setString("name", name);
                         sharedPrefHelper.setString("user_id", user_id);

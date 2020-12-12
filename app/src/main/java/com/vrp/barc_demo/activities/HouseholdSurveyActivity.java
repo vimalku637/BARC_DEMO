@@ -88,7 +88,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
     ArrayList<AnswerModel> answerModelList;
     ArrayList<ScreenWiseQuestionModel> arrayScreenWiseQuestionModel= new ArrayList<>();
     String screen_id=null;
-    boolean back_status=false;
+    boolean back_status=true;
     private SqliteHelper sqliteHelper;
     private String surveyObjectJSON=null;
 
@@ -632,10 +632,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                            editText.setInputType(InputType.TYPE_CLASS_TEXT);
                        }
                        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
+                       if(jsonObjectQuesType.getString("pre_field").equals("1")){
+                           editText.setEnabled(false);
+                       }
                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                            editText.setText(answerModelList.get(startPosition).getOption_value());
                        }
-                       txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                       String description=jsonObjectQuesType.getString("question_name");
+                       description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
+                       txtLabel.setText(description);
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        txtLabel.setTextSize(14);
                        startPosition++;
@@ -646,7 +651,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                    }
                    else if (jsonObjectQuesType.getString("question_type").equals("2")) {
                        TextView txtLabel = new TextView(this);
-                       txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                       String description=jsonObjectQuesType.getString("question_name");
+                       description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
+                       txtLabel.setText(description);
                        txtLabel.setTextSize(14);
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        ll_parent.addView(txtLabel);
@@ -676,7 +683,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                    }
                    else if (jsonObjectQuesType.getString("question_type").equals("3")) {
                        TextView txtLabel = new TextView(this);
-                       txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                       String description=jsonObjectQuesType.getString("question_name");
+                       description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
+                       txtLabel.setText(description);
                        txtLabel.setTextSize(14);
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        ll_parent.addView(txtLabel);
@@ -716,7 +725,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                    }
                    else if (jsonObjectQuesType.getString("question_type").equals("4")) {
                        TextView txtLabel = new TextView(this);
-                       txtLabel.setText(jsonObjectQuesType.getString("question_name"));
+                       String description=jsonObjectQuesType.getString("question_name");
+                       description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
+                       txtLabel.setText(description);
                        txtLabel.setTextSize(14);
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        ll_parent.addView(txtLabel);
@@ -760,12 +771,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                    else if (jsonObjectQuesType.getString("question_type").equals("6")) {
                        TextView textView=new TextView(this);
                        textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                       String description=jsonObjectQuesType.getString("question_name");
+                       description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                       description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name","Ram"));
                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                        }
                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                           textView.setText(Html.fromHtml(jsonObjectQuesType.getString("question_name"), Html.FROM_HTML_MODE_COMPACT));
+                           textView.setText(Html.fromHtml(description, Html.FROM_HTML_MODE_COMPACT));
                        } else {
-                           textView.setText(Html.fromHtml(jsonObjectQuesType.getString("question_name")));
+                           textView.setText(Html.fromHtml(description));
                        }
                        //textView.setText(jsonObjectQuesType.getString("question_name"));
                        ll_parent.addView(textView);
