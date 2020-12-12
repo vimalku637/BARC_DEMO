@@ -11,8 +11,10 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.activities.MainMenu;
 import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
+import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 public class SplashActivity extends AppCompatActivity {
     private ProgressBar progressBar;
@@ -21,6 +23,7 @@ public class SplashActivity extends AppCompatActivity {
     private final int SPLASH_DISPLAY_LENGTH = 3000;
     private boolean isProgressBar=false;
     private SqliteHelper sqliteHelper;
+    private SharedPrefHelper sharedPrefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +35,30 @@ public class SplashActivity extends AppCompatActivity {
 
         //call database open database method.
         sqliteHelper = new SqliteHelper(this);
+        sharedPrefHelper=new SharedPrefHelper(this);
+
         sqliteHelper.openDataBase();
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (isProgressBar) {
-                    Intent intentMainActivity=new Intent(context, LoginActivity.class);
-                    startActivity(intentMainActivity);
+
+                if (!sharedPrefHelper.getString("user_id","").equals("")){
+                    Intent intent = new Intent(SplashActivity.this, MainMenu.class);
+                    startActivity(intent);
+                    finish();
+
+                }else {
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(intent);
                     finish();
                 }
+
+//                if (isProgressBar) {
+//                    Intent intentMainActivity=new Intent(context, LoginActivity.class);
+//                    startActivity(intentMainActivity);
+//                    finish();
+//                }
             }
         }, SPLASH_DISPLAY_LENGTH);
 

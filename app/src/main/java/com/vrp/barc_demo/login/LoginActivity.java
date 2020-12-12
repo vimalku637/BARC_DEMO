@@ -2,13 +2,16 @@ package com.vrp.barc_demo.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -37,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "Login_Activity";
     @BindView(R.id.et_user_name)
@@ -49,11 +53,14 @@ public class LoginActivity extends AppCompatActivity {
     MaterialTextView tv_forgot_password;
     @BindView(R.id.til_user_name)
     TextInputLayout til_user_name;
-ProgressDialog mprogressDialog;
-    /*normal widgets*/
-    private Context context=this;
+    ProgressDialog mprogressDialog;
+
+    // /normal widgets/
+    private Context context = this;
     SharedPrefHelper sharedPrefHelper;
-LoginModel loginModel;
+    LoginModel loginModel;
+    String user_name;
+    String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,17 +69,17 @@ LoginModel loginModel;
         ButterKnife.bind(this);
         setTitle(R.string.login);
         initialization();
-        /*get intent values here*/
-        Bundle bundle=getIntent().getExtras();
-        if (bundle!=null) {
+        // /get intent values here/
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
         }
 
         submitButtonClick();
     }
 
     private void initialization() {
-        sharedPrefHelper=new SharedPrefHelper(this);
-        loginModel=new LoginModel();
+        sharedPrefHelper = new SharedPrefHelper(this);
+        loginModel = new LoginModel();
     }
 
     private void submitButtonClick() {
@@ -83,23 +90,90 @@ LoginModel loginModel;
 
                 loginModel.setUser_name(et_user_name.getText().toString());
                 loginModel.setUser_password(et_password.getText().toString());
-
-                if (isInternetOn()) {
-
-                    Gson gson = new Gson();
-                    String data = gson.toJson(loginModel);
-                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                    RequestBody body = RequestBody.create(JSON, data);
-                    sendLoginData(body);
-
-//                    Intent intent = new Intent(LoginActivity.this, ShowDetail.class);
-//                    startActivity(intent);
-//                    finish();
-
-
+                user_name = et_user_name.getText().toString().trim();
+                password = et_password.getText().toString().trim();
+                if (user_name.equalsIgnoreCase("") || (password.equalsIgnoreCase(""))) {
+                    if (user_name.equalsIgnoreCase("")) {
+                        et_user_name.setError("Please enter Username");
+                    }
+                    if (password.equalsIgnoreCase("")) {
+                        et_password.setError("Please enter password");
+                    }
+                    // Snackbar.make(view, "Please enter user name & password", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 } else {
 
-                    Toast.makeText(LoginActivity.this, "internet on please ", Toast.LENGTH_SHORT).show();
+                    if (!isInternetOn()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                        builder.setMessage("Network Error, check your network connection.")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setCancelable(false)
+                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        AlertDialog alert = builder.create();
+                        alert.setTitle(getString(R.string.Alert));
+                        alert.show();
+
+                    } else if (isInternetOn()) {
+
+                        loginModel.setUser_name(et_user_name.getText().toString());
+                        loginModel.setUser_password(et_password.getText().toString());
+                        Gson gson = new Gson();
+                        String data = gson.toJson(loginModel);
+                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                        RequestBody body = RequestBody.create(JSON, data);
+
+
+                        mprogressDialog = ProgressDialog.show(context, "", getString(R.string.Please_wait), true);
+                        ApiClient.getClient().create(BARC_API.class).callLogin(body).enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response.body().toString().trim());
+                                    Log.e(TAG, "onResponse: " + jsonObject.toString());
+                                    String success = jsonObject.optString("success");
+                                    String message = jsonObject.optString("message");
+                                    if (Integer.valueOf(success) == 1) {
+                                        String user_id = jsonObject.optString("user_name");
+                                        String interviewer_id = jsonObject.optString("interviewer_id");
+                                        String interviewer_name = jsonObject.optString("interviewer_name");
+                                        String user_name = jsonObject.optString("user_name");
+                                        String user_type_id = jsonObject.optString("user_type_id");
+                                        String mdl_id = jsonObject.optString("mdl_id");
+                                        String supervisor_id = jsonObject.optString("supervisor_id");
+                                        String supervisor_name = jsonObject.optString("supervisor_name");
+                                        String agency_name = jsonObject.optString("agency_name");
+
+                                        ///set preference data/
+                                        setAllDataInPreferences(user_id, interviewer_id, interviewer_name, user_name,
+                                                user_type_id, mdl_id, supervisor_id, supervisor_name, agency_name);
+
+                                        Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
+                                        startActivity(intentMainActivity);
+                                        finish();
+
+                                    } else {
+                                        Snackbar.make(findViewById(android.R.id.content), "Please Enter Valid User & Password ", Snackbar.LENGTH_LONG).show();
+
+                                        mprogressDialog.dismiss();
+                                    }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable t) {
+                                if (mprogressDialog.isShowing()) {
+                                    mprogressDialog.dismiss();
+                                }
+                            }
+                        });
+                    }
+
                 }
             }
             // }
@@ -108,14 +182,12 @@ LoginModel loginModel;
         });
 
 
-
-
-                //}
+        //}
 
         tv_forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentForgotPassword=new Intent(context, ForgotPassword.class);
+                Intent intentForgotPassword = new Intent(context, ForgotPassword.class);
                 startActivity(intentForgotPassword);
             }
         });
@@ -124,53 +196,6 @@ LoginModel loginModel;
     /*private boolean checkValidation() {
     }*/
 
-    private void sendLoginData(RequestBody body) {
-        mprogressDialog = ProgressDialog.show(this, "", getString(R.string.Please_wait), true);
-        ApiClient.getClient().create(BARC_API.class).callLogin(body).enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response.body().toString().trim());
-                    Log.e(TAG, "onResponse: "+jsonObject.toString());
-                    String success = jsonObject.optString("success");
-                    String message = jsonObject.optString("message");
-                    if (Integer.valueOf(success)==1) {
-                        String user_id = jsonObject.optString("user_name");
-                        String interviewer_id = jsonObject.optString("interviewer_id");
-                        String interviewer_name = jsonObject.optString("interviewer_name");
-                        String user_name = jsonObject.optString("user_name");
-                        String user_type_id = jsonObject.optString("user_type_id");
-                        String mdl_id = jsonObject.optString("mdl_id");
-                        String supervisor_id = jsonObject.optString("supervisor_id");
-                        String supervisor_name = jsonObject.optString("supervisor_name");
-                        String agency_name = jsonObject.optString("agency_name");
-
-                        /*set preference data*/
-                        setAllDataInPreferences(user_id,interviewer_id,interviewer_name,user_name,
-                                user_type_id,mdl_id,supervisor_id,supervisor_name,agency_name);
-
-                        Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
-                        startActivity(intentMainActivity);
-
-                    }else {
-                        Snackbar.make(findViewById(android.R.id.content),"Please Enter Valid User & Password ",Snackbar.LENGTH_LONG).show();
-
-                        mprogressDialog.dismiss();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                if (mprogressDialog.isShowing()) {
-                    mprogressDialog.dismiss();
-                }
-            }
-        });
-    }
 
     private void setAllDataInPreferences(String user_id, String interviewer_id, String interviewer_name,
                                          String user_name, String user_type_id, String mdl_id, String supervisor_id,

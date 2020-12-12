@@ -35,6 +35,7 @@
     <string name="cluster_name">Cluster Name</string>
     <string name="action">Action</string>
     <string name="Please_wait">Please Wait</string>
+    <string name="sending_password">Sending Password to email</string>
     <string name="hh_name">HH Name</string>
     <string name="status">status</string>
     <string name="start_next_survey">Start Next Survey</string>
@@ -60,6 +61,10 @@
     <string name="name">Name</string>
     <string name="address">Address</string>
     <string name="survey_terminated">Survey has been terminated</string>
+    <string name="ok">Ok</string>
+    <string name="Alert">Alert</string>
+    <string name="select_agent">Select City</string>
+    <string name="select_city">Select City</string>
     <string name="start_new_survey">Start New Survey</string>
     <string name="survey_status_in_your_cluster">Survey Status in Your Cluster</string>
 </resources>

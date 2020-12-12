@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "barc.db";
@@ -79,6 +80,41 @@ public class SqliteHelper extends SQLiteOpenHelper {
             db.close();
         }
     }
+
+
+
+//    public HashMap<String, Integer> getCity() {
+//        HashMap<String, Integer> partner = new HashMap<>();
+//        PartnerPojo partnerPojo;
+//        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+//        try {
+//            if (sqLiteDatabase != null && sqLiteDatabase.isOpen() && !sqLiteDatabase.isReadOnly()) {
+//                //String query = "Select  partner_id,partner_name from partner";
+//                String query = "Select partner_id,partner_name from partner order by partner_name asc";
+//                Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+//                if (cursor != null && cursor.getCount() > 0) {
+//                    cursor.moveToFirst();
+//                    while (!cursor.isAfterLast()) {
+//
+//                        partnerPojo = new PartnerPojo();
+//                        partnerPojo.setPartner_id(cursor.getInt(cursor.getColumnIndex("partner_id")));
+//                        partnerPojo.setPartner_name(cursor.getString(cursor.getColumnIndex("partner_name")));
+//                        cursor.moveToNext();
+//                        partner.put(partnerPojo.getPartner_name().trim(), partnerPojo.getPartner_id());
+//
+//                    }
+//
+//                }
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sqLiteDatabase.close();
+//        }
+//        return partner;
+//    }
+//
+//
 
     public ArrayList<SurveyModel> getSurveyList() {
         SQLiteDatabase db = this.getReadableDatabase();
