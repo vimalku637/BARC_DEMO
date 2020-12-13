@@ -31,7 +31,10 @@ import com.vrp.barc_demo.utils.SharedPrefHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import butterknife.BindView;
@@ -107,20 +110,6 @@ public class ClusterListActivity extends AppCompatActivity {
                             }
                             sqliteHelper.saveMasterTable(contentValues, "cluster");
 
-                            /*set preference data*/
-                            String cluster_no = jsonObject.getString("cluster_no");
-                            String State_Name = jsonObject.getString("State_Name");
-                            String Town_Village_Class = jsonObject.getString("Town_Village_Class");
-                            String Census_District_Name = jsonObject.getString("Census_District_Name");
-                            String Census_Village_Town_Code = jsonObject.getString("Census_Village_Town_Code");
-                            String Census_Village_Town_Name = jsonObject.getString("Census_Village_Town_Name");
-                            String UA_Component = jsonObject.getString("UA_Component");
-                            String UA_Component_code = jsonObject.getString("UA_Component_code");
-                            String BARC_Town_Code = jsonObject.getString("BARC_Town_Code");
-                            setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Name,
-                                    Census_Village_Town_Code,Census_Village_Town_Name,UA_Component,UA_Component_code,
-                                    BARC_Town_Code);
-
                             ClusterModel clusterModel=new ClusterModel();
                             clusterModel.setCluster_id(jsonObject.getString("cluster_no"));
                             clusterModel.setCluster_name(jsonObject.getString("Original_Town_Village"));
@@ -128,6 +117,17 @@ public class ClusterListActivity extends AppCompatActivity {
                             clusterModel.setOriginal_address(jsonObject.getString("Original_address"));
                             clusterModel.setNext_address(jsonObject.getString("After_10_Voter_Address"));
                             clusterModel.setPrevious_address(jsonObject.getString("Previous_10_Voter_Address"));
+
+                            /*set and get these values for preferences*/
+                            clusterModel.setCluster_no(jsonObject.getString("cluster_no"));
+                            clusterModel.setState_Name(jsonObject.getString("State_Name"));
+                            clusterModel.setTown_Village_Class(jsonObject.getString("Town_Village_Class"));
+                            clusterModel.setCensus_District_Name(jsonObject.getString("Census_District_Name"));
+                            clusterModel.setCensus_Village_Town_Code(jsonObject.getString("Census_Village_Town_Code"));
+                            clusterModel.setCensus_Village_Town_Name(jsonObject.getString("Census_Village_Town_Name"));
+                            clusterModel.setUA_Component(jsonObject.getString("UA_Component"));
+                            clusterModel.setUA_Component_code(jsonObject.getString("UA_Component_code"));
+                            clusterModel.setBARC_Town_Code(jsonObject.getString("BARC_Town_Code"));
 
                             clusterModelAL.add(clusterModel);
                         }
@@ -183,6 +183,22 @@ public class ClusterListActivity extends AppCompatActivity {
                                         intentSurveyList.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
                                         intentSurveyList.putExtra("cluster_id", clusterModelAL.get(position).getCluster_id());
                                         intentSurveyList.putExtra("cluster_name", clusterModelAL.get(position).getCluster_name());
+
+                                        /*set preference data*/
+                                        String cluster_no = clusterModelAL.get(position).getCluster_no();
+                                        String State_Name = clusterModelAL.get(position).getState_Name();
+                                        String Town_Village_Class = clusterModelAL.get(position).getTown_Village_Class();
+                                        String Census_District_Name = clusterModelAL.get(position).getCensus_District_Name();
+                                        String Census_Village_Town_Code = clusterModelAL.get(position).getCensus_Village_Town_Code();
+                                        String Census_Village_Town_Name = clusterModelAL.get(position).getCensus_Village_Town_Name();
+                                        String UA_Component = clusterModelAL.get(position).getUA_Component();
+                                        String UA_Component_code = clusterModelAL.get(position).getUA_Component_code();
+                                        String BARC_Town_Code = clusterModelAL.get(position).getBARC_Town_Code();
+
+                                        setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Name,
+                                                Census_Village_Town_Code,Census_Village_Town_Name,UA_Component,UA_Component_code,
+                                                BARC_Town_Code);
+
                                         startActivity(intentSurveyList);
                                     }
                                 }
@@ -255,6 +271,9 @@ public class ClusterListActivity extends AppCompatActivity {
         sharedPrefHelper.setString("ua_component", ua_component);
         sharedPrefHelper.setString("ua_component_code", ua_component_code);
         sharedPrefHelper.setString("barc_town_code", barc_town_code);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        sharedPrefHelper.setString("current_date", dateFormat.format(cal.getTime()));
     }
 
     private void setClusterAdapter() {

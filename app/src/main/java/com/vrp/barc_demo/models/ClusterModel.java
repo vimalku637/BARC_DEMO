@@ -68,6 +68,88 @@ public class ClusterModel {
     private String substitute_address;
     private String user_id;
 
+    private String cluster_no;
+    private String State_Name;
+    private String Town_Village_Class;
+    private String Census_District_Name;
+    private String Census_Village_Town_Code;
+    private String Census_Village_Town_Name;
+    private String UA_Component;
+    private String UA_Component_code;
+    private String BARC_Town_Code;
+
+    public String getCluster_no() {
+        return cluster_no;
+    }
+
+    public void setCluster_no(String cluster_no) {
+        this.cluster_no = cluster_no;
+    }
+
+    public String getState_Name() {
+        return State_Name;
+    }
+
+    public void setState_Name(String state_Name) {
+        State_Name = state_Name;
+    }
+
+    public String getTown_Village_Class() {
+        return Town_Village_Class;
+    }
+
+    public void setTown_Village_Class(String town_Village_Class) {
+        Town_Village_Class = town_Village_Class;
+    }
+
+    public String getCensus_District_Name() {
+        return Census_District_Name;
+    }
+
+    public void setCensus_District_Name(String census_District_Name) {
+        Census_District_Name = census_District_Name;
+    }
+
+    public String getCensus_Village_Town_Code() {
+        return Census_Village_Town_Code;
+    }
+
+    public void setCensus_Village_Town_Code(String census_Village_Town_Code) {
+        Census_Village_Town_Code = census_Village_Town_Code;
+    }
+
+    public String getCensus_Village_Town_Name() {
+        return Census_Village_Town_Name;
+    }
+
+    public void setCensus_Village_Town_Name(String census_Village_Town_Name) {
+        Census_Village_Town_Name = census_Village_Town_Name;
+    }
+
+    public String getUA_Component() {
+        return UA_Component;
+    }
+
+    public void setUA_Component(String UA_Component) {
+        this.UA_Component = UA_Component;
+    }
+
+    public String getUA_Component_code() {
+        return UA_Component_code;
+    }
+
+    public void setUA_Component_code(String UA_Component_code) {
+        this.UA_Component_code = UA_Component_code;
+    }
+
+    public String getBARC_Town_Code() {
+        return BARC_Town_Code;
+    }
+
+    public void setBARC_Town_Code(String BARC_Town_Code) {
+        this.BARC_Town_Code = BARC_Town_Code;
+    }
+
     public String getUser_id() {
         return user_id;
     }
