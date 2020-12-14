@@ -641,6 +641,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                         AlertDialogClass.dismissProgressDialog();
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
+                        sqliteHelper.updateLocalFlag("survey", Integer.parseInt(survey_id), 1);
                         Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
                         startActivity(intentSurveyActivity1);
                         finish();

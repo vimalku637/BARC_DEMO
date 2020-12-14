@@ -236,4 +236,25 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return inserted_id;
     }
+
+    public long updateLocalFlag(String table, int survey_id, int flag) {
+        long inserted_id = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                ContentValues values = new ContentValues();
+                values.put("flag", flag);
+                values.put("status", flag);
+
+                inserted_id = db.update(table, values, "survey_id" + " = " + survey_id + "", null);
+
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return inserted_id;
+    }
 }
