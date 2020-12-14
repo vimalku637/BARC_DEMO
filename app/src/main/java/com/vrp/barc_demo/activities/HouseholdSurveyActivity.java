@@ -359,12 +359,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                 RadioGroup radioGroup = (RadioGroup) childView;
                                 int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
                                 RadioButton selectedRadioButton = (RadioButton) childView.findViewById(selectedRadioButtonId);
+                                String strTag=selectedRadioButton.getTag().toString();
+                                int sepPos = strTag.indexOf("^");
+                                int radioID=Integer.parseInt(strTag.substring(0,sepPos));
                                 if (selectedRadioButton != null) {
                                     if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
-                                        answerModelList.get(startPositionBefore).setOption_id(Integer.toString(selectedRadioButton.getId()));
+                                        answerModelList.get(startPositionBefore).setOption_id(Integer.toString(radioID));
                                     }else{
                                         AnswerModel answerModel= new AnswerModel();
-                                        answerModel.setOption_id(Integer.toString(selectedRadioButton.getId()));
+                                        answerModel.setOption_id(Integer.toString(radioID));
                                         answerModel.setOption_value("");
                                         answerModel.setSurveyID(survey_id);
                                         answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
@@ -697,6 +700,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                        ll_parent.addView(txtLabel);
                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                        RadioGroup radioGroup=new RadioGroup(this);
+                       radioGroup.setId(i);
                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
                            RadioButton radioButton=new RadioButton(this);
                            radioButton.setLayoutParams(new LinearLayout.LayoutParams
@@ -704,7 +708,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                            JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(j);
                            radioButton.setText(jsonObjectOptionValues.getString("option_value"));
                            radioButton.setTextSize(12);
-                           radioButton.setId(Integer.parseInt(jsonObjectOptionValues.getString("option_id")));
+                           String str_id=i+""+j+""+jsonObjectOptionValues.getString("option_id");
+                           int idd=Integer.parseInt(str_id);
+                           radioButton.setId(idd);
+                           radioButton.setTag(Integer.parseInt(jsonObjectOptionValues.getString("option_id"))+"^"+Integer.parseInt(jsonObjectOptionValues.getString("is_terminate")));
                            if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                                if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
                                    radioButton.setChecked(true);
@@ -717,6 +724,20 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                        startPosition++;
                        endPosition++;
                        ll_parent.addView(radioGroup);
+                       radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+                       {
+                           @Override
+                           public void onCheckedChanged(RadioGroup group, int checkedId) {
+                               RadioButton rb=(RadioButton)findViewById(checkedId);
+                               String rbTag=rb.getTag().toString();
+                               int sepPos = rbTag.indexOf("^");
+                               String id=rbTag.substring(sepPos+1);
+                               if(id.equals("1")){
+                                   setTerminattion();
+                                   //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
+                               }
+                           }
+                       });
                        //onAddRadioButton(jsonObjectQuesType);
                    }
                    else if (jsonObjectQuesType.getString("question_type").equals("3")) {
@@ -839,6 +860,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void setTerminattion(){
+        Intent intentTerminate=new Intent(context, TerminateActivity.class);
+        intentTerminate.putExtra("screen_type", "terminate");
+        startActivity(intentTerminate);
+    }
+
     private void showPopupForTerminateSurvey() {
         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Are you sure?")
@@ -849,9 +876,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismiss();
-                        Intent intentTerminate=new Intent(context, TerminateActivity.class);
-                        intentTerminate.putExtra("screen_type", "terminate");
-                        startActivity(intentTerminate);
+                        setTerminattion();
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
