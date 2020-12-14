@@ -22,7 +22,7 @@
         android:background="@color/color_green_light"
         android:padding="@dimen/margin8"
         android:layout_margin="@dimen/margin10"
-        android:visibility="visible"
+        android:visibility="gone"
         />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_start_new_survey"
@@ -43,6 +43,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin10"
         android:scrollbars="none">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_terminate"
@@ -50,7 +51,7 @@
         android:layout_height="wrap_content"
         android:focusableInTouchMode="true"
         android:focusable="true"
-        android:layout_margin="@dimen/margin10">
+        >
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_reason_for_halt"
@@ -127,7 +128,7 @@
         </RadioGroup>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_name"
+            android:id="@+id/til_date_time"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -139,10 +140,32 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_date_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/margin5"
+                android:inputType="datetime"
+                android:hint="@string/date_time" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_date_time"
+            app:errorEnabled="true"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/margin5"
+                android:inputType="textPersonName"
                 android:hint="@string/name" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -164,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/address"
                 android:drawablePadding="@dimen/margin5"
-                android:inputType="text" />
+                android:inputType="textPostalAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton

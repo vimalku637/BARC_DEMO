@@ -34,11 +34,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.ScreenWiseQuestionModel;
+import com.vrp.barc_demo.rest_api.ApiClient;
+import com.vrp.barc_demo.rest_api.BARC_API;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
+import com.vrp.barc_demo.utils.AlertDialogClass;
 import com.vrp.barc_demo.utils.CommonClass;
 import com.vrp.barc_demo.utils.MyJSON;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
@@ -55,6 +59,11 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HouseholdSurveyActivity extends AppCompatActivity {
     private static final String TAG = "Survey_Activity";
@@ -329,7 +338,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id("");
                                     answerModel.setOption_value(editText.getText().toString().trim());
-                                    answerModel.setSurveyID(survey_id);
+                                    //answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                     answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
@@ -369,7 +378,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                         AnswerModel answerModel= new AnswerModel();
                                         answerModel.setOption_id(Integer.toString(radioID));
                                         answerModel.setOption_value("");
-                                        answerModel.setSurveyID(survey_id);
+                                        //answerModel.setSurveyID(survey_id);
                                         answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                         answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                         answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
@@ -389,7 +398,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
                                     answerModel.setOption_value("");
-                                    answerModel.setSurveyID(survey_id);
+                                    //answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                     answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
@@ -423,7 +432,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id(selectedOptions);
                                     answerModel.setOption_value("");
-                                    answerModel.setSurveyID(survey_id);
+                                    //answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                     answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
@@ -509,7 +518,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                     }
                     //startPosition=startPosition+1;
                 if(buttonText.equals("Submit")){
-                    Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
                     //save data in to local DB.
                     Gson gson = new Gson();
                     String listString = gson.toJson(
@@ -518,20 +527,34 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                     try {
                         JSONArray json_array =  new JSONArray(listString);
                         JSONObject json_object=new JSONObject();
+                        json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
+                        json_object.put("survey_id", survey_id);
                         json_object.put("survey_data", json_array);
                         Log.e(TAG, "onClick: "+json_object.toString());
 
                         if (screen_type.equals("survey_list")) {
                             sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
+
+                            Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                            startActivity(intentSurveyActivity1);
+                            finish();
                         } else {
                             sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                            if (CommonClass.isInternetOn(context)) {
+                                String data = json_object.toString();
+                                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                RequestBody body = RequestBody.create(JSON, data);
+                                //send data on server
+                                sendSurveyDataOnServer(body);
+                            } else {
+                                Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                                startActivity(intentSurveyActivity1);
+                                finish();
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
-                    startActivity(intentSurveyActivity1);
-                    finish();
                 }
                 else {
                     //back_status=false;
@@ -602,6 +625,40 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void sendSurveyDataOnServer(RequestBody body) {
+        AlertDialogClass.showProgressDialog(context);
+        ApiClient.getClient().create(BARC_API.class).sendSurveyData(body).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().toString());
+                    Log.e(TAG, "survey_data-: "+jsonObject.toString());
+                    String success=jsonObject.getString("success");
+                    String message=jsonObject.getString("message");
+                    if (success.equals("1")) {
+                        AlertDialogClass.dismissProgressDialog();
+                        //update id on the bases of local id
+                        Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                        startActivity(intentSurveyActivity1);
+                        finish();
+                    } else {
+                        AlertDialogClass.dismissProgressDialog();
+                        CommonClass.showPopupForNoInternet(context);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                AlertDialogClass.dismissProgressDialog();
+            }
+        });
+    }
+
     public String loadJSONFromAsset() {
         String json = null;
         try {

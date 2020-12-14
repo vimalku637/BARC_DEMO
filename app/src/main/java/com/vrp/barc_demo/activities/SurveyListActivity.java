@@ -86,6 +86,7 @@ public class SurveyListActivity extends AppCompatActivity {
                 intentAddressSelection.putExtra("original_address", original_address);
                 intentAddressSelection.putExtra("cluster_id", cluster_id);
                 intentAddressSelection.putExtra("cluster_name", cluster_name);
+                intentAddressSelection.putExtra("screen_type", "survey");
                 startActivity(intentAddressSelection);
             }
         });
@@ -132,9 +133,11 @@ public class SurveyListActivity extends AppCompatActivity {
                     for (int i = 0; i < totalAnswers; i++) {
                         JSONObject jsonObjectAns=jsonArrayAnswers.getJSONObject(i);
                         AnswerModel answerModel=new AnswerModel();
-                        answerModel.setOption_value(jsonObjectAns.getString("option_value"));
                         answerModel.setOption_id(jsonObjectAns.getString("option_id"));
+                        answerModel.setOption_value(jsonObjectAns.getString("option_value"));
+                        answerModel.setQuestionID(jsonObjectAns.getString("question_id"));
                         answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
+                        answerModel.setField_name(jsonObjectAns.getString("field_name"));
                         answerModelList.add(answerModel);
                     }
                 }

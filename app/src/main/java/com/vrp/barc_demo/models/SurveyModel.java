@@ -11,6 +11,10 @@ public class SurveyModel {
     public static final String COLUMN_DISTRICT="district";
     public static final String COLUMN_CITY="city";
     public static final String COLUMN_TOWN="town";
+    public static final String COLUMN_USER_ID="user_id";
+    public static final String COLUMN_DATE_TIME="date_time";
+    public static final String COLUMN_HOUSEHOLD_NAME="household_name";
+    public static final String COLUMN_ADDRESS="address";
     public static final String COLUMN_FLAG="flag";
     public static final String COLUMN_STATUS="status";
 
@@ -24,6 +28,10 @@ public class SurveyModel {
                     + COLUMN_DISTRICT + " INTEGER ,"
                     + COLUMN_CITY + " INTEGER ,"
                     + COLUMN_TOWN + " INTEGER ,"
+                    + COLUMN_USER_ID + " TEXT ,"
+                    + COLUMN_DATE_TIME + " TEXT ,"
+                    + COLUMN_HOUSEHOLD_NAME + " TEXT ,"
+                    + COLUMN_ADDRESS + " TEXT ,"
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
                     + COLUMN_STATUS + " INTEGER DEFAULT 0 "
                     + ")";
@@ -37,6 +45,42 @@ public class SurveyModel {
     private String town;
     private String flag;
     private String status;
+    private String user_id;
+    private String date_time;
+    private String household_name;
+    private String address;
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getDate_time() {
+        return date_time;
+    }
+
+    public void setDate_time(String date_time) {
+        this.date_time = date_time;
+    }
+
+    public String getHousehold_name() {
+        return household_name;
+    }
+
+    public void setHousehold_name(String household_name) {
+        this.household_name = household_name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getLocal_id() {
         return local_id;

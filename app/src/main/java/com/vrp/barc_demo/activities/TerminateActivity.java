@@ -13,8 +13,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.sqlite_db.SqliteHelper;
+import com.vrp.barc_demo.utils.SharedPrefHelper;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,17 +36,21 @@ public class TerminateActivity extends AppCompatActivity {
     MaterialTextView tv_survey_terminate;
     @BindView(R.id.btn_start_new_survey)
     MaterialButton btn_start_new_survey;
+    @BindView(R.id.et_date_time)
+    TextInputEditText et_date_time;
 
     /*normal widgets*/
     private Context context=this;
     private String screen_type="";
+    private SqliteHelper sqliteHelper;
+    private SharedPrefHelper sharedPrefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terminate);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        /*getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);*/
         ButterKnife.bind(this);
         setTitle(R.string.terminate);
         initialization();
@@ -49,7 +60,14 @@ public class TerminateActivity extends AppCompatActivity {
             screen_type=bundle.getString("screen_type", "");
         }
 
+        setValues();
         setButtonClick();
+    }
+
+    private void setValues() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        et_date_time.setText(dateFormat.format(cal.getTime()));
     }
 
     private void setButtonClick() {
@@ -71,13 +89,15 @@ public class TerminateActivity extends AppCompatActivity {
     }
 
     private void initialization() {
+        sqliteHelper=new SqliteHelper(this);
+        sharedPrefHelper=new SharedPrefHelper(this);
     }
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

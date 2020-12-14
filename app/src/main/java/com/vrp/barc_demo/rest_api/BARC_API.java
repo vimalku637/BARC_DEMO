@@ -24,4 +24,6 @@ public interface BARC_API {
     Call<JsonArray> getClusterList(@Query("pincode") String pincode);
     @POST("lock_cluster.php")
     Call<JsonObject> lockCluster(@Body RequestBody body);
+    @POST("survey_data_upload.php")
+    Call<JsonObject> sendSurveyData(@Body RequestBody body);
 }

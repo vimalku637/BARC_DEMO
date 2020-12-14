@@ -11,6 +11,15 @@ public class AnswerModel implements Serializable {
     private String question_type;
     private String pre_field;
     private String field_name;
+    private String user_id;
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
 
     public String getField_name() {
         return field_name;

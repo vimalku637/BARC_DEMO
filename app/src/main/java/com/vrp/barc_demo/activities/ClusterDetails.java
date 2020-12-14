@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ClusterDetails extends AppCompatActivity {
     @BindView(R.id.tv_cluster_id)
@@ -41,6 +42,7 @@ public class ClusterDetails extends AppCompatActivity {
     private SharedPrefHelper sharedPrefHelper;
     private String cluster_id="";
     private String cluster_name="";
+    private String screen_type="";
     private ArrayList<String> languagesSpnAL;
 
     @Override
@@ -57,6 +59,7 @@ public class ClusterDetails extends AppCompatActivity {
         if (bundle!=null) {
             cluster_id=bundle.getString("cluster_id", "");
             cluster_name=bundle.getString("cluster_name", "");
+            screen_type=bundle.getString("screen_type", "");
         }
 
         setValues();
@@ -112,13 +115,52 @@ public class ClusterDetails extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId()==R.id.stop_survey) {
+            showPopupForTerminateSurvey();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showPopupForTerminateSurvey() {
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Are you sure?")
+                .setContentText("Want to terminate the interview!")
+                .setConfirmText("Yes")
+                .setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        setTerminattion();
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    public void setTerminattion(){
+        Intent intentTerminate=new Intent(context, TerminateActivity.class);
+        intentTerminate.putExtra("screen_type", "terminate");
+        startActivity(intentTerminate);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
+        /*hide and show toolbar items*/
+        if (screen_type.equalsIgnoreCase("survey")) {
+            MenuItem item_stop_survey=menu.findItem(R.id.stop_survey);
+            item_stop_survey.setVisible(true);
+            MenuItem item_logout=menu.findItem(R.id.logout);
+            item_logout.setVisible(false);
+        }
+
         return true;
     }
 }

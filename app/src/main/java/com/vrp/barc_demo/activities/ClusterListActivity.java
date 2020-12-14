@@ -183,6 +183,7 @@ public class ClusterListActivity extends AppCompatActivity {
                                         intentSurveyList.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
                                         intentSurveyList.putExtra("cluster_id", clusterModelAL.get(position).getCluster_id());
                                         intentSurveyList.putExtra("cluster_name", clusterModelAL.get(position).getCluster_name());
+                                        intentSurveyList.putExtra("screen_type", "survey");
 
                                         /*set preference data*/
                                         String cluster_no = clusterModelAL.get(position).getCluster_no();
@@ -239,6 +240,7 @@ public class ClusterListActivity extends AppCompatActivity {
                         intentAddressSelection.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
                         intentAddressSelection.putExtra("cluster_id", clusterModelAL.get(position).getCluster_id());
                         intentAddressSelection.putExtra("cluster_name", clusterModelAL.get(position).getCluster_name());
+                        intentAddressSelection.putExtra("screen_type", "survey");
                         startActivity(intentAddressSelection);
                         Toast.makeText(context, ""+message, Toast.LENGTH_SHORT).show();
                     } else {

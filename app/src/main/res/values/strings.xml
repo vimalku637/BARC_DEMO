@@ -60,7 +60,7 @@
     <string name="call_back">Call Back</string>
     <string name="name">Name</string>
     <string name="address">Address</string>
-    <string name="survey_terminated">Survey has been terminated</string>
+    <string name="survey_terminated">Survey has been terminated successfully.</string>
     <string name="ok">Ok</string>
     <string name="Alert">Alert</string>
     <string name="select_agent">Select City</string>
@@ -68,4 +68,5 @@
     <string name="start_new_survey">Start New Survey</string>
     <string name="survey_status_in_your_cluster">Survey Status in Your Cluster</string>
     <string name="completed">Completed</string>
+    <string name="date_time">Date Time</string>
 </resources>

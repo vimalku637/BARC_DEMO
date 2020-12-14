@@ -27,6 +27,7 @@ import com.vrp.barc_demo.activities.UpdateQuestions;
 import com.vrp.barc_demo.models.LoginModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
+import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import org.json.JSONArray;
@@ -58,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     // /normal widgets/
     private Context context = this;
     SharedPrefHelper sharedPrefHelper;
+    SqliteHelper sqliteHelper;
     LoginModel loginModel;
     String user_name;
     String password;
@@ -69,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setTitle(R.string.login);
         initialization();
+        sqliteHelper.openDataBase();
         // /get intent values here/
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -79,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initialization() {
         sharedPrefHelper = new SharedPrefHelper(this);
+        sqliteHelper=new SqliteHelper(this);
         loginModel = new LoginModel();
     }
 
@@ -136,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                                     String success = jsonObject.optString("success");
                                     String message = jsonObject.optString("message");
                                     if (Integer.valueOf(success) == 1) {
-                                        String user_id = jsonObject.optString("user_name");
+                                        String user_id = jsonObject.optString("user_id");
                                         String interviewer_id = jsonObject.optString("interviewer_id");
                                         String interviewer_name = jsonObject.optString("interviewer_name");
                                         String user_name = jsonObject.optString("user_name");

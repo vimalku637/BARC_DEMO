@@ -69,6 +69,10 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 values.put("district", "1");
                 values.put("city", "4");
                 values.put("town", "3");
+                values.put("user_id", sharedPrefHelper.getString("user_id", ""));
+                values.put("date_time", "");
+                values.put("household_name", "");
+                values.put("address", "");
                 values.put("flag", "0");
                 values.put("status", "0");
 
