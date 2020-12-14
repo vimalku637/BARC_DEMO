@@ -216,4 +216,24 @@ public class SqliteHelper extends SQLiteOpenHelper {
         Log.d("LOG", idsds + " id");
         db.close();
     }
+
+    public long updateServerId(String table, int survey_id, int surveyID) {
+        long inserted_id = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                ContentValues values = new ContentValues();
+                values.put("id", surveyID);
+
+                inserted_id = db.update(table, values, "survey_id" + " = " + survey_id + "", null);
+
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return inserted_id;
+    }
 }

@@ -636,9 +636,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                     Log.e(TAG, "survey_data-: "+jsonObject.toString());
                     String success=jsonObject.getString("success");
                     String message=jsonObject.getString("message");
+                    int survey_data_monitoring_id=jsonObject.getInt("survey_data_monitoring_id");
                     if (success.equals("1")) {
                         AlertDialogClass.dismissProgressDialog();
-                        //update id on the bases of local id
+                        //update id on the bases of survey id
+                        sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
                         Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
                         startActivity(intentSurveyActivity1);
                         finish();
