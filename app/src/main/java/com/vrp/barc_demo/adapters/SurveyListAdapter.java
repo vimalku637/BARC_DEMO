@@ -57,7 +57,7 @@ public class SurveyListAdapter extends RecyclerView.Adapter<SurveyListAdapter.Vi
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.LTGRAY));
         } else if (arrayList.get(position).getStatus().equals("1")){
             holder.btn_status.setText(context.getString(R.string.completed));
-            holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+            holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0F9D58")));
         } else if (arrayList.get(position).getStatus().equals("2")) {
             holder.btn_status.setText(context.getString(R.string.halt));
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.YELLOW));

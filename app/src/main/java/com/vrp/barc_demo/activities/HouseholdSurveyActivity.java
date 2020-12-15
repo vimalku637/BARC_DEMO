@@ -78,7 +78,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HouseholdSurveyActivity extends AppCompatActivity {
-    private static final String TAG = "Survey_Activity";
+    private static final String TAG = "HouseholdSurveyActivity";
     @BindView(R.id.btn_previous)
     MaterialButton btn_previous;
     @BindView(R.id.btn_stop)
@@ -112,6 +112,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
     boolean back_status=true;
     private SqliteHelper sqliteHelper;
     private String surveyObjectJSON=null;
+    private String editFieldValues="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -351,6 +352,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id("");
                                     answerModel.setOption_value(editText.getText().toString().trim());
+                                    editFieldValues=editText.getText().toString().trim();
                                     //answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
@@ -606,7 +608,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                     }
                     if (groupRelationId!=null&&!groupRelationId.equalsIgnoreCase("0")) {
                         if (groupRelationId.equalsIgnoreCase("1")) {
+                            Bundle bundle=new Bundle();
+                            bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
                             Fragment fragment = new GroupRelationFragment();
+                            fragment.setArguments(bundle);
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.group_relation_fragment, fragment); // fragment container id in first parameter is the  container(Main layout id) of Activity
                             transaction.addToBackStack(null);  // this will manage backstack
@@ -917,6 +922,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
 
                        ll_parent.addView(button);
                        ll_parent.addView(textView);
+                       button.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View view) {
+                               textView.setText("Latitude: "+sharedPrefHelper.getString("LAT", "") +"\n"+
+                                       "Longitude: "+sharedPrefHelper.getString("LONG", ""));
+                           }
+                       });
                    }
                    else if (jsonObjectQuesType.getString("question_type").equals("6")) {
                        TextView textView=new TextView(this);

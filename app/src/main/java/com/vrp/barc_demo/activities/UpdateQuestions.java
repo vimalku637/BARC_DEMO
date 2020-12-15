@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.JsonObject;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.rest_api.ApiClient;
@@ -50,8 +51,8 @@ public class UpdateQuestions extends AppCompatActivity {
     MaterialButton btn_submit;
     @BindView(R.id.spn_select_survey)
     Spinner spn_select_survey;
- @BindView(R.id.tv_person_name)
- TextView tv_person_name;
+    @BindView(R.id.tv_person_name)
+    MaterialTextView tv_person_name;
 
     /*normal widgets*/
     private Context context=this;
@@ -75,7 +76,6 @@ public class UpdateQuestions extends AppCompatActivity {
         setSurveySpinner();
         setButtonClick();
         tv_person_name.setText( "Welcome  " +  sharedPrefHelper.getString("user_name", ""));
-
     }
 
     private void setSurveySpinner() {

@@ -55,6 +55,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ViewHold
         //lock_status (0) means open(O) and if lock_status (1) means locked(L)
         if (arrayList.get(position).getAction().equals("0")) {
             holder.btn_action.setText("O");
+            holder.btn_action.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0F9D58")));
         } else {
             holder.btn_action.setText("L");
             holder.btn_action.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
