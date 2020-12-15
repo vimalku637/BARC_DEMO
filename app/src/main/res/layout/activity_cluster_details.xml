@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_screen"
+    tools:context=".activities.ClusterDetails">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin10"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/ll_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_partner_images"
+                android:layout_width="@dimen/margin80"
+                android:layout_height="@dimen/margin80"
+                android:src="@drawable/blue_circle"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin10"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_cluster_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cluster_id"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_16" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_cluster_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cluster_name"
+                    android:textSize="@dimen/text_16" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin200"
+            android:layout_marginTop="@dimen/margin10"
+            android:src="@drawable/map" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_current_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10"
+            android:text="@string/date_11_11_2020_10_25_pm"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10"
+            android:background="@drawable/bg_spinner"
+            android:orientation="vertical">
+            <Spinner
+                android:id="@+id/spn_language"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_take_survey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/take_survey"
+            android:backgroundTint="@android:color/holo_orange_dark"
+            android:paddingTop="@dimen/margin15"
+            android:paddingBottom="@dimen/margin15"
+            app:cornerRadius="@dimen/margin8"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/til_reason"
+            android:textColor="@android:color/white" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>
+
+
+

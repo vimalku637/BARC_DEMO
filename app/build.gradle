@@ -17,6 +17,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    android {
+        lintOptions {
+            checkReleaseBuilds false
+            // Or, if you prefer, you can continue to check for errors in release builds,
+            // but continue the build even when errors are found:
+            abortOnError false
+        }
+    }
 }
 
 dependencies {
@@ -26,4 +38,33 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation 'org.json:json:20190722'
+    testImplementation files('libs/json.jar')
+
+    //butter-knife
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    //material dependencies
+    implementation 'com.google.android.material:material:1.2.1'
+    //retrofit api
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.retrofit2:converter-gson:2.+'
+    implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
+    //progress-button
+    implementation 'com.github.razir.progressbutton:progressbutton:2.1.0'
+    //sweet-alert
+    implementation 'com.github.f0ris.sweetalert:library:1.6.2'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    //circle-image-view
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    //fuse library
+    implementation 'com.google.android.gms:play-services-location:15+'
+    implementation 'com.google.android.gms:play-services-drive:15.0.1'
+
 }

@@ -1,0 +1,416 @@
+/*
+ * Copyright (c)  2020. Indev Consultancy Private Limited,
+ * Auther : Vimal Kumar
+ * Date : 2020/12/15
+ * Modified Date :
+ * Modified By :
+ */
+
+package com.vrp.barc_demo.login;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.net.ConnectivityManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textview.MaterialTextView;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.vrp.barc_demo.forgot_password.ForgotPassword;
+import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.activities.UpdateQuestions;
+import com.vrp.barc_demo.location_gps.GpsUtils;
+import com.vrp.barc_demo.models.LoginModel;
+import com.vrp.barc_demo.rest_api.ApiClient;
+import com.vrp.barc_demo.rest_api.BARC_API;
+import com.vrp.barc_demo.sqlite_db.SqliteHelper;
+import com.vrp.barc_demo.utils.SharedPrefHelper;
+
+import org.json.JSONObject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    private static final String TAG = "Login_Activity";
+    @BindView(R.id.et_user_name)
+    TextInputEditText et_user_name;
+    @BindView(R.id.et_password)
+    TextInputEditText et_password;
+    @BindView(R.id.btn_submit)
+    MaterialButton btn_submit;
+    @BindView(R.id.tv_forgot_password)
+    MaterialTextView tv_forgot_password;
+    @BindView(R.id.til_user_name)
+    TextInputLayout til_user_name;
+    ProgressDialog mprogressDialog;
+
+    // /normal widgets/
+    private Context context = this;
+    SharedPrefHelper sharedPrefHelper;
+    SqliteHelper sqliteHelper;
+    LoginModel loginModel;
+    String user_name;
+    String password;
+    //for location GPS
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    Location mLastLocation;
+    String altitude;
+    private String latitude;
+    private String longitude;
+    private boolean isGPS;
+    private static final int REQUEST = 112;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+        setTitle(R.string.login);
+        initialization();
+        sqliteHelper.openDataBase();
+        // /get intent values here/
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+        }
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            Log.d("TAG","@@@ IN IF Build.VERSION.SDK_INT >= 23");
+            String[] PERMISSIONS = {
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            };
+            if (!hasPermissions(this, PERMISSIONS)) {
+                Log.d("TAG","@@@ IN IF hasPermissions");
+                ActivityCompat.requestPermissions((Activity) this, PERMISSIONS, REQUEST );
+            } else {
+                Log.d("TAG","@@@ IN ELSE hasPermissions");
+            }
+        } else {
+            Log.d("TAG","@@@ IN ELSE  Build.VERSION.SDK_INT >= 23");
+        }
+
+        getGPS();
+        submitButtonClick();
+    }
+
+    private void getGPS() {
+        new GpsUtils(this).turnGPSOn(new GpsUtils.onGpsListener() {
+            @Override
+            public void gpsStatus(boolean isGPSEnable) {
+                // turn on GPS
+                isGPS = isGPSEnable;
+            }
+        });
+        buildGoogleApiClient();
+    }
+
+    private void initialization() {
+        sharedPrefHelper = new SharedPrefHelper(this);
+        sqliteHelper=new SqliteHelper(this);
+        loginModel = new LoginModel();
+    }
+
+    private void submitButtonClick() {
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //if (checkValidation()) {
+
+                loginModel.setUser_name(et_user_name.getText().toString());
+                loginModel.setUser_password(et_password.getText().toString());
+                user_name = et_user_name.getText().toString().trim();
+                password = et_password.getText().toString().trim();
+                if (user_name.equalsIgnoreCase("") || (password.equalsIgnoreCase(""))) {
+                    if (user_name.equalsIgnoreCase("")) {
+                        et_user_name.setError("Please enter Username");
+                    }
+                    if (password.equalsIgnoreCase("")) {
+                        et_password.setError("Please enter password");
+                    }
+                    // Snackbar.make(view, "Please enter user name & password", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                } else {
+
+                    if (!isInternetOn()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                        builder.setMessage("Network Error, check your network connection.")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setCancelable(false)
+                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        AlertDialog alert = builder.create();
+                        alert.setTitle(getString(R.string.Alert));
+                        alert.show();
+
+                    } else if (isInternetOn()) {
+
+                        loginModel.setUser_name(et_user_name.getText().toString());
+                        loginModel.setUser_password(et_password.getText().toString());
+                        Gson gson = new Gson();
+                        String data = gson.toJson(loginModel);
+                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                        RequestBody body = RequestBody.create(JSON, data);
+
+
+                        mprogressDialog = ProgressDialog.show(context, "", getString(R.string.Please_wait), true);
+                        ApiClient.getClient().create(BARC_API.class).callLogin(body).enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response.body().toString().trim());
+                                    Log.e(TAG, "onResponse: " + jsonObject.toString());
+                                    String success = jsonObject.optString("success");
+                                    String message = jsonObject.optString("message");
+                                    if (Integer.valueOf(success) == 1) {
+                                        String user_id = jsonObject.optString("user_id");
+                                        String interviewer_id = jsonObject.optString("interviewer_id");
+                                        String interviewer_name = jsonObject.optString("interviewer_name");
+                                        String user_name = jsonObject.optString("user_name");
+                                        String user_type_id = jsonObject.optString("user_type_id");
+                                        String mdl_id = jsonObject.optString("mdl_id");
+                                        String supervisor_id = jsonObject.optString("supervisor_id");
+                                        String supervisor_name = jsonObject.optString("supervisor_name");
+                                        String agency_name = jsonObject.optString("agency_name");
+
+                                        ///set preference data/
+                                        setAllDataInPreferences(user_id, interviewer_id, interviewer_name, user_name,
+                                                user_type_id, mdl_id, supervisor_id, supervisor_name, agency_name);
+
+                                        Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
+                                        startActivity(intentMainActivity);
+                                        finish();
+
+                                    } else {
+                                        Snackbar.make(findViewById(android.R.id.content), "Please Enter Valid User & Password ", Snackbar.LENGTH_LONG).show();
+
+                                        mprogressDialog.dismiss();
+                                    }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable t) {
+                                if (mprogressDialog.isShowing()) {
+                                    mprogressDialog.dismiss();
+                                }
+                            }
+                        });
+                    }
+
+                }
+            }
+            // }
+
+
+        });
+
+
+        //}
+
+        tv_forgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentForgotPassword = new Intent(context, ForgotPassword.class);
+                startActivity(intentForgotPassword);
+            }
+        });
+    }
+
+    /*private boolean checkValidation() {
+    }*/
+
+
+    private void setAllDataInPreferences(String user_id, String interviewer_id, String interviewer_name,
+                                         String user_name, String user_type_id, String mdl_id, String supervisor_id,
+                                         String supervisor_name, String agency_name) {
+        sharedPrefHelper.setString("user_id", user_id);
+        sharedPrefHelper.setString("interviewer_id", interviewer_id);
+        sharedPrefHelper.setString("interviewer_name", interviewer_name);
+        sharedPrefHelper.setString("user_name", user_name);
+        sharedPrefHelper.setString("user_type_id", user_type_id);
+        sharedPrefHelper.setString("mdl_id", mdl_id);
+        sharedPrefHelper.setString("supervisor_id", supervisor_id);
+        sharedPrefHelper.setString("supervisor_name", supervisor_name);
+        sharedPrefHelper.setString("agency_name", agency_name);
+
+    }
+
+    private boolean isInternetOn() {
+
+        ConnectivityManager connec = (ConnectivityManager) getSystemService(getBaseContext().CONNECTIVITY_SERVICE);
+
+        assert connec != null;
+        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED
+                || connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING
+                || connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING
+                || connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
+            return true;
+
+        } else if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED
+                || connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
+            return false;
+        }
+        return false;
+    }
+
+    synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addApi(LocationServices.API)
+                .build();
+        //mGoogleApiClient.connect();
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(100); // Update location every second
+        if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = String.valueOf(mLastLocation.getLatitude());
+            longitude = String.valueOf(mLastLocation.getLongitude());
+            altitude = String.valueOf(mLastLocation.getAltitude());
+            sharedPrefHelper.setString("LAT", latitude);
+            sharedPrefHelper.setString("LONG", longitude);
+            sharedPrefHelper.setString("ALTI", altitude);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        latitude = String.valueOf(location.getLatitude());
+        longitude = String.valueOf(location.getLongitude());
+
+        System.out.println("latitude>>>>" + latitude);
+        altitude = String.valueOf(location.getAltitude());
+        //String Address=cf.getAddress(Double.parseDouble(latitude), Double.parseDouble(longitude));
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("GCMSetting", MODE_PRIVATE); // 0 - for private mode
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putString("LATTITUDE>>>", latitude);
+        editor.putString("LONGITUDE>>>", longitude);
+        editor.putString("ALTITUDE>>>", altitude);
+
+        //editor.putString("Address", Address);
+
+        editor.commit(); // commit changes
+
+        /*GlobalVars.LATTITUDE = Double.parseDouble(latitude);
+        GlobalVars.LONGITUDE = Double.parseDouble(longitude);
+        GlobalVars.ALTITUDE = Double.parseDouble(altitude);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GlobalVars.Address=cf.getAddress(GlobalVars.LATTITUDE, GlobalVars.LONGITUDE);
+            }
+        });*/
+
+       /* Float thespeed = location.getSpeed();
+        Double lat=location.getLatitude();
+        Double lng=location.getLongitude();*/
+        // tv.setText("Location -"+String.valueOf(lat)+String.valueOf(lng)+"\n Speed: "+String.valueOf(thespeed));
+
+        //Log.v("speed", String.valueOf(thespeed));
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("TAG", "@@@ PERMISSIONS grant");
+                } else {
+                    Log.d("TAG", "@@@ PERMISSIONS Denied");
+                    Toast.makeText(this, "PERMISSIONS Denied", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}

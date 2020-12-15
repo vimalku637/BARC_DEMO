@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_screen"
+    tools:context=".activities.AddressSelection">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin10"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:id="@+id/rg_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rb_original_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/original_address"
+                android:checked="true"
+                android:textSize="@dimen/text_16" />
+
+            <RelativeLayout
+                android:id="@+id/rl_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_original_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_marginStart="@dimen/margin30"
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start"
+                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:paddingTop="@dimen/margin15"
+                    android:paddingBottom="@dimen/margin15"
+                    app:cornerRadius="@dimen/margin8"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tv_original_address"
+                    android:textColor="@android:color/white" />
+
+            </RelativeLayout>
+
+            <RadioButton
+                android:id="@+id/rb_next_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/next_address"
+                android:textSize="@dimen/text_16" />
+
+            <RelativeLayout
+                android:id="@+id/rl_layout_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_next_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_marginStart="@dimen/margin30"
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_start_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start"
+                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:paddingTop="@dimen/margin15"
+                    android:paddingBottom="@dimen/margin15"
+                    app:cornerRadius="@dimen/margin8"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tv_next_address"
+                    android:textColor="@android:color/white" />
+
+            </RelativeLayout>
+
+            <RadioButton
+                android:id="@+id/rb_previous_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/previous_address"
+                android:textSize="@dimen/text_16" />
+
+            <RelativeLayout
+                android:id="@+id/rl_layout_previous"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_previous_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_marginStart="@dimen/margin30"
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_start_previous"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start"
+                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:paddingTop="@dimen/margin15"
+                    android:paddingBottom="@dimen/margin15"
+                    app:cornerRadius="@dimen/margin8"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tv_previous_address"
+                    android:textColor="@android:color/white" />
+
+            </RelativeLayout>
+
+            <RadioButton
+                android:id="@+id/rb_substituted_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/substituted_address"
+                android:textSize="@dimen/text_16" />
+
+            <RelativeLayout
+                android:id="@+id/rl_layout_substituted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                >
+
+                <LinearLayout
+                    android:id="@+id/ll_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_spinner"
+                    android:layout_marginStart="@dimen/margin30"
+                    android:layout_marginEnd="@dimen/margin120"
+                    android:orientation="vertical">
+                    <Spinner
+                        android:id="@+id/spn_railway_station"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_reason"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin10"
+                    android:layout_marginStart="@dimen/margin30"
+                    app:errorEnabled="true"
+                    android:layout_below="@+id/ll_spinner" >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_reason"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/margin5"
+                        android:hint="@string/reson_of_selecting_substitute_address" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_start_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start"
+                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:paddingTop="@dimen/margin15"
+                    android:paddingBottom="@dimen/margin15"
+                    app:cornerRadius="@dimen/margin8"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/til_reason"
+                    android:textColor="@android:color/white" />
+
+            </RelativeLayout>
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</RelativeLayout>

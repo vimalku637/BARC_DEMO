@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_screen"
+    android:orientation="vertical"
+    android:padding="@dimen/margin4"
+    tools:context=".Dashboard">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin90"
+                    android:layout_marginLeft="@dimen/margin3"
+                    android:layout_marginRight="@dimen/margin6"
+                    android:layout_weight="1"
+                    android:background="@android:color/holo_blue_dark"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_Totalcluster"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin10"
+                        android:text="6"
+                        android:textColor="@color/color_white"
+                        android:textSize="40dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin6"
+                        android:layout_weight="1"
+                        android:text="Total Cluster Lucked"
+                        android:textColor="@color/color_white"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin90"
+                    android:layout_marginLeft="@dimen/margin6"
+                    android:layout_marginRight="@dimen/margin3"
+                    android:layout_weight="1"
+                    android:background="#b5651d"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_totalsurvey"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin10"
+                        android:layout_weight="1"
+                        android:text="100"
+                        android:textColor="@color/color_white"
+                        android:textSize="40dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin6"
+                        android:layout_weight="1"
+                        android:text="Total Surveys Till Date"
+                        android:textColor="@color/color_white"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/margin200"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin10"
+                android:layout_marginTop="@dimen/margin40"
+                android:background="@drawable/bg_spinner"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spn_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin40"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/margin250"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin10"
+                android:layout_marginTop="@dimen/margin40"
+                android:orientation="vertical">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin40"
+                    android:background="@drawable/bg_spinner"
+                    android:hint="Enter Cluster Number"
+                    android:padding="@dimen/margin3"
+                    android:textColorHint="#3b3b3b"
+                    android:textSize="@dimen/margin15" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="@dimen/margin150"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/margin40"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin40"
+                    android:layout_marginHorizontal="@dimen/margin20"
+                    android:background="#d3d3d3"
+                    android:gravity="center"
+                    android:hint="Search"
+                    android:padding="@dimen/margin3"
+                    android:textColorHint="@color/color_black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin10"
+                android:layout_marginTop="@dimen/margin40"
+                android:background="@drawable/buttonshap"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin30"
+                    android:gravity="center"
+                    android:hint="Survey Details Till Date"
+                    android:padding="@dimen/margin3"
+                    android:textColorHint="@color/color_white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin20"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".8"
+                    android:orientation="horizontal">
+
+<!--                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--                        xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--                        xmlns:tools="http://schemas.android.com/tools"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent">-->
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="@dimen/margin230"
+                        android:layout_marginTop="@dimen/margin25"
+                        android:layout_height="300dp">
+                    </com.github.mikephil.charting.charts.PieChart>
+
+
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/pia_chart" />-->
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin20"
+                    android:layout_marginTop="@dimen/margin110"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="@dimen/margin15"
+                            android:layout_height="@dimen/margin30"
+                            android:layout_weight=".4"
+                            android:background="@drawable/greenbutton" />
+
+                        <TextView
+                            android:layout_width="@dimen/margin50"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Completed"
+                            android:textColor="@color/color_black" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin15"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="15dp"
+                            android:layout_height="@dimen/margin30"
+                            android:layout_weight=".4"
+                            android:background="@drawable/redbutton" />
+
+                        <TextView
+                            android:layout_width="@dimen/margin50"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Rejected"
+                            android:textColor="@color/color_black" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin15"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="@dimen/margin15"
+                            android:layout_height="@dimen/margin30"
+                            android:layout_weight=".4"
+                            android:background="@drawable/lightgreebutton" />
+
+                        <TextView
+                            android:layout_width="@dimen/margin50"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="In-Progress"
+                            android:textColor="@color/color_black" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

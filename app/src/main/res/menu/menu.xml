@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/home_icon"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_power"
+        android:title="@string/logout"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/stop_survey"
+        android:icon="@drawable/stop_survey"
+        android:visible="false"
+        android:title="@string/stop"
+        app:showAsAction="always" />
+
+</menu>

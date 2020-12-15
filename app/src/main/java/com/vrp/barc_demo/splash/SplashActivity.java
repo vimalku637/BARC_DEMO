@@ -1,4 +1,12 @@
-package com.vrp.barc_demo;
+/*
+ * Copyright (c)  2020. Indev Consultancy Private Limited,
+ * Auther : Vimal Kumar
+ * Date : 2020/12/15
+ * Modified Date :
+ * Modified By :
+ */
+
+package com.vrp.barc_demo.splash;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,12 +18,19 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
+import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.login.LoginActivity;
+import com.vrp.barc_demo.sqlite_db.SqliteHelper;
+import com.vrp.barc_demo.utils.SharedPrefHelper;
+
 public class SplashActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     /*normal widgets*/
     private Context context=this;
     private final int SPLASH_DISPLAY_LENGTH = 3000;
     private boolean isProgressBar=false;
+    private SqliteHelper sqliteHelper;
+    private SharedPrefHelper sharedPrefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +40,17 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         isProgressBar=true;
 
+        //call database open database method.
+        sqliteHelper = new SqliteHelper(this);
+        sharedPrefHelper=new SharedPrefHelper(this);
+
+        sqliteHelper.openDataBase();
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (isProgressBar) {
-                    Intent intentMainActivity=new Intent(context, MainActivity.class);
+                    Intent intentMainActivity=new Intent(context, LoginActivity.class);
                     startActivity(intentMainActivity);
                     finish();
                 }
