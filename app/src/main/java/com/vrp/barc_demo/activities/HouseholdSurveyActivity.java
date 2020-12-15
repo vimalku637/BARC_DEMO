@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -39,12 +40,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.fragments.GroupRelationFragment;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.ScreenWiseQuestionModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
@@ -102,7 +106,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
     JSONObject jsonQuestions = null;
     JSONArray jsonArrayQuestions=null;
     JSONArray jsonArrayScreen=null;
-    ArrayList<AnswerModel> answerModelList;
+    public static ArrayList<AnswerModel> answerModelList;
     ArrayList<ScreenWiseQuestionModel> arrayScreenWiseQuestionModel= new ArrayList<>();
     String screen_id=null;
     boolean back_status=true;
@@ -593,7 +597,24 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                     }
                     startScreenPosition++;
                     endScreenPosition++;
-                    questionsPopulate();
+                    //condition for open group-fragment
+                    String groupRelationId=null;
+                    try {
+                        groupRelationId = jsonArrayQuestions.getJSONObject(count).getString("group_relation_id");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (groupRelationId!=null&&!groupRelationId.equalsIgnoreCase("0")) {
+                        if (groupRelationId.equalsIgnoreCase("1")) {
+                            Fragment fragment = new GroupRelationFragment();
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.group_relation_fragment, fragment); // fragment container id in first parameter is the  container(Main layout id) of Activity
+                            transaction.addToBackStack(null);  // this will manage backstack
+                            transaction.commit();
+                        }
+                    }else {
+                        questionsPopulate();
+                    }
                     Log.e(TAG, "onNextClick- " + jsonObject.toString());
                 }
             }
@@ -686,6 +707,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         }
         return json;
     }
+
     public void questionsPopulate(){
        try{
            ll_parent.removeAllViews();

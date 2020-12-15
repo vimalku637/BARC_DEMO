@@ -73,4 +73,7 @@
     <string name="halt">Halt</string>
     <string name="terminated">Terminated</string>
     <string name="date_11_11_2020_10_25_pm">Date: 11-11-2020 10:25 PM</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

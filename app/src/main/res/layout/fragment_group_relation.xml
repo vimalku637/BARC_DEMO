@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.GroupRelationFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_screen"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        >
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:backgroundTint="@color/color_blue_google"
+            android:paddingTop="@dimen/margin15"
+            android:paddingBottom="@dimen/margin15"
+            app:cornerRadius="@dimen/margin8"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/margin10"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            android:textColor="@android:color/white" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_below="@+id/btn_save"
+            android:layout_margin="@dimen/margin10"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <LinearLayout
+                    android:id="@+id/ll_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/margin15"
+                    android:layout_below="@+id/ll_parent">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_previous"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/previous"
+                        android:backgroundTint="@color/color_yellow_google"
+                        android:paddingTop="@dimen/margin15"
+                        android:paddingBottom="@dimen/margin15"
+                        app:cornerRadius="@dimen/margin8"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="@dimen/margin25"
+                        android:layout_weight="1"
+                        android:textColor="@android:color/white" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_stop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stop"
+                        android:backgroundTint="@color/color_red_google"
+                        android:paddingTop="@dimen/margin15"
+                        android:paddingBottom="@dimen/margin15"
+                        app:cornerRadius="@dimen/margin8"
+                        android:layout_marginTop="30dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="5dp"
+                        android:visibility="gone"
+                        android:textColor="@android:color/white" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_next"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/next"
+                        android:backgroundTint="@color/color_green_google"
+                        android:paddingTop="@dimen/margin15"
+                        android:paddingBottom="@dimen/margin15"
+                        app:cornerRadius="@dimen/margin8"
+                        android:layout_marginTop="30dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/margin25"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+            </RelativeLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</FrameLayout>

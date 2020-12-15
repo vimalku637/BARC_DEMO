@@ -29,12 +29,13 @@
         android:layout_height="wrap_content"
         android:scrollbars="none"
         android:layout_below="@+id/btn_save"
+        android:layout_margin="@dimen/margin10"
         >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin10">
+            android:layout_height="match_parent"
+            >
 
             <LinearLayout
                 android:id="@+id/ll_parent"
@@ -91,6 +92,13 @@
                 android:layout_marginStart="@dimen/margin25"
                 android:textColor="@android:color/white" />
             </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/group_relation_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
         </RelativeLayout>
 
     </ScrollView>
