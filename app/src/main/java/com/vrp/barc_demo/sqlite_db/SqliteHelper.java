@@ -156,6 +156,19 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return arrayList;
     }
 
+    public int getTotalsurvey() {
+            int sum = 0;
+            SQLiteDatabase db = this.getReadableDatabase();
+            String countQuery = "select count(survey_id) from survey";
+            Cursor cursor = db.rawQuery(countQuery, null);
+            if (cursor.moveToFirst())
+
+                sum = cursor.getInt(cursor.getColumnIndex("count(survey_id)"));
+            return sum;
+        }
+
+
+
     public long updateSurveyDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();

@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.vrp.barc_demo.activities.ClusterListActivity;
 import com.vrp.barc_demo.activities.MainMenu;
+import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,11 +37,12 @@ public class Dashboard extends AppCompatActivity {
     TextView tv_search;
     @BindView(R.id.tv_Totalcluster)
     TextView tv_Totalcluster;
+
     @BindView(R.id.tv_totalsurvey)
     TextView tv_totalsurvey;
     @BindView(R.id.spn_city)
     Spinner spn_city;
-
+SqliteHelper sqliteHelper;
     @BindView(R.id.pieChart)
     PieChart pieChart;
     HashMap<String, Integer> CityNameHM;
@@ -49,7 +51,7 @@ public class Dashboard extends AppCompatActivity {
     String city_name;
     int CityName;
     Context context = this;
-
+int strTotalSurvey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,7 @@ public class Dashboard extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         ButterKnife.bind(this);
+        sqliteHelper =new SqliteHelper(this);
         setTitle(R.string.dashboard);
         initialization();
 
@@ -74,6 +77,12 @@ public class Dashboard extends AppCompatActivity {
         }
 
         setButtonClick();
+
+
+
+        strTotalSurvey= sqliteHelper.getTotalsurvey();
+        tv_totalsurvey.setText(strTotalSurvey);
+
     }
 
     private void setPieChart() {

@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -49,6 +50,8 @@ public class UpdateQuestions extends AppCompatActivity {
     MaterialButton btn_submit;
     @BindView(R.id.spn_select_survey)
     Spinner spn_select_survey;
+ @BindView(R.id.tv_person_name)
+ TextView tv_person_name;
 
     /*normal widgets*/
     private Context context=this;
@@ -71,6 +74,8 @@ public class UpdateQuestions extends AppCompatActivity {
 
         setSurveySpinner();
         setButtonClick();
+        tv_person_name.setText( "Welcome  " +  sharedPrefHelper.getString("user_name", ""));
+
     }
 
     private void setSurveySpinner() {
