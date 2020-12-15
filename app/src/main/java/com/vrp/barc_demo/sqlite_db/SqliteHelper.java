@@ -156,7 +156,16 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return arrayList;
     }
 
-    public int getTotalsurvey() {
+    public int getTotallockrd() {
+        int sum = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT count(lock_status) as total from cluster where lock_status = 1", null);
+        if (cursor.moveToFirst())
+            sum = cursor.getInt(cursor.getColumnIndex("total"));
+        return sum;
+        }
+
+        public int getTotalsurvey() {
             int sum = 0;
             SQLiteDatabase db = this.getReadableDatabase();
             String countQuery = "select count(survey_id) from survey";
@@ -167,7 +176,16 @@ public class SqliteHelper extends SQLiteOpenHelper {
             return sum;
         }
 
+    public int getChartValue(int survey_id) {
+        int sum = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String countQuery = "select count(survey_id) from survey where survey_id ='" + survey_id + "'";
+        Cursor cursor = db.rawQuery(countQuery, null);
+        if (cursor.moveToFirst())
 
+            sum = cursor.getInt(cursor.getColumnIndex("count(survey_id)"));
+        return sum;
+    }
 
     public long updateSurveyDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
         long inserted_id = 0;

@@ -37,12 +37,11 @@ public class Dashboard extends AppCompatActivity {
     TextView tv_search;
     @BindView(R.id.tv_Totalcluster)
     TextView tv_Totalcluster;
-
     @BindView(R.id.tv_totalsurvey)
     TextView tv_totalsurvey;
     @BindView(R.id.spn_city)
     Spinner spn_city;
-SqliteHelper sqliteHelper;
+    SqliteHelper sqliteHelper;
     @BindView(R.id.pieChart)
     PieChart pieChart;
     HashMap<String, Integer> CityNameHM;
@@ -51,7 +50,13 @@ SqliteHelper sqliteHelper;
     String city_name;
     int CityName;
     Context context = this;
-int strTotalSurvey;
+    int strTotalSurvey;
+    int countProgress;
+    int countReject;
+    int countComplete;
+    int countTerminate;
+    int TotalclusterLock;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +64,7 @@ int strTotalSurvey;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         ButterKnife.bind(this);
-        sqliteHelper =new SqliteHelper(this);
+        sqliteHelper = new SqliteHelper(this);
         setTitle(R.string.dashboard);
         initialization();
 
@@ -80,35 +85,63 @@ int strTotalSurvey;
 
 
 
-        strTotalSurvey= sqliteHelper.getTotalsurvey();
-        tv_totalsurvey.setText(strTotalSurvey);
+        strTotalSurvey = sqliteHelper.getTotalsurvey();
+        tv_totalsurvey.setText(""+strTotalSurvey);
+
+        TotalclusterLock = sqliteHelper.getTotallockrd();
+        tv_Totalcluster.setText(""+TotalclusterLock);
 
     }
 
     private void setPieChart() {
 
-        this.pieChart = pieChart;
-        pieChart.setUsePercentValues(true);
-        pieChart.getDescription().setEnabled(false);
-        pieChart.setExtraOffsets(5, 10, 5, 5);
-        pieChart.setDragDecelerationFrictionCoef(0.9f);
-        pieChart.setTransparentCircleRadius(61f);
-        // pieChart.setHoleColor(Color.WHITE);
-        pieChart.animateY(1000, Easing.EasingOption.EaseInOutCubic);
-        ArrayList<PieEntry> yValues = new ArrayList<>();
-        yValues.add(new PieEntry(2));
-        yValues.add(new PieEntry(1));
-        yValues.add(new PieEntry(3));
 
-        PieDataSet dataSet = new PieDataSet(yValues, "");
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(10f);
-        // dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        PieData pieData = new PieData((dataSet));
-        pieData.setValueTextSize(15f);
-        pieData.setValueTextColor(Color.YELLOW);
-        pieChart.setData(pieData);
-        dataSet.setColors(new int[]{R.color.color_green_google, R.color.color_red_google, R.color.color_yellow_google}, Dashboard.this);
+        countProgress = sqliteHelper.getChartValue(2);
+        countReject = sqliteHelper.getChartValue(3);
+        countComplete = sqliteHelper.getChartValue(1);
+        countTerminate = sqliteHelper.getChartValue(4);
+
+        ArrayList Entryes = new ArrayList();
+        Entryes.add(new PieEntry(countProgress, ""));
+        Entryes.add(new PieEntry(countReject, ""));
+        Entryes.add(new PieEntry(countComplete, ""));
+        Entryes.add(new PieEntry(countTerminate, ""));
+//        entries.add(new PieEntry(29f, 0));
+//        entries.add(new PieEntry(40f, 0));
+
+        PieDataSet set = new PieDataSet(Entryes, "");
+
+        PieData data = new PieData(set);
+        data.setValueTextSize(14);
+        pieChart.setData(data);
+        set.setColors(new int[]{R.color.color_green_google, R.color.color_red_google, R.color.color_yellow_google ,R.color.color_white}, Dashboard.this);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.animateXY(1400, 1400);
+
+
+//        this.pieChart = pieChart;
+//        pieChart.setUsePercentValues(true);
+//        pieChart.getDescription().setEnabled(false);
+//        pieChart.setExtraOffsets(5, 10, 5, 5);
+//        pieChart.setDragDecelerationFrictionCoef(0.9f);
+//        pieChart.setTransparentCircleRadius(61f);
+//        // pieChart.setHoleColor(Color.WHITE);
+//        pieChart.animateY(1000, Easing.EasingOption.EaseInOutCubic);
+//        ArrayList<PieEntry> yValues = new ArrayList<>();
+//        Entryes.add(new PieEntry(2));
+//        Entryes.add(new PieEntry(1));
+//        Entryes.add(new PieEntry(3));
+//        Entryes.add(new PieEntry(4));
+//
+//        PieDataSet dataSet = new PieDataSet(yValues, "");
+//        dataSet.setSliceSpace(3f);
+//        dataSet.setSelectionShift(10f);
+//        // dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+//        PieData pieData = new PieData((dataSet));
+//        pieData.setValueTextSize(15f);
+//        pieData.setValueTextColor(Color.YELLOW);
+//        pieChart.setData(pieData);
+//        dataSet.setColors(new int[]{R.color.color_green_google, R.color.color_red_google, R.color.color_yellow_google}, Dashboard.this);
 
         //PieChart Ends Here
 
@@ -178,8 +211,8 @@ int strTotalSurvey;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
-        if (item.getItemId()==R.id.home_icon) {
-            Intent intentMainMenu=new Intent(context, MainMenu.class);
+        if (item.getItemId() == R.id.home_icon) {
+            Intent intentMainMenu = new Intent(context, MainMenu.class);
             intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentMainMenu);
         }
@@ -192,4 +225,6 @@ int strTotalSurvey;
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
+
+
 }
