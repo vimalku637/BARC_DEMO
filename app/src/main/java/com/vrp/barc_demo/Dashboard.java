@@ -96,9 +96,9 @@ int strTotalSurvey;
         // pieChart.setHoleColor(Color.WHITE);
         pieChart.animateY(1000, Easing.EasingOption.EaseInOutCubic);
         ArrayList<PieEntry> yValues = new ArrayList<>();
-        yValues.add(new PieEntry(34f));
-        yValues.add(new PieEntry(56f));
-        yValues.add(new PieEntry(66f));
+        yValues.add(new PieEntry(2));
+        yValues.add(new PieEntry(1));
+        yValues.add(new PieEntry(3));
 
         PieDataSet dataSet = new PieDataSet(yValues, "");
         dataSet.setSliceSpace(3f);
