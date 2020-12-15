@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,14 +22,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.button.MaterialButton;
@@ -48,7 +51,6 @@ import com.vrp.barc_demo.rest_api.BARC_API;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import butterknife.BindView;
@@ -60,7 +62,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = "Login_Activity";
     @BindView(R.id.et_user_name)
     TextInputEditText et_user_name;
@@ -89,6 +91,7 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private String latitude;
     private String longitude;
     private boolean isGPS;
+    private static final int REQUEST = 112;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,21 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
         // /get intent values here/
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+        }
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            Log.d("TAG","@@@ IN IF Build.VERSION.SDK_INT >= 23");
+            String[] PERMISSIONS = {
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            };
+            if (!hasPermissions(this, PERMISSIONS)) {
+                Log.d("TAG","@@@ IN IF hasPermissions");
+                ActivityCompat.requestPermissions((Activity) this, PERMISSIONS, REQUEST );
+            } else {
+                Log.d("TAG","@@@ IN ELSE hasPermissions");
+            }
+        } else {
+            Log.d("TAG","@@@ IN ELSE  Build.VERSION.SDK_INT >= 23");
         }
 
         getGPS();
@@ -368,5 +386,31 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("TAG", "@@@ PERMISSIONS grant");
+                } else {
+                    Log.d("TAG", "@@@ PERMISSIONS Denied");
+                    Toast.makeText(this, "PERMISSIONS Denied", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
