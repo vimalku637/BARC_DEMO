@@ -45,16 +45,16 @@ public class SurveyListAdapter extends RecyclerView.Adapter<SurveyListAdapter.Vi
 
         //change status here
         if (arrayList.get(position).getStatus().equals("0")) {
-            holder.btn_status.setText("Rejected");
+            holder.btn_status.setText(context.getString(R.string.rejected));
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.LTGRAY));
         } else if (arrayList.get(position).getStatus().equals("1")){
-            holder.btn_status.setText("Completed");
+            holder.btn_status.setText(context.getString(R.string.completed));
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
         } else if (arrayList.get(position).getStatus().equals("2")) {
-            holder.btn_status.setText("Halt");
+            holder.btn_status.setText(context.getString(R.string.halt));
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.YELLOW));
-        } else {
-            holder.btn_status.setText("Terminated");
+        } else if (arrayList.get(position).getStatus().equals("3")) {
+            holder.btn_status.setText(context.getString(R.string.terminated));
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
         }
 

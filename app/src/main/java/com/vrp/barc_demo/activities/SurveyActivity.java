@@ -724,6 +724,11 @@ public class SurveyActivity extends AppCompatActivity {
         if (item.getItemId()==R.id.stop_survey) {
             showPopupForTerminateSurvey();
         }
+        if (item.getItemId()==R.id.home_icon) {
+            Intent intentMainMenu=new Intent(context, MainMenu.class);
+            intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentMainMenu);
+        }
         return super.onOptionsItemSelected(item);
     }
 

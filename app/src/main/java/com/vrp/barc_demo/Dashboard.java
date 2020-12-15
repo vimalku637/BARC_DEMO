@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.vrp.barc_demo.activities.ClusterListActivity;
+import com.vrp.barc_demo.activities.MainMenu;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -168,6 +169,11 @@ public class Dashboard extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId()==R.id.home_icon) {
+            Intent intentMainMenu=new Intent(context, MainMenu.class);
+            intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentMainMenu);
+        }
         return super.onOptionsItemSelected(item);
     }
 

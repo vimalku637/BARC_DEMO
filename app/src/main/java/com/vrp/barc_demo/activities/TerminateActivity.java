@@ -39,9 +39,10 @@ public class TerminateActivity extends AppCompatActivity {
     @BindView(R.id.et_date_time)
     TextInputEditText et_date_time;
 
+
     /*normal widgets*/
     private Context context=this;
-    private String screen_type="";
+    private String screen_type="", radio_button_id="";
     private SqliteHelper sqliteHelper;
     private SharedPrefHelper sharedPrefHelper;
 
@@ -58,10 +59,23 @@ public class TerminateActivity extends AppCompatActivity {
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
             screen_type=bundle.getString("screen_type", "");
+            radio_button_id=bundle.getString("radio_button_id", "");
         }
 
+        hideShowOptions();
         setValues();
         setButtonClick();
+    }
+
+    private void hideShowOptions() {
+        if (radio_button_id.equals("1")) {
+            cl_terminate.setVisibility(View.GONE);
+            tv_survey_terminate.setVisibility(View.VISIBLE);
+            btn_start_new_survey.setVisibility(View.VISIBLE);
+            //call api here
+            sqliteHelper.updateLocalFlag("terminate", "survey",
+                    Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+        }
     }
 
     private void setValues() {
@@ -77,6 +91,9 @@ public class TerminateActivity extends AppCompatActivity {
                 cl_terminate.setVisibility(View.GONE);
                 tv_survey_terminate.setVisibility(View.VISIBLE);
                 btn_start_new_survey.setVisibility(View.VISIBLE);
+                //call api here
+                sqliteHelper.updateLocalFlag("halt", "survey",
+                        Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
             }
         });
         btn_start_new_survey.setOnClickListener(new View.OnClickListener() {
@@ -93,11 +110,16 @@ public class TerminateActivity extends AppCompatActivity {
         sharedPrefHelper=new SharedPrefHelper(this);
     }
 
-    /*@Override
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId()==R.id.home_icon) {
+            Intent intentMainMenu=new Intent(context, MainMenu.class);
+            intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentMainMenu);
+        }
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

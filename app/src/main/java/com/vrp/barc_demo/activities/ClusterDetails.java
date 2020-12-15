@@ -97,6 +97,7 @@ public class ClusterDetails extends AppCompatActivity {
             public void onClick(View view) {
                 Long aLong = System.currentTimeMillis()/1000;
                 String uuid = aLong.toString();
+                sharedPrefHelper.setString("survey_id", uuid);
                 Intent intentSurveyActivity=new Intent(context, HouseholdSurveyActivity.class);
                 intentSurveyActivity.putExtra("survey_id", uuid);
                 intentSurveyActivity.putExtra("screen_type", "survey");
@@ -117,6 +118,11 @@ public class ClusterDetails extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) finish();
         if (item.getItemId()==R.id.stop_survey) {
             showPopupForTerminateSurvey();
+        }
+        if (item.getItemId()==R.id.home_icon) {
+            Intent intentMainMenu=new Intent(context, MainMenu.class);
+            intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentMainMenu);
         }
         return super.onOptionsItemSelected(item);
     }

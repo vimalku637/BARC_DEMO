@@ -641,7 +641,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                         AlertDialogClass.dismissProgressDialog();
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
-                        sqliteHelper.updateLocalFlag("survey", Integer.parseInt(survey_id), 1);
+                        sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
                         Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
                         startActivity(intentSurveyActivity1);
                         finish();
@@ -793,7 +793,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                int sepPos = rbTag.indexOf("^");
                                String id=rbTag.substring(sepPos+1);
                                if(id.equals("1")){
-                                   setTerminattion();
+                                   setTerminattion(id);
                                    //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
                                }
                            }
@@ -816,7 +816,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                            selectedOptions=answerModelList.get(startPosition).getOption_id();
                            String[] arraySelectedOptions = selectedOptions.split(",");
                        }*/
-                       for (int j = 0; j <jsonArrayOptions.length() ; j++) {
+                       for (int j = 0; j <jsonArrayOptions.length(); j++) {
                            TableRow row =new TableRow(this);
                            row.setId(j);
                            row.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -917,12 +917,18 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         if (item.getItemId()==R.id.stop_survey) {
             showPopupForTerminateSurvey();
         }
+        if (item.getItemId()==R.id.home_icon) {
+            Intent intentMainMenu=new Intent(context, MainMenu.class);
+            intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentMainMenu);
+        }
         return super.onOptionsItemSelected(item);
     }
 
-    public void setTerminattion(){
+    public void setTerminattion(String id){
         Intent intentTerminate=new Intent(context, TerminateActivity.class);
         intentTerminate.putExtra("screen_type", "terminate");
+        intentTerminate.putExtra("radio_button_id", id);
         startActivity(intentTerminate);
     }
 
@@ -936,7 +942,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismiss();
-                        setTerminattion();
+                        setTerminattion("");
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {

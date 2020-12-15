@@ -55,7 +55,8 @@ public class SurveyListActivity extends AppCompatActivity {
     JSONArray jsonArrayAnswers=null;
     int totalAnswers;
     ArrayList<AnswerModel> answerModelList;
-    private String original_address="", cluster_id="", cluster_name="";
+    private String original_address="", cluster_id="", cluster_name="",
+            next_address="", previous_address="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,8 @@ public class SurveyListActivity extends AppCompatActivity {
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
             original_address=bundle.getString("original_address", "");
+            next_address=bundle.getString("next_address", "");
+            previous_address=bundle.getString("previous_address", "");
             cluster_id=bundle.getString("cluster_id", "");
             cluster_name=bundle.getString("cluster_name", "");
         }
@@ -84,6 +87,8 @@ public class SurveyListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intentAddressSelection=new Intent(context, AddressSelection.class);
                 intentAddressSelection.putExtra("original_address", original_address);
+                intentAddressSelection.putExtra("previous_address", previous_address);
+                intentAddressSelection.putExtra("next_address", next_address);
                 intentAddressSelection.putExtra("cluster_id", cluster_id);
                 intentAddressSelection.putExtra("cluster_name", cluster_name);
                 intentAddressSelection.putExtra("screen_type", "survey");
@@ -157,6 +162,11 @@ public class SurveyListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId()==R.id.home_icon) {
+            Intent intentMainMenu=new Intent(context, MainMenu.class);
+            intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentMainMenu);
+        }
         return super.onOptionsItemSelected(item);
     }
 

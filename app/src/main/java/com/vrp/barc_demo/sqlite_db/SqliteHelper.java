@@ -71,7 +71,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 values.put("town", "3");
                 values.put("user_id", sharedPrefHelper.getString("user_id", ""));
                 values.put("date_time", "");
-                values.put("household_name", "");
+                values.put("household_name", sharedPrefHelper.getString("interviewer_name", ""));
                 values.put("address", "");
                 values.put("flag", "0");
                 values.put("status", "0");
@@ -125,13 +125,14 @@ public class SqliteHelper extends SQLiteOpenHelper {
         ArrayList<SurveyModel> arrayList = new ArrayList<>();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_id, status from survey";
+                String query = "select survey_id,household_name,status from survey";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
                         SurveyModel surveyModel = new SurveyModel();
                         surveyModel.setSurvey_id(cursor.getString(cursor.getColumnIndex("survey_id")));
+                        surveyModel.setHousehold_name(cursor.getString(cursor.getColumnIndex("household_name")));
                         surveyModel.setStatus(cursor.getString(cursor.getColumnIndex("status")));
 
                         cursor.moveToNext();
@@ -145,25 +146,6 @@ public class SqliteHelper extends SQLiteOpenHelper {
             db.close();
         }
         return arrayList;
-    }
-
-    public long updateFlagInTable(String table, String whr, int local_id, String flag) {
-        long inserted_id = 0;
-        SQLiteDatabase db = this.getWritableDatabase();
-        try {
-            if (db != null && db.isOpen() && !db.isReadOnly()) {
-                ContentValues values = new ContentValues();
-                values.put("flag", flag);
-
-                inserted_id = db.update(table, values, whr + " = " + local_id + "", null);
-                db.close();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            db.close();
-        }
-        return inserted_id;
     }
 
     public long updateSurveyDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
@@ -237,14 +219,19 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return inserted_id;
     }
 
-    public long updateLocalFlag(String table, int survey_id, int flag) {
+    public long updateLocalFlag(String screenType, String table, int survey_id, int flag) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
                 ContentValues values = new ContentValues();
                 values.put("flag", flag);
-                values.put("status", flag);
+                if (screenType.equals("household_survey"))
+                    values.put("status", 1);
+                else if (screenType.equals("terminate"))
+                    values.put("status", 3);
+                else if (screenType.equals("halt"))
+                    values.put("status", 2);
 
                 inserted_id = db.update(table, values, "survey_id" + " = " + survey_id + "", null);
 

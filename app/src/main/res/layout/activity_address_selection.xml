@@ -63,12 +63,72 @@
                 android:text="@string/next_address"
                 android:textSize="@dimen/text_16" />
 
+            <RelativeLayout
+                android:id="@+id/rl_layout_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_next_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_marginStart="@dimen/margin30"
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_start_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start"
+                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:paddingTop="@dimen/margin15"
+                    android:paddingBottom="@dimen/margin15"
+                    app:cornerRadius="@dimen/margin8"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tv_next_address"
+                    android:textColor="@android:color/white" />
+
+            </RelativeLayout>
+
             <RadioButton
                 android:id="@+id/rb_previous_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/previous_address"
                 android:textSize="@dimen/text_16" />
+
+            <RelativeLayout
+                android:id="@+id/rl_layout_previous"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_previous_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_marginStart="@dimen/margin30"
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_start_previous"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start"
+                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:paddingTop="@dimen/margin15"
+                    android:paddingBottom="@dimen/margin15"
+                    app:cornerRadius="@dimen/margin8"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tv_previous_address"
+                    android:textColor="@android:color/white" />
+
+            </RelativeLayout>
 
             <RadioButton
                 android:id="@+id/rb_substituted_address"

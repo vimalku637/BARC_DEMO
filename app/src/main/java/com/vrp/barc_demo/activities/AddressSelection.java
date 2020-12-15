@@ -47,13 +47,23 @@ public class AddressSelection extends AppCompatActivity {
     RelativeLayout rl_layout_substituted;
     @BindView(R.id.rl_layout)
     RelativeLayout rl_layout;
+    @BindView(R.id.tv_next_address)
+    MaterialTextView tv_next_address;
+    @BindView(R.id.rl_layout_next)
+    RelativeLayout rl_layout_next;
+    @BindView(R.id.btn_start_next)
+    MaterialButton btn_start_next;
+    @BindView(R.id.rl_layout_previous)
+    RelativeLayout rl_layout_previous;
+    @BindView(R.id.tv_previous_address)
+    MaterialTextView tv_previous_address;
+    @BindView(R.id.btn_start_previous)
+    MaterialButton btn_start_previous;
 
     /*normal widgets*/
     private Context context=this;
-    private String original_address="";
-    private String cluster_id="";
-    private String cluster_name="";
-    private String screen_type="";
+    private String original_address="", cluster_id="", cluster_name="", screen_type="",
+            previous_address="", next_address="";
     private ArrayList<String> railwayStationSpnAL;
 
     @Override
@@ -72,6 +82,8 @@ public class AddressSelection extends AppCompatActivity {
             cluster_id=bundle.getString("cluster_id", "");
             cluster_name=bundle.getString("cluster_name", "");
             screen_type=bundle.getString("screen_type", "");
+            previous_address=bundle.getString("previous_address", "");
+            next_address=bundle.getString("next_address", "");
         }
 
         setValues();
@@ -88,18 +100,26 @@ public class AddressSelection extends AppCompatActivity {
                     case R.id.rb_original_address:
                         rl_layout_substituted.setVisibility(View.GONE);
                         rl_layout.setVisibility(View.VISIBLE);
+                        rl_layout_next.setVisibility(View.GONE);
+                        rl_layout_previous.setVisibility(View.GONE);
                         break;
                     case R.id.rb_next_address:
                         rl_layout_substituted.setVisibility(View.GONE);
                         rl_layout.setVisibility(View.GONE);
+                        rl_layout_next.setVisibility(View.VISIBLE);
+                        rl_layout_previous.setVisibility(View.GONE);
                         break;
                     case R.id.rb_previous_address:
                         rl_layout_substituted.setVisibility(View.GONE);
                         rl_layout.setVisibility(View.GONE);
+                        rl_layout_next.setVisibility(View.GONE);
+                        rl_layout_previous.setVisibility(View.VISIBLE);
                         break;
                     case R.id.rb_substituted_address:
                         rl_layout_substituted.setVisibility(View.VISIBLE);
                         rl_layout.setVisibility(View.GONE);
+                        rl_layout_next.setVisibility(View.GONE);
+                        rl_layout_previous.setVisibility(View.GONE);
                         break;
                 }
             }
@@ -126,6 +146,8 @@ public class AddressSelection extends AppCompatActivity {
 
     private void setValues() {
         tv_original_address.setText(original_address);
+        tv_next_address.setText(next_address);
+        tv_previous_address.setText(previous_address);
     }
 
     private void setButtonClick() {
@@ -150,6 +172,11 @@ public class AddressSelection extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) finish();
         if (item.getItemId()==R.id.stop_survey) {
             showPopupForTerminateSurvey();
+        }
+        if (item.getItemId()==R.id.home_icon) {
+            Intent intentMainMenu=new Intent(context, MainMenu.class);
+            intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentMainMenu);
         }
         return super.onOptionsItemSelected(item);
     }
