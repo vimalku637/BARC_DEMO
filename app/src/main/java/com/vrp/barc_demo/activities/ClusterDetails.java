@@ -74,10 +74,15 @@ public class ClusterDetails extends AppCompatActivity {
             cluster_name=bundle.getString("cluster_name", "");
             screen_type=bundle.getString("screen_type", "");
         }
-
+        getPreferencesData();
         setValues();
         setLanguageSpinner();
         setButtonClick();
+    }
+
+    private void getPreferencesData() {
+        cluster_id=sharedPrefHelper.getString("cluster_id", "");
+        cluster_name=sharedPrefHelper.getString("cluster_name", "");
     }
 
     private void setLanguageSpinner() {

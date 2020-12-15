@@ -206,10 +206,15 @@ public class ClusterListActivity extends AppCompatActivity {
                                         String UA_Component = clusterModelAL.get(position).getUA_Component();
                                         String UA_Component_code = clusterModelAL.get(position).getUA_Component_code();
                                         String BARC_Town_Code = clusterModelAL.get(position).getBARC_Town_Code();
+                                        String original_address=clusterModelAL.get(position).getOriginal_address();
+                                        String next_address=clusterModelAL.get(position).getNext_address();
+                                        String previous_address=clusterModelAL.get(position).getPrevious_address();
+                                        String cluster_name=clusterModelAL.get(position).getCluster_name();
+                                        String cluster_id=clusterModelAL.get(position).getCluster_id();
 
                                         setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Name,
                                                 Census_Village_Town_Code,Census_Village_Town_Name,UA_Component,UA_Component_code,
-                                                BARC_Town_Code);
+                                                BARC_Town_Code,original_address,next_address,previous_address,cluster_name,cluster_id);
 
                                         startActivity(intentSurveyList);
                                     }
@@ -252,6 +257,13 @@ public class ClusterListActivity extends AppCompatActivity {
                         intentAddressSelection.putExtra("cluster_id", clusterModelAL.get(position).getCluster_id());
                         intentAddressSelection.putExtra("cluster_name", clusterModelAL.get(position).getCluster_name());
                         intentAddressSelection.putExtra("screen_type", "survey");
+                        /*save data in preferences*/
+                        sharedPrefHelper.setString("original_address", clusterModelAL.get(position).getOriginal_address());
+                        sharedPrefHelper.setString("next_address", clusterModelAL.get(position).getNext_address());
+                        sharedPrefHelper.setString("previous_address", clusterModelAL.get(position).getPrevious_address());
+                        sharedPrefHelper.setString("cluster_name", clusterModelAL.get(position).getCluster_name());
+                        sharedPrefHelper.setString("cluster_id", clusterModelAL.get(position).getCluster_id());
+
                         startActivity(intentAddressSelection);
                         Toast.makeText(context, ""+message, Toast.LENGTH_SHORT).show();
                     } else {
@@ -274,7 +286,9 @@ public class ClusterListActivity extends AppCompatActivity {
     private void setAllDataInPreferences(String cluster_no, String state_name, String town_village_class,
                                          String census_district_name, String census_village_town_code,
                                          String census_village_town_name, String ua_component,
-                                         String ua_component_code, String barc_town_code) {
+                                         String ua_component_code, String barc_town_code, String original_address,
+                                         String next_address, String previous_address, String cluster_name,
+                                         String cluster_id) {
         sharedPrefHelper.setString("cluster_no", cluster_no);
         sharedPrefHelper.setString("state_name", state_name);
         sharedPrefHelper.setString("town_village_class", town_village_class);
@@ -287,6 +301,11 @@ public class ClusterListActivity extends AppCompatActivity {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         sharedPrefHelper.setString("current_date", dateFormat.format(cal.getTime()));
+        sharedPrefHelper.setString("original_address", original_address);
+        sharedPrefHelper.setString("next_address", next_address);
+        sharedPrefHelper.setString("previous_address", previous_address);
+        sharedPrefHelper.setString("cluster_name", cluster_name);
+        sharedPrefHelper.setString("cluster_id", cluster_id);
     }
 
     private void setClusterAdapter() {

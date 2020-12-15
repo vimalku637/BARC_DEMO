@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import java.util.ArrayList;
 
@@ -73,6 +74,7 @@ public class AddressSelection extends AppCompatActivity {
     private String original_address="", cluster_id="", cluster_name="", screen_type="",
             previous_address="", next_address="";
     private ArrayList<String> railwayStationSpnAL;
+    private SharedPrefHelper sharedPrefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,10 +96,17 @@ public class AddressSelection extends AppCompatActivity {
             next_address=bundle.getString("next_address", "");
         }
 
+        getPreferencesData();
         setValues();
         setRailwayStationSpinner();
         setRadioButtonClick();
         setButtonClick();
+    }
+
+    private void getPreferencesData() {
+        original_address=sharedPrefHelper.getString("original_address", "");
+        next_address=sharedPrefHelper.getString("next_address", "");
+        previous_address=sharedPrefHelper.getString("previous_address", "");
     }
 
     private void setRadioButtonClick() {
@@ -192,6 +201,7 @@ public class AddressSelection extends AppCompatActivity {
     }
 
     private void initialization() {
+        sharedPrefHelper=new SharedPrefHelper(this);
         railwayStationSpnAL=new ArrayList<>();
     }
 
