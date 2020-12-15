@@ -17,9 +17,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
 import com.google.android.material.card.MaterialCardView;
 import com.vrp.barc_demo.Dashboard;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,9 +33,12 @@ public class MainMenu extends AppCompatActivity {
     MaterialCardView cv_dashboard;
     @BindView(R.id.cv_synchronise)
     MaterialCardView cv_synchronise;
+    @BindView(R.id.tv_person_name)
+    TextView tv_person_name;
 
     /*normal widgets*/
     private Context context=this;
+SharedPrefHelper sharedPrefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,7 @@ public class MainMenu extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         ButterKnife.bind(this);
         setTitle(R.string.main_menu);
+        sharedPrefHelper =new SharedPrefHelper(this);
         initialization();
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
@@ -49,6 +56,9 @@ public class MainMenu extends AppCompatActivity {
         }
 
         setButtonClick();
+
+        tv_person_name.setText( "Welcome  " +  sharedPrefHelper.getString("user_name", ""));
+
     }
 
     private void setButtonClick() {
