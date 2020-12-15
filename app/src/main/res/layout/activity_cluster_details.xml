@@ -59,6 +59,14 @@
             android:layout_marginTop="@dimen/margin10"
             android:src="@drawable/map" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_current_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10"
+            android:text="@string/date_11_11_2020_10_25_pm"
+            />
+
         <LinearLayout
             android:id="@+id/ll_spinner"
             android:layout_width="match_parent"

@@ -6,7 +6,8 @@
  * Modified By :
  */
 
-package com.vrp.barc_demo.models;
+package com.vrp.barc_demo.location_gps;
 
-public class ValidationModel {
+class AppConstants {
+    public static final int GPS_REQUEST = 3033;
 }

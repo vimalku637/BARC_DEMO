@@ -6,7 +6,9 @@
  * Modified By :
  */
 
-package com.vrp.barc_demo.models;
+package com.vrp.barc_demo.location_gps;
 
-public class ValidationModel {
+public class Fcmdata {
+
+    String lattitude, longitude, accuracy, timestamp;
 }

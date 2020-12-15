@@ -1,3 +1,11 @@
+/*
+ * Copyright (c)  2020. Indev Consultancy Private Limited,
+ * Auther : Vimal Kumar
+ * Date : 2020/12/15
+ * Modified Date :
+ * Modified By :
+ */
+
 package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
@@ -138,6 +146,11 @@ public class UpdateQuestions extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId()==R.id.home_icon) {
+            Intent intentMainMenu=new Intent(context, MainMenu.class);
+            intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentMainMenu);
+        }
         return super.onOptionsItemSelected(item);
     }
 

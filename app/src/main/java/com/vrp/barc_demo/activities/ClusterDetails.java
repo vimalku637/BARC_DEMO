@@ -1,3 +1,11 @@
+/*
+ * Copyright (c)  2020. Indev Consultancy Private Limited,
+ * Auther : Vimal Kumar
+ * Date : 2020/12/15
+ * Modified Date :
+ * Modified By :
+ */
+
 package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
@@ -21,7 +29,10 @@ import com.vrp.barc_demo.activities.HouseholdSurveyActivity;
 import com.vrp.barc_demo.activities.SurveyActivity;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +47,8 @@ public class ClusterDetails extends AppCompatActivity {
     MaterialButton btn_take_survey;
     @BindView(R.id.spn_language)
     Spinner spn_language;
+    @BindView(R.id.tv_current_date)
+    MaterialTextView tv_current_date;
 
     /*normal widgets*/
     private Context context=this;
@@ -89,6 +102,9 @@ public class ClusterDetails extends AppCompatActivity {
     private void setValues() {
         tv_cluster_id.setText("Cluster id: "+cluster_id);
         tv_cluster_name.setText("Cluster Name: "+cluster_name);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss a");
+        Calendar cal = Calendar.getInstance();
+        tv_current_date.setText(dateFormat.format(cal.getTime()));
     }
 
     private void setButtonClick() {

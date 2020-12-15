@@ -1,3 +1,11 @@
+/*
+ * Copyright (c)  2020. Indev Consultancy Private Limited,
+ * Auther : Vimal Kumar
+ * Date : 2020/12/15
+ * Modified Date :
+ * Modified By :
+ */
+
 package com.vrp.barc_demo.activities;
 
 import android.content.Context;
@@ -110,7 +118,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setTitle(R.string.survey);
         initialization();
-
+        Log.e(TAG, "LAT_LONG>>> "+sharedPrefHelper.getString("LAT", "")+"\n"+
+                sharedPrefHelper.getString("LONG", ""));
         endPosition=sharedPrefHelper.getInt("endPosition",0);
         if(endPosition==0){
             endPosition=length;

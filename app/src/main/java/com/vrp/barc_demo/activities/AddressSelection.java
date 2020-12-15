@@ -1,3 +1,11 @@
+/*
+ * Copyright (c)  2020. Indev Consultancy Private Limited,
+ * Auther : Vimal Kumar
+ * Date : 2020/12/15
+ * Modified Date :
+ * Modified By :
+ */
+
 package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
@@ -152,6 +160,26 @@ public class AddressSelection extends AppCompatActivity {
 
     private void setButtonClick() {
         btn_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentClusterDetails=new Intent(AddressSelection.this, ClusterDetails.class);
+                intentClusterDetails.putExtra("cluster_id", cluster_id);
+                intentClusterDetails.putExtra("cluster_name", cluster_name);
+                intentClusterDetails.putExtra("screen_type", "survey");
+                startActivity(intentClusterDetails);
+            }
+        });
+        btn_start_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentClusterDetails=new Intent(AddressSelection.this, ClusterDetails.class);
+                intentClusterDetails.putExtra("cluster_id", cluster_id);
+                intentClusterDetails.putExtra("cluster_name", cluster_name);
+                intentClusterDetails.putExtra("screen_type", "survey");
+                startActivity(intentClusterDetails);
+            }
+        });
+        btn_start_previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intentClusterDetails=new Intent(AddressSelection.this, ClusterDetails.class);
