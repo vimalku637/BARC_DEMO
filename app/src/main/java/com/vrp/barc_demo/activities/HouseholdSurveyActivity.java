@@ -78,7 +78,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HouseholdSurveyActivity extends AppCompatActivity {
-    private static final String TAG = "HouseholdSurveyActivity";
+    private static final String TAG = "HouseholdSurvey>>";
     @BindView(R.id.btn_previous)
     MaterialButton btn_previous;
     @BindView(R.id.btn_stop)
@@ -968,11 +968,42 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setTerminattion(String id){
-        Intent intentTerminate=new Intent(context, TerminateActivity.class);
+    public void setTerminattion(String id) {
+        Intent intentTerminate = new Intent(context, TerminateActivity.class);
         intentTerminate.putExtra("screen_type", "terminate");
-        intentTerminate.putExtra("radio_button_id", id);
+        intentTerminate.putExtra("radio_button_id", id);//id=(reason)
+        intentTerminate.putExtra("answerModelList", answerModelList);
         startActivity(intentTerminate);
+        /*//save data in to local DB.
+        Gson gson = new Gson();
+        String listString = gson.toJson(
+                answerModelList,
+                new TypeToken<ArrayList<AnswerModel>>() {
+                }.getType());
+        try {
+            JSONArray json_array = null;
+            JSONObject json_object = null;
+            try {
+                json_array = new JSONArray(listString);
+                json_object = new JSONObject();
+                json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
+                json_object.put("survey_id", survey_id);
+                if (!id.equals("")) {
+                    json_object.put("reason", id);
+                }
+                json_object.put("survey_data", json_array);
+                Log.e(TAG, "onClick: " + json_object.toString());
+
+                sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            intentTerminate.putExtra("json_object", json_object.toString());
+            startActivity(intentTerminate);
+        } catch (Exception e) {
+        e.printStackTrace();
+        }*/
     }
 
     private void showPopupForTerminateSurvey() {

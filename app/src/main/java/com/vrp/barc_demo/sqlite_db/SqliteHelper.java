@@ -65,6 +65,16 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return SQLiteDatabase.openDatabase(dbFile.getPath(), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.CREATE_IF_NECESSARY);
     }
 
+    public void dropTable(String tablename) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.execSQL("DELETE FROM'" + tablename + "'");
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+    }
+
     public void saveSurveyDataInTable(JSONObject jsonObject, String survey_id) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {

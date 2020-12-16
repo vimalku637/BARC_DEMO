@@ -119,6 +119,7 @@ public class ClusterListActivity extends AppCompatActivity {
                                 String currentDynamicKey = (String) keys.next();
                                 contentValues.put(currentDynamicKey, jsonObject.get(currentDynamicKey).toString());
                             }
+                            sqliteHelper.dropTable("cluster");
                             sqliteHelper.saveMasterTable(contentValues, "cluster");
 
                             ClusterModel clusterModel=new ClusterModel();

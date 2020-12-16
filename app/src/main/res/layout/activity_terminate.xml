@@ -76,51 +76,61 @@
             android:orientation="vertical">
 
             <RadioButton
+                android:id="@+id/rb_door_lock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/door_locked"
                 />
             <RadioButton
+                android:id="@+id/rb_not_available_at_home"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/hh_cwe_not_available_at_home"
                 />
             <RadioButton
+                android:id="@+id/rb_refused"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/refused"
                 />
             <RadioButton
+                android:id="@+id/rb_in_eligible_nccs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/in_eligible_nccs"
                 />
             <RadioButton
+                android:id="@+id/rb_refused_to_continue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/refused_to_continue_interview_after_some_time"
                 />
             <RadioButton
+                android:id="@+id/rb_in_eligible_age"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/in_eligible_age"
                 />
             <RadioButton
+                android:id="@+id/rb_intro_exit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/intro_exit"
                 />
             <RadioButton
+                android:id="@+id/rb_age_terminate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/age_terminate"
                 />
             <RadioButton
+                android:id="@+id/rb_terminate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/terminate"
                 />
             <RadioButton
+                android:id="@+id/rb_call_back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/call_back"
@@ -145,6 +155,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/margin5"
                 android:inputType="datetime"
+                android:editable="false"
                 android:hint="@string/date_time" />
         </com.google.android.material.textfield.TextInputLayout>
 
