@@ -168,7 +168,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".8"
+                    android:layout_weight=".7"
                     android:orientation="horizontal">
 
 <!--                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
@@ -179,7 +179,8 @@
 
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/pieChart"
-                        android:layout_width="@dimen/margin230"
+                        android:layout_width="match_parent"
+
                         android:layout_marginTop="@dimen/margin25"
                         android:layout_height="300dp">
                     </com.github.mikephil.charting.charts.PieChart>
@@ -196,8 +197,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin20"
-                    android:layout_marginTop="@dimen/margin110"
+                    android:layout_marginLeft="@dimen/margin30"
+                    android:layout_marginTop="@dimen/margin80"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -211,14 +212,38 @@
                             android:layout_width="@dimen/margin15"
                             android:layout_height="@dimen/margin30"
                             android:layout_weight=".4"
+                            android:background="@drawable/rwhitebutton" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:text="Tarminate"
+                            android:textColor="@color/color_black" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin15"
+
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="@dimen/margin15"
+                            android:layout_height="@dimen/margin30"
+                            android:layout_weight=".4"
                             android:background="@drawable/greenbutton" />
 
                         <TextView
-                            android:layout_width="@dimen/margin50"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_weight="1"
                             android:gravity="center"
+                            android:layout_marginLeft="@dimen/_5sdp"
                             android:text="Completed"
                             android:textColor="@color/color_black" />
                     </LinearLayout>
@@ -231,18 +256,20 @@
                         android:weightSum="2">
 
                         <TextView
-                            android:layout_width="15dp"
+                            android:layout_width="12dp"
                             android:layout_height="@dimen/margin30"
                             android:layout_weight=".4"
                             android:background="@drawable/redbutton" />
 
                         <TextView
-                            android:layout_width="@dimen/margin50"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_weight="1"
                             android:gravity="center"
+                            android:layout_marginLeft="@dimen/_6sdp"
+
                             android:text="Rejected"
+
                             android:textColor="@color/color_black" />
                     </LinearLayout>
 
@@ -260,11 +287,11 @@
                             android:background="@drawable/lightgreebutton" />
 
                         <TextView
-                            android:layout_width="@dimen/margin50"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_weight="1"
                             android:gravity="center"
+                            android:layout_marginLeft="@dimen/_5sdp"
                             android:text="In-Progress"
                             android:textColor="@color/color_black" />
                     </LinearLayout>

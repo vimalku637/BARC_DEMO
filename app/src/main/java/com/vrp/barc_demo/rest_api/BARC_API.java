@@ -24,14 +24,22 @@ import retrofit2.http.Url;
 public interface BARC_API {
     @POST("loginv2.php")
     Call<JsonObject> callLogin(@Body RequestBody body);
+
     @POST("forget_password.php")
     Call<JsonObject> getForgetPassword(@Body RequestBody body);
+
     @GET("questions.php")
     Call<JsonObject> getBarcDemoJson();
+
     @POST("download_cluster.php")
     Call<JsonArray> getClusterList(@Query("pincode") String pincode);
+
     @POST("lock_cluster.php")
     Call<JsonObject> lockCluster(@Body RequestBody body);
+
     @POST("survey_data_upload.php")
     Call<JsonObject> sendSurveyData(@Body RequestBody body);
+
+    @POST("download_general.php")
+    Call<JsonArray> saveCities(@Body RequestBody body);
 }

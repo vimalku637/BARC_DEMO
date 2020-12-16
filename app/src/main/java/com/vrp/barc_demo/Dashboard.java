@@ -97,26 +97,23 @@ public class Dashboard extends AppCompatActivity {
 
 
         countProgress = sqliteHelper.getChartValue(2);
-        countReject = sqliteHelper.getChartValue(3);
+        countReject = sqliteHelper.getChartValue(4);
         countComplete = sqliteHelper.getChartValue(1);
-        countTerminate = sqliteHelper.getChartValue(4);
+        countTerminate = sqliteHelper.getTotalchart4(3);
 
         ArrayList Entryes = new ArrayList();
         Entryes.add(new PieEntry(countProgress, ""));
         Entryes.add(new PieEntry(countReject, ""));
         Entryes.add(new PieEntry(countComplete, ""));
         Entryes.add(new PieEntry(countTerminate, ""));
-//        entries.add(new PieEntry(29f, 0));
-//        entries.add(new PieEntry(40f, 0));
-
         PieDataSet set = new PieDataSet(Entryes, "");
 
         PieData data = new PieData(set);
-        data.setValueTextSize(14);
+        data.setValueTextSize(10);
         pieChart.setData(data);
         set.setColors(new int[]{R.color.color_green_google, R.color.color_red_google, R.color.color_yellow_google ,R.color.color_white}, Dashboard.this);
         pieChart.getDescription().setEnabled(false);
-        pieChart.animateXY(1400, 1400);
+        pieChart.animateXY(800, 800);
 
 
 //        this.pieChart = pieChart;
@@ -150,7 +147,7 @@ public class Dashboard extends AppCompatActivity {
 
     private void setAgentSpinner() {
         CityArrayList.clear();
-        //CityNameHM = sqliteHelper.getAgentSpinner();
+        CityNameHM = sqliteHelper.getCity();
 
         for (int i = 0; i < CityNameHM.size(); i++) {
             CityArrayList.add(CityNameHM.keySet().toArray()[i].toString().trim());

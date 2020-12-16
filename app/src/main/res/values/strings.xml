@@ -68,10 +68,10 @@
     <string name="start_new_survey">Start New Survey</string>
     <string name="survey_status_in_your_cluster">Survey Status in Your Cluster</string>
     <string name="date_time">Date Time</string>
-    <string name="rejected">Rejected</string>
-    <string name="completed">Completed</string>
-    <string name="halt">Halt</string>
-    <string name="terminated">Terminated</string>
+    <string name="rejected">R</string>
+    <string name="completed">C</string>
+    <string name="halt">H</string>
+    <string name="terminated">T</string>
     <string name="date_11_11_2020_10_25_pm">Date: 11-11-2020 10:25 PM</string>
 
     <!-- TODO: Remove or change this placeholder text -->

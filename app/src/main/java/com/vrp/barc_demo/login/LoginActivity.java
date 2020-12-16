@@ -16,6 +16,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,6 +41,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.vrp.barc_demo.forgot_password.ForgotPassword;
 import com.vrp.barc_demo.R;
@@ -52,6 +54,8 @@ import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import org.json.JSONObject;
+
+import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -206,6 +210,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         String supervisor_name = jsonObject.optString("supervisor_name");
                                         String agency_name = jsonObject.optString("agency_name");
 
+                                       download_city("cities");
+                                       download_city("nccs_matrix");
                                         ///set preference data/
                                         setAllDataInPreferences(user_id, interviewer_id, interviewer_name, user_name,
                                                 user_type_id, mdl_id, supervisor_id, supervisor_name, agency_name);
@@ -252,6 +258,49 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
+
+    public void download_city(String table){
+        DataDownloadInput dataDownloadInput = new DataDownloadInput();
+        dataDownloadInput.setTable_name(table);
+        Gson Gson = new Gson();
+        String data = Gson.toJson(dataDownloadInput);
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, data);
+
+        ApiClient.getClient().create(BARC_API.class).saveCities(body).enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                try {
+                    //JSONObject data=new JSONObject(response.body().toString().trim());
+                    JsonArray data = response.body();
+
+                    sqliteHelper.dropTable(table);
+                    for (int i = 0; i < data.size(); i++) {
+                        JSONObject singledata = new JSONObject(data.get(i).toString());
+                        Iterator keys = singledata.keys();
+                        ContentValues contentValues = new ContentValues();
+                        while (keys.hasNext()) {
+                            String currentDynamicKey = (String) keys.next();
+                            contentValues.put(currentDynamicKey, singledata.get(currentDynamicKey).toString());
+                        }
+                        sqliteHelper.saveMasterTable(contentValues, table);
+                    }
+
+
+                } catch (Exception s) {
+                    s.printStackTrace();
+                    mprogressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                mprogressDialog.dismiss();
+                mprogressDialog.dismiss();
+            }
+        });
+    }
+
 
     /*private boolean checkValidation() {
     }*/

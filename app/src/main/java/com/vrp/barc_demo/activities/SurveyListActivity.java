@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
@@ -51,6 +52,22 @@ public class SurveyListActivity extends AppCompatActivity {
     MaterialButton btn_start_next_survey;
     @BindView(R.id.tb_layout)
     TableLayout tb_layout;
+    @BindView(R.id.tv_SurveysHaltCount)
+    TextView tv_SurveysHaltCount;
+    @BindView(R.id.tv_SurveysCompletedcount)
+    TextView tv_SurveysCompletedcount;
+    @BindView(R.id.tv_SurveysRejectedCount)
+    TextView tv_SurveysRejectedCount;
+    @BindView(R.id.tv_HouseHoldcount)
+    TextView tv_HouseHoldcount;
+    @BindView(R.id.tv_teminated)
+    TextView tv_teminated;
+    int strTotalSurvey;
+    int countProgress;
+    int countReject;
+    int countComplete;
+    int countHouseHold;
+    int countTerminate;
 
     /*normal widgets*/
     private Context context=this;
@@ -70,8 +87,8 @@ public class SurveyListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey_list);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
         ButterKnife.bind(this);
         setTitle(R.string.survey_list);
         initialization();
@@ -87,6 +104,18 @@ public class SurveyListActivity extends AppCompatActivity {
 
         setSurveyAdapter();
         setButtonClick();
+
+        countProgress = sqliteHelper.getChartValue(2);
+        tv_SurveysHaltCount.setText(""+countProgress);
+        countReject = sqliteHelper.getChartValue(3);
+        tv_SurveysRejectedCount.setText(""+countReject);
+        countComplete = sqliteHelper.getChartValue(1);
+        tv_SurveysCompletedcount.setText(""+countComplete);
+        countHouseHold = sqliteHelper.getTotalsurveyhousehold();
+        tv_HouseHoldcount.setText(""+countHouseHold);
+        countTerminate = sqliteHelper.getTotalchart4(3);
+        tv_teminated.setText(""+countTerminate);
+
     }
 
     private void setButtonClick() {

@@ -41,6 +41,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_HouseHoldcount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin10"
@@ -72,6 +73,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_SurveysCompletedcount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin10"
@@ -103,6 +105,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_SurveysRejectedCount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin10"
@@ -145,6 +148,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_teminated"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin10"
@@ -154,11 +158,12 @@
                     android:textSize="25dp" />
 
                 <TextView
+                    android:id="@+id/tv_surveyHalt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin6"
                     android:layout_weight="1"
-                    android:text="Household Attempts"
+                    android:text="Household Terminated"
                     android:textColor="@color/color_white"
                     android:textSize="13dp" />
 
@@ -174,6 +179,8 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_SurveysHaltCount"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin10"
@@ -188,7 +195,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin6"
                     android:layout_weight="1"
-                    android:text="Surveys Completed"
+                    android:text="Surveys Halt"
                     android:textColor="@color/color_white"
                     android:textSize="13dp" />
 

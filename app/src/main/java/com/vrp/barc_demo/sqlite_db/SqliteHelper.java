@@ -18,8 +18,10 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.vrp.barc_demo.login.DataDownloadInput;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.ClusterModel;
+import com.vrp.barc_demo.models.NccsMatrixModel;
 import com.vrp.barc_demo.models.SurveyModel;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
@@ -50,6 +52,8 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SurveyModel.CREATE_TABLE);
         db.execSQL(ClusterModel.CREATE_TABLE);
+        db.execSQL(DataDownloadInput.CREATE_TABLE);
+        db.execSQL(NccsMatrixModel.CREATE_TABLE);
     }
 
     @Override
@@ -105,38 +109,38 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
 
 
-//    public HashMap<String, Integer> getCity() {
-//        HashMap<String, Integer> partner = new HashMap<>();
-//        PartnerPojo partnerPojo;
-//        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-//        try {
-//            if (sqLiteDatabase != null && sqLiteDatabase.isOpen() && !sqLiteDatabase.isReadOnly()) {
-//                //String query = "Select  partner_id,partner_name from partner";
-//                String query = "Select partner_id,partner_name from partner order by partner_name asc";
-//                Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-//                if (cursor != null && cursor.getCount() > 0) {
-//                    cursor.moveToFirst();
-//                    while (!cursor.isAfterLast()) {
-//
-//                        partnerPojo = new PartnerPojo();
-//                        partnerPojo.setPartner_id(cursor.getInt(cursor.getColumnIndex("partner_id")));
-//                        partnerPojo.setPartner_name(cursor.getString(cursor.getColumnIndex("partner_name")));
-//                        cursor.moveToNext();
-//                        partner.put(partnerPojo.getPartner_name().trim(), partnerPojo.getPartner_id());
-//
-//                    }
-//
-//                }
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            sqLiteDatabase.close();
-//        }
-//        return partner;
-//    }
-//
-//
+    public HashMap<String, Integer> getCity() {
+        HashMap<String, Integer> city = new HashMap<>();
+        DataDownloadInput dataDownloadInput;
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        try {
+            if (sqLiteDatabase != null && sqLiteDatabase.isOpen() && !sqLiteDatabase.isReadOnly()) {
+                //String query = "Select  partner_id,partner_name from partner";
+                String query = "Select city_id,city_name from cities order by city_name asc";
+                Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+
+                        dataDownloadInput = new DataDownloadInput();
+                        dataDownloadInput.setCity_id(cursor.getInt(cursor.getColumnIndex("city_id")));
+                        dataDownloadInput.setCity_name(cursor.getString(cursor.getColumnIndex("city_name")));
+                        cursor.moveToNext();
+                        city.put(dataDownloadInput.getCity_name().trim(), dataDownloadInput.getCity_id());
+
+                    }
+
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            sqLiteDatabase.close();
+        }
+        return city;
+    }
+
+
 
     public ArrayList<SurveyModel> getSurveyList() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -178,24 +182,65 @@ public class SqliteHelper extends SQLiteOpenHelper {
         public int getTotalsurvey() {
             int sum = 0;
             SQLiteDatabase db = this.getReadableDatabase();
-            String countQuery = "select count(survey_id) from survey";
+            String countQuery = "select count(id) from survey";
             Cursor cursor = db.rawQuery(countQuery, null);
             if (cursor.moveToFirst())
 
-                sum = cursor.getInt(cursor.getColumnIndex("count(survey_id)"));
+                sum = cursor.getInt(cursor.getColumnIndex("count(id)"));
+            return sum;
+        }
+ public int getTotalsurveyhousehold() {
+            int sum = 0;
+            SQLiteDatabase db = this.getReadableDatabase();
+            String countQuery = "select count(household_name) from survey";
+            Cursor cursor = db.rawQuery(countQuery, null);
+            if (cursor.moveToFirst())
+
+                sum = cursor.getInt(cursor.getColumnIndex("count(household_name)"));
             return sum;
         }
 
-    public int getChartValue(int survey_id) {
+    public int getChartValue1(int status) {
         int sum = 0;
         SQLiteDatabase db = this.getReadableDatabase();
-        String countQuery = "select count(survey_id) from survey where survey_id ='" + survey_id + "'";
+        String countQuery = "select count(status) from survey where status ='" + status + "'";
         Cursor cursor = db.rawQuery(countQuery, null);
         if (cursor.moveToFirst())
 
-            sum = cursor.getInt(cursor.getColumnIndex("count(survey_id)"));
+            sum = cursor.getInt(cursor.getColumnIndex("count(status)"));
         return sum;
     }
+ public int getChartValue2(int status) {
+        int sum = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String countQuery = "select count(status) from survey where status ='" + status + "'";
+        Cursor cursor = db.rawQuery(countQuery, null);
+        if (cursor.moveToFirst())
+
+            sum = cursor.getInt(cursor.getColumnIndex("count(status)"));
+        return sum;
+    }
+ public int getChartValue(int status) {
+        int sum = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String countQuery = "select count(status) from survey where status ='" + status + "'";
+        Cursor cursor = db.rawQuery(countQuery, null);
+        if (cursor.moveToFirst())
+
+            sum = cursor.getInt(cursor.getColumnIndex("count(status)"));
+        return sum;
+    }
+    public int getTotalchart4(int status) {
+        int sum = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String countQuery = "select count(status) from survey where status ='" + status + "'";
+        Cursor cursor = db.rawQuery(countQuery, null);
+        if (cursor.moveToFirst())
+
+            sum = cursor.getInt(cursor.getColumnIndex("count(status)"));
+        return sum;
+    }
+
 
     public long updateSurveyDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
         long inserted_id = 0;
@@ -239,6 +284,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return surveyJSON;
     }
+
 
     public void saveMasterTable(ContentValues contentValues, String table_name) {
         SQLiteDatabase db = this.getWritableDatabase();
