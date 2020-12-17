@@ -94,6 +94,7 @@ public class GroupRelationFragment extends Fragment {
     JSONObject jsonQuestions = null;
     JSONArray jsonArrayQuestions=null;
     JSONArray jsonArrayScreen=null;
+    JSONArray jsonArrayScreenGroup=null;
     public static ArrayList<AnswerModel> answerModelList;
     ArrayList<ScreenWiseQuestionModel> arrayScreenWiseQuestionModel= new ArrayList<>();
     String screen_id="11";
@@ -101,6 +102,8 @@ public class GroupRelationFragment extends Fragment {
     private SqliteHelper sqliteHelper;
     private String surveyObjectJSON=null;
     private int editFieldValues=0;
+    private int groupRelationId=0;
+    private int questionID=0;
 
     public GroupRelationFragment() {
         // Required empty public constructor
@@ -115,13 +118,17 @@ public class GroupRelationFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle!=null) {
             editFieldValues=getArguments().getInt("editFieldValues");
+            startScreenPosition=getArguments().getInt("startScreenPosition");
+            endScreenPosition=getArguments().getInt("endScreenPosition");
+            groupRelationId=getArguments().getInt("groupRelationId");
+            questionID=getArguments().getInt("questionID");
         }
         initialization();
 
         try {
             jsonQuestions = new JSONObject(MyJSON.loadJSONFromAsset(getActivity()));
             if (jsonQuestions.has("screen")) {
-                jsonArrayScreen = jsonQuestions.getJSONArray("screen");
+                jsonArrayScreenGroup = jsonQuestions.getJSONArray("group");
                 totalScreen = jsonArrayScreen.length();
                 Log.e("Screen", "onCreate: " + jsonArrayScreen.toString());
                 if(totalScreen>0){
@@ -485,7 +492,7 @@ public class GroupRelationFragment extends Fragment {
                 JSONObject jsonObjectScreen=jsonArrayScreen.getJSONObject(l);
                 screen_id=jsonObjectScreen.getString("screen_no");
                 jsonArrayQuestions = jsonObjectScreen.getJSONArray("questions");
-                for (int i = 0; i < editFieldValues; i++) {
+                for (int i = 0; i <jsonArrayQuestions.length(); i++) {
                     JSONObject jsonObjectQuesType=jsonArrayQuestions.getJSONObject(i);
                     if (jsonObjectQuesType.getString("question_type").equals("1")) {
                         TextView txtLabel = new TextView(getActivity());

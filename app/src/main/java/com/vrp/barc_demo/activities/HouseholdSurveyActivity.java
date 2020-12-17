@@ -113,6 +113,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
     private SqliteHelper sqliteHelper;
     private String surveyObjectJSON=null;
     private String editFieldValues="";
+    private int groupQuestionID=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -330,85 +331,78 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean flag=true;
                 Button b = (Button)view;
                 String buttonText = b.getText().toString();
                     JSONArray jsonArray = new JSONArray();
                     final JSONObject jsonObject = new JSONObject();
-                int count=0;
+                    int count=0;
+                    int nextPosition=startPositionBefore;
                     for (int i = 0; i < ll_parent.getChildCount(); i++) {
                         final View childView = ll_parent.getChildAt(i);
                         try {
-                        /*JSONArray jsonArrayET = new JSONArray();
-                        final JSONObject jsonObjectET = new JSONObject();*/
                             if (childView instanceof EditText) {
                                 EditText editText = (EditText) childView;
                                 int viewID=editText.getId();
-
-                                /*jsonArray.put(editText.getText().toString().trim());
-                                jsonObject.put("edit_text", jsonArray);*/
-                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
-                                    answerModelList.get(startPositionBefore).setOption_value(editText.getText().toString().trim());
-                                }else{
+                                editFieldValues=editText.getText().toString().trim();
+                                groupQuestionID=Integer.parseInt(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
+                                    answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
+                                }
+                                else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id("");
                                     answerModel.setOption_value(editText.getText().toString().trim());
-                                    editFieldValues=editText.getText().toString().trim();
                                     //answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
                                     answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                     answerModelList.add(answerModel);
                                 }
-                                startPositionBefore++;
+                                if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
+                                    flag=false;
+                                    break;
+                                }
+                                nextPosition++;
                                 count++;
                             }
                             if (childView instanceof Button) {
-                               /* if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
-                                    answerModelList.get(startPositionBefore).setOption_value("");
-                                }else{
-                                    AnswerModel answerModel= new AnswerModel();
-                                    answerModel.setOption_id("");
-                                    answerModel.setOption_value("");
-                                    answerModel.setSurveyID(survey_id);
-                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
-                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
-                                    answerModelList.add(answerModel);
-                                }*/
-                                //startPositionBefore++;
                                 count++;
                             }
-                        /*JSONArray jsonArrayRG = new JSONArray();
-                        final JSONObject jsonObjectRG = new JSONObject();*/
                             else if (childView instanceof RadioGroup) {
                                 RadioGroup radioGroup = (RadioGroup) childView;
                                 int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
                                 RadioButton selectedRadioButton = (RadioButton) childView.findViewById(selectedRadioButtonId);
-                                String strTag=selectedRadioButton.getTag().toString();
-                                int sepPos = strTag.indexOf("^");
-                                int radioID=Integer.parseInt(strTag.substring(0,sepPos));
+                                int radioID=0;
                                 if (selectedRadioButton != null) {
-                                    if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
-                                        answerModelList.get(startPositionBefore).setOption_id(Integer.toString(radioID));
-                                    }else{
-                                        AnswerModel answerModel= new AnswerModel();
-                                        answerModel.setOption_id(Integer.toString(radioID));
-                                        answerModel.setOption_value("");
-                                        //answerModel.setSurveyID(survey_id);
-                                        answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
-                                        answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
-                                        answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
-                                        answerModelList.add(answerModel);
-                                    }
-                                    startPositionBefore++;
-                                    count++;
+                                    String strTag = selectedRadioButton.getTag().toString();
+                                    int sepPos = strTag.indexOf("^");
+                                    radioID = Integer.parseInt(strTag.substring(0, sepPos));
                                 }
+                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
+                                    //if((back_status==true || screen_type.equals("survey_list")) && answerModelList.get(startPositionBefore).getQuestionID().equals(jsonArrayQuestions.getJSONObject(count).getString("question_id"))){
+                                    answerModelList.get(nextPosition).setOption_id(Integer.toString(radioID));
+                                }else{
+                                    AnswerModel answerModel= new AnswerModel();
+                                    answerModel.setOption_id(Integer.toString(radioID));
+                                    answerModel.setOption_value("");
+                                    //answerModel.setSurveyID(survey_id);
+                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                                    answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
+                                    answerModelList.add(answerModel);
+                                }
+                                if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && radioID==0){
+                                    flag=false;
+                                    break;
+                                }
+                                nextPosition++;
+                                count++;
                             }
-                        /*JSONArray jsonArraySPN = new JSONArray();
-                        final JSONObject jsonObjectSPN = new JSONObject();*/
                             else if (childView instanceof Spinner) {
                                 Spinner spinner = (Spinner) childView;
-                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
-                                    answerModelList.get(startPositionBefore).setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
+                                    answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
@@ -419,11 +413,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                     answerModelList.add(answerModel);
                                 }
-                                startPositionBefore++;
+                                if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId()==0){
+                                    flag=false;
+                                    break;
+                                }
+                                nextPosition++;
                                 count++;
                             }
-                        /*JSONArray jsonArrayCHK = new JSONArray();
-                        final JSONObject jsonObjectCHK = new JSONObject();*/
                         else if(childView instanceof TableLayout){
                                 TableLayout tableLayout = (TableLayout) childView;
                                 String selectedOptions="";
@@ -441,8 +437,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                         }
                                     }
                                 }
-                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPositionBefore){
-                                    answerModelList.get(startPositionBefore).setOption_id(selectedOptions);
+                                if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
+                                    answerModelList.get(nextPosition).setOption_id(selectedOptions);
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id(selectedOptions);
@@ -453,85 +449,21 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                     answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                     answerModelList.add(answerModel);
                                 }
-                                startPositionBefore++;
+                                if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("")){
+                                    flag=false;
+                                    break;
+                                }
+                                nextPosition++;
                                 count++;
                         }
-                        /*else if (childView instanceof TextView) {
-                                TextView textView = (TextView) childView;
-                                int viewID=textView.getId();
-
-                                *//*jsonArray.put(editText.getText().toString().trim());
-                                jsonObject.put("edit_text", jsonArray);*//*
-                                if(back_status==true || screen_type.equals("survey_list")){
-                                    answerModelList.get(startPositionBefore).setOption_value(textView.getText().toString().trim());
-                                }else{
-                                    AnswerModel answerModel= new AnswerModel();
-                                    answerModel.setOption_id("");
-                                    answerModel.setOption_value(textView.getText().toString().trim());
-                                    answerModel.setSurveyID(survey_id);
-                                    answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
-                                    answerModel.setPre_field(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("pre_field"));
-                                    answerModelList.add(answerModel);
-                                }
-                                startPositionBefore++;
-                            }*/
-                            /*else if (childView instanceof CheckBox) {
-                                CheckBox checkBox = (CheckBox) childView;
-                                String selectedOptions="";
-                                if (checkBox.isChecked()) {
-                                    jsonArray.put(checkBox.getText().toString().trim());
-                                    jsonObject.put("check_box", jsonArray);
-                                    if(selectedOptions.equals("")){
-                                        selectedOptions=Integer.toString(checkBox.getId());
-                                    }else{
-                                        selectedOptions=selectedOptions+","+Integer.toString(checkBox.getId());
-                                    }
-                                }
-                                AnswerModel answerModel= new AnswerModel();
-                                answerModel.setOption_id(selectedOptions);
-                                answerModel.setOption_value("");
-                                answerModel.setSurveyID(survey_id);
-                                answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(startPositionBefore).getString("question_id"));
-                                answerModelList.add(answerModel);
-                                startPositionBefore++;
-                            }*/
                             else{
                                 childView.getRootView();
                             }
 
-                        /*JSONObject merged = new JSONObject();
-                        JSONObject[] objects = new JSONObject[]
-                                {jsonObjectET, jsonObjectRG, jsonObjectSPN, jsonObjectCHK};
-                        for (JSONObject obj : objects) {
-                            Iterator it = obj.keys();
-                            while (it.hasNext()) {
-                                String key = (String)it.next();
-                                try {
-                                    merged.put(key, obj.get(key));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-
-                        Log.e(TAG, "onNextClick- "+merged.toString());*/
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-                        String json = jsonObject.toString();
-
-                   /* Intent intentSurveyActivity1=new Intent(context, LoginActivity.class)
-                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intentSurveyActivity1.putExtra("count", count);
-                    intentSurveyActivity1.putExtra("survey_id", survey_id);
-                    intentSurveyActivity1.putExtra("json", json);
-                    startActivity(intentSurveyActivity1);
-                    finish();*/
-
                     }
-                    //startPosition=startPosition+1;
                 if(buttonText.equals("Submit")){
                     //Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
                     //save data in to local DB.
@@ -573,54 +505,62 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                 }
                 else {
                     //back_status=false;
-                    sharedPrefHelper.setInt("startPosition", startPosition);
-                    endPosition = endPosition + length;
-                   if (endScreenPosition<totalScreen) {
-                        btn_next.setText("Next");
-                        sharedPrefHelper.setInt("endPosition", endPosition);
-                    }
-                    else {
-                        //endPosition = totalQuestions;
-                        btn_next.setText("Submit");
-                        back_status=false;
-                        sharedPrefHelper.setInt("endPosition", totalQuestions);
-                    }
-                    Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition+"startPositionBefore >>>" + startPositionBefore);
-                    if(endPosition!=0)
-                        endPosition=endPosition-1;
-                    if(back_status==true && startScreenPosition<arrayScreenWiseQuestionModel.size()){
-                        arrayScreenWiseQuestionModel.get(startScreenPosition).setscreen_id(screen_id);
-                        arrayScreenWiseQuestionModel.get(startScreenPosition).setquestions(""+endPosition);
-                    }else{
-                        ScreenWiseQuestionModel screenWiseQuestionModel=new ScreenWiseQuestionModel();
-                        screenWiseQuestionModel.setscreen_id(screen_id);
-                        screenWiseQuestionModel.setquestions(""+endPosition);
-                        arrayScreenWiseQuestionModel.add(screenWiseQuestionModel);
-                    }
-                    startScreenPosition++;
-                    endScreenPosition++;
-                    //condition for open group-fragment
-                    String groupRelationId=null;
-                    try {
-                        groupRelationId = jsonArrayQuestions.getJSONObject(count).getString("group_relation_id");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (groupRelationId!=null&&!groupRelationId.equalsIgnoreCase("0")) {
-                        if (groupRelationId.equalsIgnoreCase("1")) {
-                            Bundle bundle=new Bundle();
-                            bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
-                            Fragment fragment = new GroupRelationFragment();
-                            fragment.setArguments(bundle);
-                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.group_relation_fragment, fragment); // fragment container id in first parameter is the  container(Main layout id) of Activity
-                            transaction.addToBackStack(null);  // this will manage backstack
-                            transaction.commit();
+                    if(flag==true){
+                        sharedPrefHelper.setInt("startPosition", startPosition);
+                        endPosition = endPosition + length;
+                        if (endScreenPosition<totalScreen) {
+                            btn_next.setText("Next");
+                            sharedPrefHelper.setInt("endPosition", endPosition);
                         }
-                    }else {
-                        questionsPopulate();
+                        else {
+                            //endPosition = totalQuestions;
+                            btn_next.setText("Submit");
+                            back_status=false;
+                            sharedPrefHelper.setInt("endPosition", totalQuestions);
+                        }
+                        Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition+"startPositionBefore >>>" + startPositionBefore);
+                        if(endPosition!=0)
+                            endPosition=endPosition-1;
+                        if(back_status==true && startScreenPosition<arrayScreenWiseQuestionModel.size()){
+                            arrayScreenWiseQuestionModel.get(startScreenPosition).setscreen_id(screen_id);
+                            arrayScreenWiseQuestionModel.get(startScreenPosition).setquestions(""+endPosition);
+                        }else{
+                            ScreenWiseQuestionModel screenWiseQuestionModel=new ScreenWiseQuestionModel();
+                            screenWiseQuestionModel.setscreen_id(screen_id);
+                            screenWiseQuestionModel.setquestions(""+endPosition);
+                            arrayScreenWiseQuestionModel.add(screenWiseQuestionModel);
+                        }
+                        startScreenPosition++;
+                        endScreenPosition++;
+                        //condition for open group-fragment
+                        String groupRelationId=null;
+                        try {
+                            groupRelationId = jsonArrayQuestions.getJSONObject(count).getString("group_relation_id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        /*if (groupRelationId!=null&&!groupRelationId.equalsIgnoreCase("0")) {
+                            if (groupRelationId.equalsIgnoreCase("1")) {
+                                Bundle bundle=new Bundle();
+                                bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
+                                bundle.putInt("startScreenPosition", startScreenPosition);
+                                bundle.putInt("endScreenPosition", endScreenPosition);
+                                bundle.putInt("groupRelationId", Integer.parseInt(groupRelationId));
+                                bundle.putInt("questionID", groupQuestionID);
+                                Fragment fragment = new GroupRelationFragment();
+                                fragment.setArguments(bundle);
+                                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                                transaction.replace(R.id.group_relation_fragment, fragment); // fragment container id in first parameter is the  container(Main layout id) of Activity
+                                transaction.addToBackStack(null);  // this will manage backstack
+                                transaction.commit();
+                            }
+                        }else {*/
+                            questionsPopulate();
+                        //}
+                        Log.e(TAG, "onNextClick- " + jsonObject.toString());
+                    }else{
+                        Toast.makeText(context,"Please fill all required fields",Toast.LENGTH_LONG).show();
                     }
-                    Log.e(TAG, "onNextClick- " + jsonObject.toString());
                 }
             }
         });
@@ -718,6 +658,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
            ll_parent.removeAllViews();
            startPositionBefore=startPosition;
            endPosition=0;
+           String name="";
            for(int l=startScreenPosition;l<endScreenPosition;l++){
                JSONObject jsonObjectScreen=jsonArrayScreen.getJSONObject(l);
                screen_id=jsonObjectScreen.getString("screen_no");
@@ -812,6 +753,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
                                    radioButton.setChecked(true);
                                }
+                           }else if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
+                               radioButton.setChecked(true);
                            }
                            if (radioGroup != null) {
                                radioGroup.addView(radioButton);

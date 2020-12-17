@@ -175,6 +175,7 @@ public class AddressSelection extends AppCompatActivity {
                 intentClusterDetails.putExtra("cluster_id", cluster_id);
                 intentClusterDetails.putExtra("cluster_name", cluster_name);
                 intentClusterDetails.putExtra("screen_type", "survey");
+                sharedPrefHelper.setString("address_type", "1");
                 startActivity(intentClusterDetails);
             }
         });
@@ -185,6 +186,7 @@ public class AddressSelection extends AppCompatActivity {
                 intentClusterDetails.putExtra("cluster_id", cluster_id);
                 intentClusterDetails.putExtra("cluster_name", cluster_name);
                 intentClusterDetails.putExtra("screen_type", "survey");
+                sharedPrefHelper.setString("address_type", "2");
                 startActivity(intentClusterDetails);
             }
         });
@@ -195,6 +197,7 @@ public class AddressSelection extends AppCompatActivity {
                 intentClusterDetails.putExtra("cluster_id", cluster_id);
                 intentClusterDetails.putExtra("cluster_name", cluster_name);
                 intentClusterDetails.putExtra("screen_type", "survey");
+                sharedPrefHelper.setString("address_type", "3");
                 startActivity(intentClusterDetails);
             }
         });
