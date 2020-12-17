@@ -15,11 +15,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -40,6 +35,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
@@ -65,8 +63,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -79,7 +75,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GroupRelationFragment extends Fragment implements HouseholdSurveyActivity.OnBackPressedListener, FragmentCommunicator {
+public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity.OnBackPressedListener, FragmentCommunicator {
 
     private static final String TAG = "GroupRelationFragment>>>";
     @BindView(R.id.btn_previous)
@@ -129,11 +125,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
     private static final String STRING_VALUE ="stringValue";
     public Context context;
 
-    public GroupRelationFragment() {
+    public GroupTVFragment() {
         // Required empty public constructor
     }
-    public static GroupRelationFragment newInstance(){
-        return new GroupRelationFragment();
+    public static GroupTVFragment newInstance(){
+        return new GroupTVFragment();
     }
     @Override
     public void onAttach(Activity activity){
@@ -141,7 +137,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
         context = getActivity();
         activityCommunicator =(ActivityCommunicator)context;
         ((HouseholdSurveyActivity)context).fragmentCommunicator = this;
-        answerModelList =((HouseholdSurveyActivity)context).answerModelHouseholdMemberList;
+        answerModelList =((HouseholdSurveyActivity)context).answerModelTVList;
     }
     //now on your entire fragment use context rather than getActivity()
     @Override
@@ -581,7 +577,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         e.printStackTrace();
                     }
                 }
-                activityCommunicator.passDataToActivity(answerModelList,1);
+                activityCommunicator.passDataToActivity(answerModelList,2);
                 doBack();
             }
         });

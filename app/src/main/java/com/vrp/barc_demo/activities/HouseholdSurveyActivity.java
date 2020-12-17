@@ -49,13 +49,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.fragments.GroupRelationFragment;
+import com.vrp.barc_demo.fragments.GroupTVFragment;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.ScreenWiseQuestionModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
+import com.vrp.barc_demo.utils.ActivityCommunicator;
 import com.vrp.barc_demo.utils.AlertDialogClass;
 import com.vrp.barc_demo.utils.CommonClass;
+import com.vrp.barc_demo.utils.FragmentCommunicator;
 import com.vrp.barc_demo.utils.MyJSON;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
@@ -77,7 +80,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HouseholdSurveyActivity extends AppCompatActivity {
+public class HouseholdSurveyActivity extends AppCompatActivity implements ActivityCommunicator {
     private static final String TAG = "HouseholdSurvey>>";
     @BindView(R.id.btn_previous)
     MaterialButton btn_previous;
@@ -107,6 +110,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
     JSONArray jsonArrayQuestions=null;
     JSONArray jsonArrayScreen=null;
     public static ArrayList<AnswerModel> answerModelList;
+    public static ArrayList<AnswerModel> answerModelHouseholdMemberList;
+    public static ArrayList<AnswerModel> answerModelTVList;
+    public FragmentCommunicator fragmentCommunicator;
     ArrayList<ScreenWiseQuestionModel> arrayScreenWiseQuestionModel= new ArrayList<>();
     String screen_id=null;
     boolean back_status=true;
@@ -161,8 +167,18 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         else {*/
             try {
                 jsonQuestions = new JSONObject(MyJSON.loadJSONFromAsset(context));
-                if (jsonQuestions.has("screen")) {
+                /*if (jsonQuestions.has("screen")) {
                     jsonArrayScreen = jsonQuestions.getJSONArray("screen");
+                    totalScreen = jsonArrayScreen.length();
+                    Log.e("Screen", "onCreate: " + jsonArrayScreen.toString());
+                    if(totalScreen>0){
+                        questionsPopulate();
+                    }
+                }*/
+                if (jsonQuestions.has("group")) {
+                    /*JSONArray jsonArrayGroup=jsonQuestions.getJSONArray("group");
+                    JSONObject jsonObjectGroup=jsonArrayGroup.getJSONObject(0);*/
+                    jsonArrayScreen = jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
                     totalScreen = jsonArrayScreen.length();
                     Log.e("Screen", "onCreate: " + jsonArrayScreen.toString());
                     if(totalScreen>0){
@@ -325,6 +341,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         sharedPrefHelper=new SharedPrefHelper(this);
         sqliteHelper=new SqliteHelper(this);
         answerModelList=new ArrayList<>();
+        answerModelHouseholdMemberList=new ArrayList<>();
+        answerModelTVList=new ArrayList<>();
     }
 
     private void setButtonClick() {
@@ -539,8 +557,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        /*if (groupRelationId!=null&&!groupRelationId.equalsIgnoreCase("0")) {
-                            if (groupRelationId.equalsIgnoreCase("1")) {
+                        if (groupRelationId!=null&&!groupRelationId.equalsIgnoreCase("0")) {
+                           if (groupRelationId.equalsIgnoreCase("1")) {
                                 Bundle bundle=new Bundle();
                                 bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
                                 bundle.putInt("startScreenPosition", startScreenPosition);
@@ -554,9 +572,23 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                                 transaction.addToBackStack(null);  // this will manage backstack
                                 transaction.commit();
                             }
-                        }else {*/
+                            if (groupRelationId.equalsIgnoreCase("2")) {
+                                Bundle bundle=new Bundle();
+                                bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
+                                bundle.putInt("startScreenPosition", startScreenPosition);
+                                bundle.putInt("endScreenPosition", endScreenPosition);
+                                bundle.putInt("groupRelationId", Integer.parseInt(groupRelationId));
+                                bundle.putInt("questionID", groupQuestionID);
+                                Fragment fragment = new GroupTVFragment();
+                                fragment.setArguments(bundle);
+                                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                                transaction.replace(R.id.group_relation_fragment, fragment); // fragment container id in first parameter is the  container(Main layout id) of Activity
+                                transaction.addToBackStack(null);  // this will manage backstack
+                                transaction.commit();
+                            }
+                        }else {
                             questionsPopulate();
-                        //}
+                        }
                         Log.e(TAG, "onNextClick- " + jsonObject.toString());
                     }else{
                         Toast.makeText(context,"Please fill all required fields",Toast.LENGTH_LONG).show();
@@ -717,7 +749,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
                            editText.setText(answerModelList.get(startPosition).getOption_value());
                        }
                        String description=jsonObjectQuesType.getString("question_name");
-                       description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
+                       //description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
+                       description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
                        txtLabel.setText(description);
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        txtLabel.setTextSize(14);
@@ -984,5 +1017,47 @@ public class HouseholdSurveyActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("pause","onpause Called");
+    }
+    protected OnBackPressedListener onBackPressedListener;
+
+    public interface OnBackPressedListener {
+        void doBack();
+    }
+
+    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
+        this.onBackPressedListener = onBackPressedListener;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (onBackPressedListener != null)
+            onBackPressedListener.doBack();
+    }
+
+    @Override
+    protected void onDestroy() {
+        onBackPressedListener = null;
+        super.onDestroy();
+    }
+    @Override
+    public void passDataToActivity(ArrayList<AnswerModel> answerModelList,int type){
+       // Log.e("Fragment Dismissed",someValue);
+        if(type==1){
+            answerModelHouseholdMemberList.clear();
+            ArrayList<AnswerModel> answerModelListN=answerModelList;
+            answerModelHouseholdMemberList=answerModelListN;
+        }else if(type==2){
+            answerModelTVList.clear();
+            ArrayList<AnswerModel> answerModelListN=answerModelList;
+            answerModelTVList=answerModelListN;
+        }
+        questionsPopulate();
+        //textView.setText(someValue);
     }
 }

@@ -28,7 +28,7 @@ public interface BARC_API {
     @POST("forget_password.php")
     Call<JsonObject> getForgetPassword(@Body RequestBody body);
 
-    @GET("questions2.php")
+    @GET("questions_v2.php")
     Call<JsonObject> getBarcDemoJson();
 
     @POST("download_cluster.php")
