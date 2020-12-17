@@ -116,17 +116,17 @@ public class SqliteHelper extends SQLiteOpenHelper {
         try {
             if (sqLiteDatabase != null && sqLiteDatabase.isOpen() && !sqLiteDatabase.isReadOnly()) {
                 //String query = "Select  partner_id,partner_name from partner";
-                String query = "Select city_id,city_name from cities order by city_name asc";
+                String query = "Select city_code,city_name from cities order by city_name asc";
                 Cursor cursor = sqLiteDatabase.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
 
                         dataDownloadInput = new DataDownloadInput();
-                        dataDownloadInput.setCity_id(cursor.getInt(cursor.getColumnIndex("city_id")));
                         dataDownloadInput.setCity_name(cursor.getString(cursor.getColumnIndex("city_name")));
+                        dataDownloadInput.setCity_code(cursor.getInt(cursor.getColumnIndex("city_code")));
                         cursor.moveToNext();
-                        city.put(dataDownloadInput.getCity_name().trim(), dataDownloadInput.getCity_id());
+                        city.put(dataDownloadInput.getCity_name().trim(), dataDownloadInput.getCity_code());
 
                     }
 

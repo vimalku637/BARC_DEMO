@@ -37,6 +37,8 @@ public class Dashboard extends AppCompatActivity {
     TextView tv_search;
     @BindView(R.id.tv_Totalcluster)
     TextView tv_Totalcluster;
+    @BindView(R.id.et_clucode)
+    TextView et_clucode;
     @BindView(R.id.tv_totalsurvey)
     TextView tv_totalsurvey;
     @BindView(R.id.spn_city)
@@ -71,7 +73,7 @@ public class Dashboard extends AppCompatActivity {
 
         CityNameHM = new HashMap<>();
         CityArrayList = new ArrayList<>();
-        setAgentSpinner();
+        setCitySpinner();
 
         pieChart = findViewById(R.id.pieChart);
 
@@ -145,7 +147,7 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-    private void setAgentSpinner() {
+    private void setCitySpinner() {
         CityArrayList.clear();
         CityNameHM = sqliteHelper.getCity();
 
@@ -197,6 +199,8 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Dashboard.this, ClusterListActivity.class);
+                intent.putExtra("City",CityName);
+                intent.putExtra("clucode",et_clucode.getText().toString());
                 startActivity(intent);
             }
         });

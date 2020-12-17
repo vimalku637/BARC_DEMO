@@ -75,6 +75,46 @@ public class ClusterModel {
     private String previous_address;
     private String substitute_address;
     private String user_id;
+    private int city_id;
+    private int city_code;
+    private String clu_code;
+    private String pincode;
+
+    public static String getColumnLocalId() {
+        return COLUMN_LOCAL_ID;
+    }
+
+    public int getCity_code() {
+        return city_code;
+    }
+
+    public void setCity_code(int city_code) {
+        this.city_code = city_code;
+    }
+
+    public int getCity_id() {
+        return city_id;
+    }
+
+    public void setCity_id(int city_id) {
+        this.city_id = city_id;
+    }
+
+    public String getClu_code() {
+        return clu_code;
+    }
+
+    public void setClu_code(String clu_code) {
+        this.clu_code = clu_code;
+    }
+
+    public String getPincode() {
+        return pincode;
+    }
+
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
+    }
 
     private String cluster_no;
     private String State_Name;

@@ -70,6 +70,9 @@ public class ClusterListActivity extends AppCompatActivity {
     private SharedPrefHelper sharedPrefHelper;
     private ArrayList<ClusterModel> clusterModelAL;
     private ClusterAdapter mClusterAdapter;
+    ClusterModel clusterModel;
+    int cityCLU ;
+    String CluCode = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +83,13 @@ public class ClusterListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setTitle(R.string.dashboard);
         initialization();
+        clusterModel=new ClusterModel();
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
+            cityCLU = bundle.getInt("City",0 );
+            CluCode = bundle.getString("clucode","" );
+
         }
 
         callClusterApi();
@@ -94,13 +101,17 @@ public class ClusterListActivity extends AppCompatActivity {
         /*ClusterModel clusterModel=new ClusterModel();
         clusterModel.setPincode("422004");
 
+        */
+
+        clusterModel.setClu_code(CluCode);
+        clusterModel.setCity_code(cityCLU);
+        clusterModel.setUser_id(sharedPrefHelper.getString("user_id","" ));
         Gson gson = new Gson();
         String data = gson.toJson(clusterModel);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, data);*/
-
+        RequestBody body = RequestBody.create(JSON, data);
         AlertDialogClass.showProgressDialog(context);
-        ApiClient.getClient().create(BARC_API.class).getClusterList("422004").enqueue(new Callback<JsonArray>() {
+        ApiClient.getClient().create(BARC_API.class).getClusterList(body).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 try {
