@@ -102,7 +102,7 @@ public class TerminateActivity extends AppCompatActivity {
 
     /*normal widgets*/
     private Context context=this;
-    private String screen_type="", radio_button_id="", reason="";
+    private String screen_type="", radio_button_id="", reason="",survey_id;
     private SqliteHelper sqliteHelper;
     private SharedPrefHelper sharedPrefHelper;
     public static ArrayList<AnswerModel> answerModelList;
@@ -123,7 +123,7 @@ public class TerminateActivity extends AppCompatActivity {
             radio_button_id=bundle.getString("radio_button_id", "");
             answerModelList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
         }
-
+        survey_id=sharedPrefHelper.getString("survey_id", "");
         hideShowOptions();
         setValues();
         getRadioButtonValues();
@@ -208,7 +208,9 @@ public class TerminateActivity extends AppCompatActivity {
                     json_object.put("survey_data", json_array);
                     Log.e(TAG, "onClick: " + json_object.toString());
 
-                    sqliteHelper.saveSurveyDataInTable(json_object, sharedPrefHelper.getString("survey_id", ""));
+                    //sqliteHelper.saveSurveyDataInTable(json_object, sharedPrefHelper.getString("survey_id", ""));
+                    //update data in to local DB
+                    sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                     //call terminate API here
                     if (CommonClass.isInternetOn(context)) {
                         String data = json_object.toString();
@@ -305,7 +307,9 @@ public class TerminateActivity extends AppCompatActivity {
                             json_object.put("survey_data", json_array);
                             Log.e(TAG, "onClick: " + json_object.toString());
 
-                            sqliteHelper.saveSurveyDataInTable(json_object, sharedPrefHelper.getString("survey_id", ""));
+                            //sqliteHelper.saveSurveyDataInTable(json_object, sharedPrefHelper.getString("survey_id", ""));
+                            //update data in to local DB
+                            sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                             //call terminate API here
                             if (CommonClass.isInternetOn(context)) {
                                 String data = json_object.toString();

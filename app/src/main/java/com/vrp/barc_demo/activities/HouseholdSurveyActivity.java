@@ -501,6 +501,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
                         json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
                         json_object.put("survey_data", json_array);
+                        json_object.put("family_data", sqliteHelper.getFamilyDataFromTable(survey_id));
+                        json_object.put("tv_data", sqliteHelper.getTVDataFromTable(survey_id));
                         Log.e(TAG, "onClick: "+json_object.toString());
 
                         if (screen_type.equals("survey_list")) {
@@ -509,8 +511,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             startActivity(intentSurveyActivity1);
                             finish();
                         } else {
-                            sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                            //sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                            //update data in to local DB
+                            sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                             if (CommonClass.isInternetOn(context)) {
+                                //get all data from survey table
+                                //sqliteHelper.getAllSurveyDataFromTable(survey_id);
+                                /*Gson gson = new Gson();
+                                String data = gson.toJson(clusterModel);*/
                                 String data = json_object.toString();
                                 MediaType JSON = MediaType.parse("application/json; charset=utf-8");
                                 RequestBody body = RequestBody.create(JSON, data);
@@ -547,6 +555,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     json_object.put("survey_id", survey_id);
                                     json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                                     json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
+                                    json_object.put("GPS_latitude", "27.883743");
+                                    json_object.put("GPS_longitude", "79.912247");
+                                    /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
                                     json_object.put("survey_data", json_array);
                                     Log.e(TAG, "onClick: "+json_object.toString());
 

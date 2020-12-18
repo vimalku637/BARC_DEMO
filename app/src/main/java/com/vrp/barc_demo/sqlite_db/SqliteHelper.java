@@ -261,6 +261,42 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return inserted_id;
     }
+    public long updateFamilyDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
+        long inserted_id = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                ContentValues values = new ContentValues();
+                values.put("family_data", String.valueOf(jsonObject));
+
+                inserted_id = db.update(table, values, whr + " = " + survey_id + "", null);
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return inserted_id;
+    }
+    public long updateTVDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
+        long inserted_id = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                ContentValues values = new ContentValues();
+                values.put("tv_data", String.valueOf(jsonObject));
+
+                inserted_id = db.update(table, values, whr + " = " + survey_id + "", null);
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return inserted_id;
+    }
 
     public String getSurveyData(String survey_id) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -341,5 +377,78 @@ public class SqliteHelper extends SQLiteOpenHelper {
             db.close();
         }
         return inserted_id;
+    }
+
+    public ArrayList<SurveyModel> getAllSurveyDataFromTable(String survey_id) {
+        ArrayList<SurveyModel> arrayList = new ArrayList<>();
+        SurveyModel surveyModel;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "select survey_data,family_data,tv_data from survey where survey_id= '" + survey_id + "'";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        surveyModel=new SurveyModel();
+                        surveyModel.setSurvey_data(cursor.getString(cursor.getColumnIndex("survey_data")));
+                        surveyModel.setFamily_data(cursor.getString(cursor.getColumnIndex("family_data")));
+                        surveyModel.setTv_data(cursor.getString(cursor.getColumnIndex("tv_data")));
+
+                        cursor.moveToNext();
+                        arrayList.add(surveyModel);
+                    }
+                    db.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return arrayList;
+    }
+    public String getFamilyDataFromTable(String survey_id) {
+        String family_data = "";
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "Select family_data from survey where survey_id= '" + survey_id + "'";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        family_data = cursor.getString(cursor.getColumnIndex("family_data"));
+                        cursor.moveToNext();
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return family_data;
+    }
+    public String getTVDataFromTable(String survey_id) {
+        String tv_data = "";
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "Select tv_data from survey where survey_id= '" + survey_id + "'";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        tv_data = cursor.getString(cursor.getColumnIndex("tv_data"));
+                        cursor.moveToNext();
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return tv_data;
     }
 }

@@ -77,7 +77,7 @@ import retrofit2.Response;
 
 public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity.OnBackPressedListener, FragmentCommunicator {
 
-    private static final String TAG = "GroupRelationFragment>>>";
+    private static final String TAG = "GroupTVFragment>>>";
     @BindView(R.id.btn_previous)
     MaterialButton btn_previous;
     @BindView(R.id.btn_stop)
@@ -159,6 +159,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
         View view=inflater.inflate(R.layout.fragment_group_relation, container, false);
         ((HouseholdSurveyActivity)getActivity()).setOnBackPressedListener(this);
         unbinder = ButterKnife.bind(this, view);
+        initialization();
         Bundle bundle = getArguments();
         if (bundle!=null) {
             editFieldValues=getArguments().getInt("editFieldValues");
@@ -167,7 +168,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
             groupRelationId=getArguments().getInt("groupRelationId");
             questionID=getArguments().getInt("questionID");
         }
-        initialization();
+        survey_id=sharedPrefHelper.getString("survey_id", "");
 
         try {
             jsonQuestions = new JSONObject(MyJSON.loadJSONFromAsset(getActivity()));
@@ -347,11 +348,11 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                 if(buttonText.equals("Submit")){
                     //Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
                     //save data in to local DB.
-                    Gson gson = new Gson();
+                    /*Gson gson = new Gson();
                     String listString = gson.toJson(
                             answerModelList,
-                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
-                    try {
+                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());*/
+                    /*try {
                         JSONArray json_array =  new JSONArray(listString);
                         JSONObject json_object=new JSONObject();
                         json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
@@ -379,7 +380,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                 }
                 else {
                     //back_status=false;
@@ -401,6 +402,41 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         if (endScreenCount<(totalScreen*editFieldValues)-1) {
                             btn_next.setText("Next");
                             sharedPrefHelper.setInt("endPosition", endPosition);
+                            //save tv_data in DB
+                            if (!survey_id.equals("")) {
+                                Gson gson = new Gson();
+                                String listString = gson.toJson(
+                                        arrayScreenWiseQuestionModel,
+                                        new TypeToken<ArrayList<ScreenWiseQuestionModel>>() {}.getType());
+                                try {
+                                    JSONArray json_array =  new JSONArray(listString);
+                                    JSONObject json_object=new JSONObject();
+                                    /*json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
+                                    json_object.put("survey_id", survey_id);
+                                    json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                                    json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
+                                    json_object.put("GPS_latitude", "27.883743");
+                                    json_object.put("GPS_longitude", "79.912247");*/
+                                    /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
+                                    json_object.put("tv_data", json_array);
+                                    Log.e(TAG, "onClick: "+json_object.toString());
+
+                                    if (endScreenPosition==1) {
+                                        //save data in to local DB.
+                                        sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
+                                        sqliteHelper.updateLocalFlag("partial", "survey",
+                                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                    } else {
+                                        //update data in to local DB
+                                        sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
+                                        sqliteHelper.updateLocalFlag("partial", "survey",
+                                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                             startScreenPosition++;
                             endScreenPosition++;
                         }
