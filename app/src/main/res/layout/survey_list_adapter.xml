@@ -47,14 +47,14 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_status"
-                    android:layout_width="@dimen/margin85"
+                    android:layout_width="@dimen/margin20"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="@string/completed"
                     android:textAllCaps="false"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/text_12"
+                    android:textSize="@dimen/text_16"
                     android:backgroundTint="@color/color_green_google"
                     />
             </TableRow>

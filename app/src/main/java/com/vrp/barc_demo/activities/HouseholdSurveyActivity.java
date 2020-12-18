@@ -494,12 +494,17 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         JSONObject json_object=new JSONObject();
                         json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                         json_object.put("survey_id", survey_id);
+                        json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                        json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
+                        json_object.put("GPS_latitude", "27.883743");
+                        json_object.put("GPS_longitude", "79.912247");
+                        /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                        json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
                         json_object.put("survey_data", json_array);
                         Log.e(TAG, "onClick: "+json_object.toString());
 
                         if (screen_type.equals("survey_list")) {
                             sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
-
                             Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
                             startActivity(intentSurveyActivity1);
                             finish();
@@ -529,6 +534,37 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         if (endScreenPosition<totalScreen) {
                             btn_next.setText("Next");
                             sharedPrefHelper.setInt("endPosition", endPosition);
+                            //save survey data JSON on every next click in DB
+                            if (!survey_id.equals("")) {
+                                Gson gson = new Gson();
+                                String listString = gson.toJson(
+                                        answerModelList,
+                                        new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                                try {
+                                    JSONArray json_array =  new JSONArray(listString);
+                                    JSONObject json_object=new JSONObject();
+                                    json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
+                                    json_object.put("survey_id", survey_id);
+                                    json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                                    json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
+                                    json_object.put("survey_data", json_array);
+                                    Log.e(TAG, "onClick: "+json_object.toString());
+
+                                if (endScreenPosition==1) {
+                                    //save data in to local DB.
+                                    sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                                    sqliteHelper.updateLocalFlag("partial", "survey",
+                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                } else {
+                                    //update data in to local DB
+                                    sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
+                                    sqliteHelper.updateLocalFlag("partial", "survey",
+                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                         else {
                             //endPosition = totalQuestions;
@@ -735,6 +771,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            editText.setText(sharedPrefHelper.getString("census_village_town_code", ""));
                        } else if (jsonObjectQuesType.getString("field_name").equals("cluster_no")) {
                            editText.setText(sharedPrefHelper.getString("cluster_no", ""));
+                       }//pre field for screen 15
+                       else if (jsonObjectQuesType.getString("field_name").equals("nccs_hh")) {
+                           editText.setText(sharedPrefHelper.getString("nccs_hh", ""));
                        }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
@@ -932,7 +971,36 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId() == android.R.id.home){
+            //finish();
+            try {
+                /*if(endScreenPosition==totalScreen){
+                    startPosition=startPosition-1;
+                }else{
+                    startPosition=startPosition-length;
+                }*/
+                startScreenPosition=startScreenPosition-1;
+                endScreenPosition=endScreenPosition-1;
+                /*endPosition=startPosition;
+                startPosition=endPosition-length;
+                //endPosition = endPosition + length;
+                sharedPrefHelper.setInt("endPosition", endPosition);
+                Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);*/
+                back_status=true;
+
+                if(endScreenPosition<=0){
+                    Intent intentHom= new Intent(HouseholdSurveyActivity.this, ClusterDetails.class);
+                    startActivity(intentHom);
+                    finish();
+                }else{
+                    btn_next.setText("Next");
+                    startPosition=startPosition-(endPosition+Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions()));
+                    questionsPopulate();
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         if (item.getItemId()==R.id.stop_survey) {
             showPopupForTerminateSurvey();
         }
@@ -1060,4 +1128,5 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         questionsPopulate();
         //textView.setText(someValue);
     }
+
 }

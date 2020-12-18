@@ -70,8 +70,6 @@ public class ClusterDetails extends AppCompatActivity {
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
-            cluster_id=bundle.getString("cluster_id", "");
-            cluster_name=bundle.getString("cluster_name", "");
             screen_type=bundle.getString("screen_type", "");
         }
         getPreferencesData();
@@ -81,7 +79,7 @@ public class ClusterDetails extends AppCompatActivity {
     }
 
     private void getPreferencesData() {
-        cluster_id=sharedPrefHelper.getString("cluster_id", "");
+        cluster_id=sharedPrefHelper.getString("cluster_no", "");
         cluster_name=sharedPrefHelper.getString("cluster_name", "");
     }
 

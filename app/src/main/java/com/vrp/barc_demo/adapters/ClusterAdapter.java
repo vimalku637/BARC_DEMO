@@ -50,10 +50,10 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tv_cluster_id.setText(arrayList.get(position).getCluster_id());
-        holder.tv_cluster_name.setText(arrayList.get(position).getCluster_name());
+        holder.tv_cluster_id.setText(arrayList.get(position).getCluster_no());
+        holder.tv_cluster_name.setText(arrayList.get(position).getOriginal_Town_Village());
         //lock_status (0) means open(O) and if lock_status (1) means locked(L)
-        if (arrayList.get(position).getAction().equals("0")) {
+        if (arrayList.get(position).getLock_status().equals("0")) {
             holder.btn_action.setText("O");
             holder.btn_action.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0F9D58")));
         } else {

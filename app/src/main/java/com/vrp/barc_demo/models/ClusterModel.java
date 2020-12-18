@@ -67,22 +67,32 @@ public class ClusterModel {
                     + ")";
 
     private String local_id;
-    private String cluster_id;
-    private String cluster_name;
-    private String action;
-    private String original_address;
-    private String next_address;
-    private String previous_address;
-    private String substitute_address;
     private String user_id;
+    private String cluster_no;
+    private String Census_State_Code;
+    private String State_Name;
+    private String Town_Village_Class;
+    private String Census_District_Code;
+    private String Census_District_Name;
+    private String Census_Village_Town_Code;
+    private String Census_Village_Town_Name;
+    private String UA_Component;
+    private String UA_Component_code;
+    private String BARC_Town_Code;
+    private String Original_Town_Village;
+    private String Original_Town_Village_Code;
+    private String Sampling_town_class;
+    private String SP_No;
+    private String original_address;
+    private String After_10_Voter_Address;
+    private String Previous_10_Voter_Address;
+    private String Operator_Agency;
+    private String lock_status;
     private int city_id;
     private int city_code;
     private String clu_code;
     private String pincode;
 
-    public static String getColumnLocalId() {
-        return COLUMN_LOCAL_ID;
-    }
 
     public int getCity_code() {
         return city_code;
@@ -116,15 +126,85 @@ public class ClusterModel {
         this.pincode = pincode;
     }
 
-    private String cluster_no;
-    private String State_Name;
-    private String Town_Village_Class;
-    private String Census_District_Name;
-    private String Census_Village_Town_Code;
-    private String Census_Village_Town_Name;
-    private String UA_Component;
-    private String UA_Component_code;
-    private String BARC_Town_Code;
+    public String getCensus_State_Code() {
+        return Census_State_Code;
+    }
+
+    public void setCensus_State_Code(String census_State_Code) {
+        Census_State_Code = census_State_Code;
+    }
+
+    public String getCensus_District_Code() {
+        return Census_District_Code;
+    }
+
+    public void setCensus_District_Code(String census_District_Code) {
+        Census_District_Code = census_District_Code;
+    }
+
+    public String getOriginal_Town_Village() {
+        return Original_Town_Village;
+    }
+
+    public void setOriginal_Town_Village(String original_Town_Village) {
+        Original_Town_Village = original_Town_Village;
+    }
+
+    public String getOriginal_Town_Village_Code() {
+        return Original_Town_Village_Code;
+    }
+
+    public void setOriginal_Town_Village_Code(String original_Town_Village_Code) {
+        Original_Town_Village_Code = original_Town_Village_Code;
+    }
+
+    public String getSampling_town_class() {
+        return Sampling_town_class;
+    }
+
+    public void setSampling_town_class(String sampling_town_class) {
+        Sampling_town_class = sampling_town_class;
+    }
+
+    public String getSP_No() {
+        return SP_No;
+    }
+
+    public void setSP_No(String SP_No) {
+        this.SP_No = SP_No;
+    }
+
+    public String getAfter_10_Voter_Address() {
+        return After_10_Voter_Address;
+    }
+
+    public void setAfter_10_Voter_Address(String after_10_Voter_Address) {
+        After_10_Voter_Address = after_10_Voter_Address;
+    }
+
+    public String getPrevious_10_Voter_Address() {
+        return Previous_10_Voter_Address;
+    }
+
+    public void setPrevious_10_Voter_Address(String previous_10_Voter_Address) {
+        Previous_10_Voter_Address = previous_10_Voter_Address;
+    }
+
+    public String getOperator_Agency() {
+        return Operator_Agency;
+    }
+
+    public void setOperator_Agency(String operator_Agency) {
+        Operator_Agency = operator_Agency;
+    }
+
+    public String getLock_status() {
+        return lock_status;
+    }
+
+    public void setLock_status(String lock_status) {
+        this.lock_status = lock_status;
+    }
 
     public String getCluster_no() {
         return cluster_no;
@@ -214,30 +294,6 @@ public class ClusterModel {
         this.original_address = original_address;
     }
 
-    public String getNext_address() {
-        return next_address;
-    }
-
-    public void setNext_address(String next_address) {
-        this.next_address = next_address;
-    }
-
-    public String getPrevious_address() {
-        return previous_address;
-    }
-
-    public void setPrevious_address(String previous_address) {
-        this.previous_address = previous_address;
-    }
-
-    public String getSubstitute_address() {
-        return substitute_address;
-    }
-
-    public void setSubstitute_address(String substitute_address) {
-        this.substitute_address = substitute_address;
-    }
-
     public String getLocal_id() {
         return local_id;
     }
@@ -246,27 +302,4 @@ public class ClusterModel {
         this.local_id = local_id;
     }
 
-    public String getCluster_id() {
-        return cluster_id;
-    }
-
-    public void setCluster_id(String cluster_id) {
-        this.cluster_id = cluster_id;
-    }
-
-    public String getCluster_name() {
-        return cluster_name;
-    }
-
-    public void setCluster_name(String cluster_name) {
-        this.cluster_name = cluster_name;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
 }

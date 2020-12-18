@@ -96,6 +96,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 values.put("household_name", sharedPrefHelper.getString("interviewer_name", ""));
                 values.put("address", "");
                 values.put("flag", "0");
+
                 values.put("status", "0");
 
                 db.insert("survey", null, values);
@@ -327,6 +328,8 @@ public class SqliteHelper extends SQLiteOpenHelper {
                     values.put("status", 3);
                 else if (screenType.equals("halt"))
                     values.put("status", 2);
+                else if (screenType.equals("partial"))
+                    values.put("status", 4);
 
                 inserted_id = db.update(table, values, "survey_id" + " = " + survey_id + "", null);
 

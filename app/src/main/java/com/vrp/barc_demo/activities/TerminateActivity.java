@@ -196,6 +196,12 @@ public class TerminateActivity extends AppCompatActivity {
                     json_object = new JSONObject();
                     json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                     json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
+                    json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                    json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
+                    json_object.put("GPS_latitude", "27.883743");
+                    json_object.put("GPS_longitude", "79.912247");
+                    /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                     json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
                     if (!radio_button_id.equals("")) {
                         json_object.put("reason", radio_button_id);
                     }
@@ -286,6 +292,12 @@ public class TerminateActivity extends AppCompatActivity {
                             json_object = new JSONObject();
                             json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                             json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
+                            json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                            json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
+                            json_object.put("GPS_latitude", "27.883743");
+                            json_object.put("GPS_longitude", "79.912247");
+                            /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                            json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
                             json_object.put("reason", reason);
                             json_object.put("date_time", et_date_time.getText().toString().trim());
                             json_object.put("household_name", et_name.getText().toString().trim());

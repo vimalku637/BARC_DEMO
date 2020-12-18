@@ -78,4 +78,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="network_error">Network Error, please check internet connection.</string>
     <string name="reason_of_halt">Please choose reason of halt.</string>
+    <string name="pending">P</string>
 </resources>

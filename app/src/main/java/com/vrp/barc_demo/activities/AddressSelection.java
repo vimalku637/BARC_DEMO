@@ -88,12 +88,12 @@ public class AddressSelection extends AppCompatActivity {
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
-            original_address=bundle.getString("original_address", "");
+            /*original_address=bundle.getString("original_address", "");
             cluster_id=bundle.getString("cluster_id", "");
-            cluster_name=bundle.getString("cluster_name", "");
+            cluster_name=bundle.getString("cluster_name", "");*/
             screen_type=bundle.getString("screen_type", "");
-            previous_address=bundle.getString("previous_address", "");
-            next_address=bundle.getString("next_address", "");
+            /*previous_address=bundle.getString("previous_address", "");
+            next_address=bundle.getString("next_address", "");*/
         }
 
         getPreferencesData();
@@ -172,8 +172,8 @@ public class AddressSelection extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intentClusterDetails=new Intent(AddressSelection.this, ClusterDetails.class);
-                intentClusterDetails.putExtra("cluster_id", cluster_id);
-                intentClusterDetails.putExtra("cluster_name", cluster_name);
+                /*intentClusterDetails.putExtra("cluster_id", cluster_id);
+                intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
                 sharedPrefHelper.setString("address_type", "1");
                 startActivity(intentClusterDetails);
@@ -183,8 +183,8 @@ public class AddressSelection extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intentClusterDetails=new Intent(AddressSelection.this, ClusterDetails.class);
-                intentClusterDetails.putExtra("cluster_id", cluster_id);
-                intentClusterDetails.putExtra("cluster_name", cluster_name);
+                /*intentClusterDetails.putExtra("cluster_id", cluster_id);
+                intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
                 sharedPrefHelper.setString("address_type", "2");
                 startActivity(intentClusterDetails);
@@ -194,8 +194,8 @@ public class AddressSelection extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intentClusterDetails=new Intent(AddressSelection.this, ClusterDetails.class);
-                intentClusterDetails.putExtra("cluster_id", cluster_id);
-                intentClusterDetails.putExtra("cluster_name", cluster_name);
+                /*intentClusterDetails.putExtra("cluster_id", cluster_id);
+                intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
                 sharedPrefHelper.setString("address_type", "3");
                 startActivity(intentClusterDetails);

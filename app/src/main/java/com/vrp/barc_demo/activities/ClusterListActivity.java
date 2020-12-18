@@ -134,23 +134,27 @@ public class ClusterListActivity extends AppCompatActivity {
                             sqliteHelper.saveMasterTable(contentValues, "cluster");
 
                             ClusterModel clusterModel=new ClusterModel();
-                            clusterModel.setCluster_id(jsonObject.getString("cluster_no"));
-                            clusterModel.setCluster_name(jsonObject.getString("Original_Town_Village"));
-                            clusterModel.setAction(jsonObject.getString("lock_status"));
-                            clusterModel.setOriginal_address(jsonObject.getString("Original_address"));
-                            clusterModel.setNext_address(jsonObject.getString("After_10_Voter_Address"));
-                            clusterModel.setPrevious_address(jsonObject.getString("Previous_10_Voter_Address"));
-
-                            /*set and get these values for preferences*/
                             clusterModel.setCluster_no(jsonObject.getString("cluster_no"));
+                            clusterModel.setCensus_State_Code(jsonObject.getString("Census_State_Code"));
                             clusterModel.setState_Name(jsonObject.getString("State_Name"));
                             clusterModel.setTown_Village_Class(jsonObject.getString("Town_Village_Class"));
+                            clusterModel.setCensus_District_Code(jsonObject.getString("Census_District_Code"));
                             clusterModel.setCensus_District_Name(jsonObject.getString("Census_District_Name"));
                             clusterModel.setCensus_Village_Town_Code(jsonObject.getString("Census_Village_Town_Code"));
                             clusterModel.setCensus_Village_Town_Name(jsonObject.getString("Census_Village_Town_Name"));
                             clusterModel.setUA_Component(jsonObject.getString("UA_Component"));
                             clusterModel.setUA_Component_code(jsonObject.getString("UA_Component_code"));
                             clusterModel.setBARC_Town_Code(jsonObject.getString("BARC_Town_Code"));
+                            clusterModel.setOriginal_Town_Village(jsonObject.getString("Original_Town_Village"));
+                            clusterModel.setOriginal_Town_Village_Code(jsonObject.getString("Original_Town_Village_Code"));
+                            clusterModel.setSampling_town_class(jsonObject.getString("Sampling_town_class"));
+                            clusterModel.setSP_No(jsonObject.getString("SP_No"));
+                            clusterModel.setOriginal_address(jsonObject.getString("Original_address"));
+                            clusterModel.setAfter_10_Voter_Address(jsonObject.getString("After_10_Voter_Address"));
+                            clusterModel.setPrevious_10_Voter_Address(jsonObject.getString("Previous_10_Voter_Address"));
+                            clusterModel.setPincode(jsonObject.getString("Pincode"));
+                            clusterModel.setOperator_Agency(jsonObject.getString("Operator_Agency"));
+                            clusterModel.setLock_status(jsonObject.getString("lock_status"));
 
                             clusterModelAL.add(clusterModel);
                         }
@@ -164,10 +168,10 @@ public class ClusterListActivity extends AppCompatActivity {
                             mClusterAdapter.onItemClick(new ClickListener() {
                                 @Override
                                 public void onItemClick(int position) {
-                                    if (clusterModelAL.get(position).getAction().equals("0")) {
+                                    if (clusterModelAL.get(position).getLock_status().equals("0")) {
                                         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                                                 .setTitleText("Are you sure?")
-                                                .setContentText("Want to assign" + "\n" + clusterModelAL.get(position).getCluster_id())
+                                                .setContentText("Want to assign" + "\n" + clusterModelAL.get(position).getCluster_no())
                                                 .setConfirmText("Submit")
                                                 .setCancelText("Cancel")
                                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -177,7 +181,7 @@ public class ClusterListActivity extends AppCompatActivity {
                                                         //call api to lock cluster
                                                         if (CommonClass.isInternetOn(context)) {
                                                             ClusterModel clusterModel=new ClusterModel();
-                                                            clusterModel.setCluster_id(clusterModelAL.get(position).getCluster_id());
+                                                            clusterModel.setCluster_no(clusterModelAL.get(position).getCluster_no());
                                                             clusterModel.setUser_id(sharedPrefHelper.getString("user_id", ""));
 
                                                             Gson gson = new Gson();
@@ -199,19 +203,21 @@ public class ClusterListActivity extends AppCompatActivity {
                                                     }
                                                 })
                                                 .show();
-                                    } else {
+                                    }
+                                    else {
                                         Intent intentSurveyList = new Intent(context, SurveyListActivity.class);
-                                        intentSurveyList.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
+                                        /*intentSurveyList.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
                                         intentSurveyList.putExtra("next_address", clusterModelAL.get(position).getNext_address());
                                         intentSurveyList.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
-                                        intentSurveyList.putExtra("cluster_id", clusterModelAL.get(position).getCluster_id());
-                                        intentSurveyList.putExtra("cluster_name", clusterModelAL.get(position).getCluster_name());
+                                        intentSurveyList.putExtra("cluster_id", clusterModelAL.get(position).getCluster_no());
+                                        intentSurveyList.putExtra("cluster_name", clusterModelAL.get(position).getOriginal_Town_Village());*/
                                         intentSurveyList.putExtra("screen_type", "survey");
 
                                         /*set preference data*/
                                         String cluster_no = clusterModelAL.get(position).getCluster_no();
                                         String State_Name = clusterModelAL.get(position).getState_Name();
                                         String Town_Village_Class = clusterModelAL.get(position).getTown_Village_Class();
+                                        String Census_District_Code = clusterModelAL.get(position).getCensus_District_Code();
                                         String Census_District_Name = clusterModelAL.get(position).getCensus_District_Name();
                                         String Census_Village_Town_Code = clusterModelAL.get(position).getCensus_Village_Town_Code();
                                         String Census_Village_Town_Name = clusterModelAL.get(position).getCensus_Village_Town_Name();
@@ -219,15 +225,14 @@ public class ClusterListActivity extends AppCompatActivity {
                                         String UA_Component_code = clusterModelAL.get(position).getUA_Component_code();
                                         String BARC_Town_Code = clusterModelAL.get(position).getBARC_Town_Code();
                                         String original_address=clusterModelAL.get(position).getOriginal_address();
-                                        String next_address=clusterModelAL.get(position).getNext_address();
-                                        String previous_address=clusterModelAL.get(position).getPrevious_address();
-                                        String cluster_name=clusterModelAL.get(position).getCluster_name();
-                                        String cluster_id=clusterModelAL.get(position).getCluster_id();
+                                        String next_address=clusterModelAL.get(position).getAfter_10_Voter_Address();
+                                        String previous_address=clusterModelAL.get(position).getPrevious_10_Voter_Address();
+                                        String cluster_name=clusterModelAL.get(position).getOriginal_Town_Village();
 
-                                        setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Name,
-                                                Census_Village_Town_Code,Census_Village_Town_Name,UA_Component,UA_Component_code,
-                                                BARC_Town_Code,original_address,next_address,previous_address,cluster_name,cluster_id);
-
+                                        setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Code,
+                                                Census_District_Name, Census_Village_Town_Code,Census_Village_Town_Name,
+                                                UA_Component,UA_Component_code, BARC_Town_Code,original_address,next_address,
+                                                previous_address,cluster_name);
                                         startActivity(intentSurveyList);
                                     }
                                 }
@@ -263,18 +268,39 @@ public class ClusterListActivity extends AppCompatActivity {
                     if (success.equals("1")) {
                         AlertDialogClass.dismissProgressDialog();
                         Intent intentAddressSelection=new Intent(context, AddressSelection.class);
-                        intentAddressSelection.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
+                        /*intentAddressSelection.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
                         intentAddressSelection.putExtra("next_address", clusterModelAL.get(position).getNext_address());
                         intentAddressSelection.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
-                        intentAddressSelection.putExtra("cluster_id", clusterModelAL.get(position).getCluster_id());
-                        intentAddressSelection.putExtra("cluster_name", clusterModelAL.get(position).getCluster_name());
+                        intentAddressSelection.putExtra("cluster_id", clusterModelAL.get(position).getCluster_no());
+                        intentAddressSelection.putExtra("cluster_name", clusterModelAL.get(position).getOriginal_Town_Village());*/
                         intentAddressSelection.putExtra("screen_type", "survey");
-                        /*save data in preferences*/
+                        /*save data in preferences*//*
                         sharedPrefHelper.setString("original_address", clusterModelAL.get(position).getOriginal_address());
-                        sharedPrefHelper.setString("next_address", clusterModelAL.get(position).getNext_address());
-                        sharedPrefHelper.setString("previous_address", clusterModelAL.get(position).getPrevious_address());
-                        sharedPrefHelper.setString("cluster_name", clusterModelAL.get(position).getCluster_name());
-                        sharedPrefHelper.setString("cluster_id", clusterModelAL.get(position).getCluster_id());
+                        sharedPrefHelper.setString("next_address", clusterModelAL.get(position).getAfter_10_Voter_Address());
+                        sharedPrefHelper.setString("previous_address", clusterModelAL.get(position).getPrevious_10_Voter_Address());
+                        sharedPrefHelper.setString("cluster_name", clusterModelAL.get(position).getOriginal_Town_Village());
+                        sharedPrefHelper.setString("cluster_no", clusterModelAL.get(position).getCluster_no());*/
+                        /*set preference data*/
+                        String cluster_no = clusterModelAL.get(position).getCluster_no();
+                        String State_Name = clusterModelAL.get(position).getState_Name();
+                        String Town_Village_Class = clusterModelAL.get(position).getTown_Village_Class();
+                        String Census_District_Code=clusterModelAL.get(position).getCensus_District_Code();
+                        String Census_District_Name = clusterModelAL.get(position).getCensus_District_Name();
+                        String Census_Village_Town_Code = clusterModelAL.get(position).getCensus_Village_Town_Code();
+                        String Census_Village_Town_Name = clusterModelAL.get(position).getCensus_Village_Town_Name();
+                        String UA_Component = clusterModelAL.get(position).getUA_Component();
+                        String UA_Component_code = clusterModelAL.get(position).getUA_Component_code();
+                        String BARC_Town_Code = clusterModelAL.get(position).getBARC_Town_Code();
+                        String original_address=clusterModelAL.get(position).getOriginal_address();
+                        String next_address=clusterModelAL.get(position).getAfter_10_Voter_Address();
+                        String previous_address=clusterModelAL.get(position).getPrevious_10_Voter_Address();
+                        String cluster_name=clusterModelAL.get(position).getOriginal_Town_Village();
+
+                        setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Code,
+                                Census_District_Name, Census_Village_Town_Code,Census_Village_Town_Name,
+                                UA_Component,UA_Component_code, BARC_Town_Code,original_address,next_address,
+                                previous_address,cluster_name);
+
 
                         startActivity(intentAddressSelection);
                         Toast.makeText(context, ""+message, Toast.LENGTH_SHORT).show();
@@ -296,14 +322,15 @@ public class ClusterListActivity extends AppCompatActivity {
     }
 
     private void setAllDataInPreferences(String cluster_no, String state_name, String town_village_class,
-                                         String census_district_name, String census_village_town_code,
-                                         String census_village_town_name, String ua_component,
-                                         String ua_component_code, String barc_town_code, String original_address,
-                                         String next_address, String previous_address, String cluster_name,
-                                         String cluster_id) {
+                                         String census_district_code, String census_district_name,
+                                         String census_village_town_code, String census_village_town_name,
+                                         String ua_component, String ua_component_code, String barc_town_code,
+                                         String original_address, String next_address, String previous_address,
+                                         String cluster_name) {
         sharedPrefHelper.setString("cluster_no", cluster_no);
         sharedPrefHelper.setString("state_name", state_name);
         sharedPrefHelper.setString("town_village_class", town_village_class);
+        sharedPrefHelper.setString("census_district_code", census_district_code);
         sharedPrefHelper.setString("census_district_name", census_district_name);
         sharedPrefHelper.setString("census_village_town_code", census_village_town_code);
         sharedPrefHelper.setString("census_village_town_name", census_village_town_name);
@@ -317,7 +344,7 @@ public class ClusterListActivity extends AppCompatActivity {
         sharedPrefHelper.setString("next_address", next_address);
         sharedPrefHelper.setString("previous_address", previous_address);
         sharedPrefHelper.setString("cluster_name", cluster_name);
-        sharedPrefHelper.setString("cluster_id", cluster_id);
+        sharedPrefHelper.setString("nccs_hh", "123");
     }
 
     private void setClusterAdapter() {
@@ -338,7 +365,7 @@ public class ClusterListActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) finish();
         if (item.getItemId()==R.id.home_icon) {
             Intent intentMainMenu=new Intent(context, MainMenu.class);
-            intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intentMainMenu.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentMainMenu);
         }
         return super.onOptionsItemSelected(item);
