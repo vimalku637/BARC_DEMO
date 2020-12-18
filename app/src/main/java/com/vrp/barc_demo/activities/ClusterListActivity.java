@@ -155,6 +155,8 @@ public class ClusterListActivity extends AppCompatActivity {
                             clusterModel.setPincode(jsonObject.getString("Pincode"));
                             clusterModel.setOperator_Agency(jsonObject.getString("Operator_Agency"));
                             clusterModel.setLock_status(jsonObject.getString("lock_status"));
+                            clusterModel.setsample_size(jsonObject.getString("sample_size"));
+                            clusterModel.setNCCCatagory(jsonObject.getString("NCC_catagory"));
 
                             clusterModelAL.add(clusterModel);
                         }
@@ -228,11 +230,13 @@ public class ClusterListActivity extends AppCompatActivity {
                                         String next_address=clusterModelAL.get(position).getAfter_10_Voter_Address();
                                         String previous_address=clusterModelAL.get(position).getPrevious_10_Voter_Address();
                                         String cluster_name=clusterModelAL.get(position).getOriginal_Town_Village();
+                                        String NCC_catagory=clusterModelAL.get(position).getNCCCatagory();
+                                        String sample_size=clusterModelAL.get(position).getsample_size();
 
                                         setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Code,
                                                 Census_District_Name, Census_Village_Town_Code,Census_Village_Town_Name,
                                                 UA_Component,UA_Component_code, BARC_Town_Code,original_address,next_address,
-                                                previous_address,cluster_name);
+                                                previous_address,cluster_name,NCC_catagory,sample_size);
                                         startActivity(intentSurveyList);
                                     }
                                 }
@@ -295,11 +299,13 @@ public class ClusterListActivity extends AppCompatActivity {
                         String next_address=clusterModelAL.get(position).getAfter_10_Voter_Address();
                         String previous_address=clusterModelAL.get(position).getPrevious_10_Voter_Address();
                         String cluster_name=clusterModelAL.get(position).getOriginal_Town_Village();
+                        String NCC_catagory=clusterModelAL.get(position).getNCCCatagory();
+                        String sample_size=clusterModelAL.get(position).getsample_size();
 
                         setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Code,
                                 Census_District_Name, Census_Village_Town_Code,Census_Village_Town_Name,
                                 UA_Component,UA_Component_code, BARC_Town_Code,original_address,next_address,
-                                previous_address,cluster_name);
+                                previous_address,cluster_name,NCC_catagory,sample_size);
 
 
                         startActivity(intentAddressSelection);
@@ -326,7 +332,7 @@ public class ClusterListActivity extends AppCompatActivity {
                                          String census_village_town_code, String census_village_town_name,
                                          String ua_component, String ua_component_code, String barc_town_code,
                                          String original_address, String next_address, String previous_address,
-                                         String cluster_name) {
+                                         String cluster_name,String nccs_matrix,String sample_size) {
         sharedPrefHelper.setString("cluster_no", cluster_no);
         sharedPrefHelper.setString("state_name", state_name);
         sharedPrefHelper.setString("town_village_class", town_village_class);
@@ -344,7 +350,9 @@ public class ClusterListActivity extends AppCompatActivity {
         sharedPrefHelper.setString("next_address", next_address);
         sharedPrefHelper.setString("previous_address", previous_address);
         sharedPrefHelper.setString("cluster_name", cluster_name);
-        sharedPrefHelper.setString("nccs_hh", "123");
+        sharedPrefHelper.setString("nccs_hh", nccs_matrix);
+        sharedPrefHelper.setString("nccs_matrix", nccs_matrix);
+        sharedPrefHelper.setString("sample_size", sample_size);
     }
 
     private void setClusterAdapter() {

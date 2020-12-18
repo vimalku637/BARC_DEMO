@@ -36,6 +36,8 @@ public class ClusterModel {
     public static final String COLUMN_LOCK_STATUS="lock_status";
     public static final String COLUMN_FLAG="flag";
     public static final String COLUMN_STATUS="status";
+    public static final String COLUMN_SAMPLE_SIZE="sample_size";
+    public static final String COLUMN_NCC_CATAGORY="NCC_catagory";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
@@ -63,6 +65,8 @@ public class ClusterModel {
                     + COLUMN_OPERATOR_AGENCY + " TEXT ,"
                     + COLUMN_LOCK_STATUS + " TEXT ,"
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
+                    + COLUMN_NCC_CATAGORY + " TEXT ,"
+                    + COLUMN_SAMPLE_SIZE + " INTEGER DEFAULT 0 ,"
                     + COLUMN_STATUS + " INTEGER DEFAULT 0 "
                     + ")";
 
@@ -294,12 +298,14 @@ public class ClusterModel {
         this.original_address = original_address;
     }
 
-    public String getLocal_id() {
-        return local_id;
+    private String NCC_catagory,sample_size;
+    public String getNCCCatagory() { return NCC_catagory; }
+    public void setNCCCatagory(String NCC_catagory) {
+        this.NCC_catagory = NCC_catagory;
     }
-
-    public void setLocal_id(String local_id) {
-        this.local_id = local_id;
+    public String getsample_size() { return sample_size; }
+    public void setsample_size(String sample_size) {
+        this.sample_size = sample_size;
     }
 
 }
