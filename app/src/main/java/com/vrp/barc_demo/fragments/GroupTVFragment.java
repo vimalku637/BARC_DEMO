@@ -419,17 +419,17 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                     json_object.put("GPS_longitude", "79.912247");*/
                                     /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
                                     json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
-                                    json_object.put("tv_data", json_array);
+                                    //json_object.put("tv_data", json_array);
                                     Log.e(TAG, "onClick: "+json_object.toString());
 
                                     if (endScreenPosition==1) {
                                         //save data in to local DB.
-                                        sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
+                                        sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_array);
                                         sqliteHelper.updateLocalFlag("partial", "survey",
                                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
                                     } else {
                                         //update data in to local DB
-                                        sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
+                                        sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_array);
                                         sqliteHelper.updateLocalFlag("partial", "survey",
                                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
                                     }

@@ -261,7 +261,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return inserted_id;
     }
-    public long updateFamilyDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
+    public long updateFamilyDataInTable(String table, String whr, String survey_id, JSONArray jsonObject) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -279,7 +279,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return inserted_id;
     }
-    public long updateTVDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
+    public long updateTVDataInTable(String table, String whr, String survey_id, JSONArray jsonObject) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
