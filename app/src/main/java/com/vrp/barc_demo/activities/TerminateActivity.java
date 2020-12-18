@@ -102,7 +102,8 @@ public class TerminateActivity extends AppCompatActivity {
 
     /*normal widgets*/
     private Context context=this;
-    private String screen_type="", radio_button_id="", reason="",survey_id;
+    private String screen_type="", radio_button_id="", reason="",survey_id,
+            halt_radio_button_id="";
     private SqliteHelper sqliteHelper;
     private SharedPrefHelper sharedPrefHelper;
     public static ArrayList<AnswerModel> answerModelList;
@@ -137,42 +138,52 @@ public class TerminateActivity extends AppCompatActivity {
                 switch (i) {
                     case R.id.rb_door_lock:
                         reason=getResources().getString(R.string.door_locked);
+                        halt_radio_button_id="1";
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_not_available_at_home:
                         reason=getResources().getString(R.string.hh_cwe_not_available_at_home);
+                        halt_radio_button_id="2";
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_refused:
                         reason=getResources().getString(R.string.refused);
+                        halt_radio_button_id="3";
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_in_eligible_nccs:
                         reason=getResources().getString(R.string.in_eligible_nccs);
+                        halt_radio_button_id="4";
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_refused_to_continue:
                         reason=getResources().getString(R.string.refused_to_continue_interview_after_some_time);
+                        halt_radio_button_id="5";
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_in_eligible_age:
                         reason=getResources().getString(R.string.in_eligible_age);
+                        halt_radio_button_id="6";
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_intro_exit:
                         reason=getResources().getString(R.string.intro_exit);
+                        halt_radio_button_id="7";
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_age_terminate:
                         reason=getResources().getString(R.string.age_terminate);
+                        halt_radio_button_id="8";
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_terminate:
                         reason=getResources().getString(R.string.terminate);
+                        halt_radio_button_id="9";
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_call_back:
                         reason=getResources().getString(R.string.call_back);
+                        halt_radio_button_id="10";
                         rb_door_lock.setError(null);
                         break;
                 }
@@ -204,6 +215,7 @@ public class TerminateActivity extends AppCompatActivity {
                      json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
                     if (!radio_button_id.equals("")) {
                         json_object.put("reason", radio_button_id);
+                        json_object.put("description", "terminate");
                     }
                     json_object.put("survey_data", json_array);
                     Log.e(TAG, "onClick: " + json_object.toString());
@@ -301,6 +313,7 @@ public class TerminateActivity extends AppCompatActivity {
                             /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
                             json_object.put("reason", reason);
+                            json_object.put("description", reason);
                             json_object.put("date_time", et_date_time.getText().toString().trim());
                             json_object.put("household_name", et_name.getText().toString().trim());
                             json_object.put("address", et_address.getText().toString().trim());

@@ -8,12 +8,19 @@
 
 package com.vrp.barc_demo.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -24,6 +31,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -40,10 +50,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -68,8 +81,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,6 +95,9 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class HouseholdSurveyActivity extends AppCompatActivity implements ActivityCommunicator {
     private static final String TAG = "HouseholdSurvey>>";
@@ -92,6 +111,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     MaterialButton btn_save;
     @BindView(R.id.ll_parent)
     LinearLayout ll_parent;
+    @BindView(R.id.iv_recording)
+    ShapeableImageView iv_recording;
 
     /*normal widgets*/
     private Context context=this;
@@ -120,6 +141,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     private String surveyObjectJSON=null;
     private String editFieldValues="";
     private int groupQuestionID=0;
+    //to start record audio
+    private boolean isRecording;
+    public static MediaRecorder mediaRecorder;
+    public static AudioManager audioManager;
+    public static final int RequestPermissionCode = 1;
+    public static String AudioSavePathInDevice = null;
+    //initialization MediaPlayer
+    MediaPlayer mediaPlayer=new MediaPlayer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -874,6 +903,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    setTerminattion(id);
                                    //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
                                }
+                               //start recording here
+                               if (checkedId==101){
+                                   iv_recording.setVisibility(View.VISIBLE);
+                                   startRecordingAnimation();
+                                   startRecording();
+                               }
                            }
                        });
                        //onAddRadioButton(jsonObjectQuesType);
@@ -996,6 +1031,97 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
     }
 
+    private void startRecording() {
+        if (checkPermission()) {
+            mediaRecorder = new MediaRecorder();
+            IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+            registerReceiver(mBluetoothScoReceiver, intentFilter);
+            audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+            // Start Bluetooth SCO.
+            audioManager.setMode(audioManager.MODE_NORMAL);
+            audioManager.setBluetoothScoOn(true);
+            audioManager.startBluetoothSco();
+            // Stop Speaker.
+            audioManager.setSpeakerphoneOn(false);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+            AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + timeStamp + ".mp3";
+            MediaRecorderReady();
+            try {
+
+                mediaRecorder.prepare();
+                mediaRecorder.start();
+                isRecording = true;
+
+            } catch (IllegalStateException e) {
+                // TODO Auto-generated catch block
+                Toast.makeText(context, "Recording Failed", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                isRecording = false;
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                Toast.makeText(context, "Recording Failed", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                isRecording = false;
+            }
+        } else {
+            requestPermission();
+            Toast.makeText(this, "Failed to create recording folder.", Toast.LENGTH_SHORT).show();
+            isRecording = false;
+        }
+    }
+    private void stopRecording() {
+        if (mediaRecorder != null) {
+            try {
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                mediaRecorder = null;
+            } catch (Exception e) {
+                // Add your handling here.
+                e.printStackTrace();
+            }
+        }
+        Toast.makeText(context, ""+AudioSavePathInDevice, Toast.LENGTH_SHORT).show();
+    }
+    public boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(context,
+                WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(context,
+                RECORD_AUDIO);
+        return result == PackageManager.PERMISSION_GRANTED &&
+                result1 == PackageManager.PERMISSION_GRANTED;
+    }
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new
+                String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+    }
+    public void MediaRecorderReady() {
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setOutputFile(AudioSavePathInDevice);
+    }
+
+    private BroadcastReceiver mBluetoothScoReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1);
+            System.out.println("ANDROID Audio SCO state: " + state);
+            if (AudioManager.SCO_AUDIO_STATE_CONNECTED == state) {
+                /*
+                 * Now the connection has been established to the bluetooth device.
+                 * Record audio or whatever (on another thread).With AudioRecord you can record with an object created like this:
+                 * new AudioRecord(MediaRecorder.AudioSource.MIC, 8000, AudioFormat.CHANNEL_CONFIGURATION_MONO,
+                 * AudioFormat.ENCODING_PCM_16BIT, audioBufferSize);
+                 *
+                 * After finishing, don't forget to unregister this receiver and
+                 * to stop the bluetooth connection with am.stopBluetoothSco();
+                 */
+            } else {
+            }
+        }
+    };
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home){
@@ -1114,10 +1240,26 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         return true;
     }
 
+    private void startRecordingAnimation() {
+        Animation animation = new AlphaAnimation((float) 0.5, 0); //to change visibility from visible to invisible
+        animation.setDuration(1000); //1 second duration for each animation cycle
+        animation.setInterpolator(new LinearInterpolator());
+        animation.setRepeatCount(Animation.INFINITE); //repeating indefinitely
+        animation.setRepeatMode(Animation.REVERSE); //animation will start from end point once ended.
+        iv_recording.startAnimation(animation); //to start animation
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         Log.e("pause","onpause Called");
+        unregisterReceiver(mBluetoothScoReceiver);
+        // Stop Bluetooth SCO.
+        audioManager.stopBluetoothSco();
+        audioManager.setMode(audioManager.MODE_NORMAL);
+        audioManager.setBluetoothScoOn(false);
+        // Start Speaker.
+        audioManager.setSpeakerphoneOn(true);
     }
     protected OnBackPressedListener onBackPressedListener;
 
@@ -1156,4 +1298,17 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         //textView.setText(someValue);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+        registerReceiver(mBluetoothScoReceiver, intentFilter);
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        // Start Bluetooth SCO.
+        audioManager.setMode(audioManager.MODE_NORMAL);
+        audioManager.setBluetoothScoOn(true);
+        audioManager.startBluetoothSco();
+        // Stop Speaker.
+        audioManager.setSpeakerphoneOn(false);
+    }
 }
