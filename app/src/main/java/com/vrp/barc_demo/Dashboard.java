@@ -97,16 +97,15 @@ public class Dashboard extends AppCompatActivity {
 
     private void setPieChart() {
 
-
-        countProgress = sqliteHelper.getTotalchartInprogress();
-        countReject = sqliteHelper.getChartValue(5);
         countComplete = sqliteHelper.getChartValue(1);
+        countReject = sqliteHelper.getChartValue(5);
+        countProgress = sqliteHelper.getTotalchartInprogress();
         countTerminate = sqliteHelper.getTotalchart4(3);
 
         ArrayList Entryes = new ArrayList();
-        Entryes.add(new PieEntry(countProgress, ""));
-        Entryes.add(new PieEntry(countReject, ""));
         Entryes.add(new PieEntry(countComplete, ""));
+        Entryes.add(new PieEntry(countReject, ""));
+        Entryes.add(new PieEntry(countProgress, ""));
         Entryes.add(new PieEntry(countTerminate, ""));
         PieDataSet set = new PieDataSet(Entryes, "");
 
