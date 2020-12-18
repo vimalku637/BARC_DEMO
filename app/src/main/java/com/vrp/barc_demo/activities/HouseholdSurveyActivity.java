@@ -609,7 +609,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         //condition for open group-fragment
                         String groupRelationId=null;
                         try {
-                            groupRelationId = jsonArrayQuestions.getJSONObject(count).getString("group_relation_id");
+                            //for(int m=0;m<jsonArrayQuestions.length();m++){
+                                groupRelationId = jsonArrayQuestions.getJSONObject(jsonArrayQuestions.length()-1).getString("group_relation_id");
+                           // }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -836,7 +838,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        ll_parent.addView(txtLabel);
                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                        RadioGroup radioGroup=new RadioGroup(this);
-                       radioGroup.setId(i);
+                       radioGroup.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
                            RadioButton radioButton=new RadioButton(this);
                            radioButton.setLayoutParams(new LinearLayout.LayoutParams
@@ -870,9 +872,18 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                String rbTag=rb.getTag().toString();
                                int sepPos = rbTag.indexOf("^");
                                String id=rbTag.substring(sepPos+1);
+                               int sepPosID = rbTag.indexOf("^");
+                               String radioID = rbTag.substring(0, sepPosID);
                                if(id.equals("1")){
                                    setTerminattion(id);
                                    //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
+                               }else if(group.getId()==23){
+                                    sharedPrefHelper.setString("CWE_Status",radioID);
+                                    if(radioID.equalsIgnoreCase("2")){
+                                        jsonArrayScreen.remove(11);
+                                        jsonArrayScreen.remove(11);
+                                        totalScreen=totalScreen-2;
+                                    }
                                }
                            }
                        });
@@ -1144,11 +1155,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     public void passDataToActivity(ArrayList<AnswerModel> answerModelList,int type){
        // Log.e("Fragment Dismissed",someValue);
         if(type==1){
-            answerModelHouseholdMemberList.clear();
+            //answerModelHouseholdMemberList.clear();
             ArrayList<AnswerModel> answerModelListN=answerModelList;
             answerModelHouseholdMemberList=answerModelListN;
         }else if(type==2){
-            answerModelTVList.clear();
+            //answerModelTVList.clear();
             ArrayList<AnswerModel> answerModelListN=answerModelList;
             answerModelTVList=answerModelListN;
         }
