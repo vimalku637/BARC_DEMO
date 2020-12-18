@@ -795,6 +795,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        else if (jsonObjectQuesType.getString("field_name").equals("nccs_hh")) {
                            editText.setText(sharedPrefHelper.getString("nccs_hh", ""));
                        }
+                       else if (jsonObjectQuesType.getString("field_name").equals("interview_number")) {
+                           editText.setText(survey_id);
+                       }
+                       else if (jsonObjectQuesType.getString("field_name").equals("nccs_matrix")) {
+                           editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
+                       }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
                        }else{
