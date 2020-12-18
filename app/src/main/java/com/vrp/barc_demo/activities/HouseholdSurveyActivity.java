@@ -489,8 +489,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     String listString = gson.toJson(
                             answerModelList,
                             new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                    String listStringFamily = gson.toJson(
+                            answerModelHouseholdMemberList,
+                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                    String listStringTV = gson.toJson(
+                            answerModelTVList,
+                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
                     try {
                         JSONArray json_array =  new JSONArray(listString);
+                        JSONArray json_array_family =  new JSONArray(listStringFamily);
+                        JSONArray json_array_TV =  new JSONArray(listStringTV);
                         JSONObject json_object=new JSONObject();
                         json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                         json_object.put("survey_id", survey_id);
@@ -501,8 +509,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
                         json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
                         json_object.put("survey_data", json_array);
-                        json_object.put("family_data", sqliteHelper.getFamilyDataFromTable(survey_id));
-                        json_object.put("tv_data", sqliteHelper.getTVDataFromTable(survey_id));
+                        json_object.put("family_data", json_array_family);
+                        json_object.put("tv_data", json_array_TV);
                         Log.e(TAG, "onClick: "+json_object.toString());
 
                         if (screen_type.equals("survey_list")) {

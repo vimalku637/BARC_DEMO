@@ -19,7 +19,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.vrp.barc_demo.login.DataDownloadInput;
-import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.ClusterModel;
 import com.vrp.barc_demo.models.NccsMatrixModel;
 import com.vrp.barc_demo.models.SurveyModel;
@@ -261,7 +260,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return inserted_id;
     }
-    public long updateFamilyDataInTable(String table, String whr, String survey_id, JSONArray jsonObject) {
+    public long updateFamilyDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -279,7 +278,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return inserted_id;
     }
-    public long updateTVDataInTable(String table, String whr, String survey_id, JSONArray jsonObject) {
+    public long updateTVDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -408,7 +407,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return arrayList;
     }
     public String getFamilyDataFromTable(String survey_id) {
-        String family_data = "";
+        String family_data = null;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
