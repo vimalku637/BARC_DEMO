@@ -200,26 +200,8 @@ public class SqliteHelper extends SQLiteOpenHelper {
             return sum;
         }
 
-    public int getChartValue1(int status) {
-        int sum = 0;
-        SQLiteDatabase db = this.getReadableDatabase();
-        String countQuery = "select count(status) from survey where status ='" + status + "'";
-        Cursor cursor = db.rawQuery(countQuery, null);
-        if (cursor.moveToFirst())
 
-            sum = cursor.getInt(cursor.getColumnIndex("count(status)"));
-        return sum;
-    }
- public int getChartValue2(int status) {
-        int sum = 0;
-        SQLiteDatabase db = this.getReadableDatabase();
-        String countQuery = "select count(status) from survey where status ='" + status + "'";
-        Cursor cursor = db.rawQuery(countQuery, null);
-        if (cursor.moveToFirst())
 
-            sum = cursor.getInt(cursor.getColumnIndex("count(status)"));
-        return sum;
-    }
  public int getChartValue(int status) {
         int sum = 0;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -236,11 +218,18 @@ public class SqliteHelper extends SQLiteOpenHelper {
         String countQuery = "select count(status) from survey where status ='" + status + "'";
         Cursor cursor = db.rawQuery(countQuery, null);
         if (cursor.moveToFirst())
-
             sum = cursor.getInt(cursor.getColumnIndex("count(status)"));
         return sum;
     }
 
+    public int getTotalchartInprogress() {
+        int sum = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT count(status) as total from survey where status IN (2,4)", null);
+        if (cursor.moveToFirst())
+            sum = cursor.getInt(cursor.getColumnIndex("total"));
+        return sum;
+    }
 
     public long updateSurveyDataInTable(String table, String whr, String survey_id, JSONObject jsonObject) {
         long inserted_id = 0;

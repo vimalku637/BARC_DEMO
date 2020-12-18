@@ -105,9 +105,9 @@ public class SurveyListActivity extends AppCompatActivity {
         setSurveyAdapter();
         setButtonClick();
 
-        countProgress = sqliteHelper.getChartValue(2);
+        countProgress = sqliteHelper.getTotalchartInprogress();
         tv_SurveysHaltCount.setText(""+countProgress);
-        countReject = sqliteHelper.getChartValue(3);
+        countReject = sqliteHelper.getChartValue(5);
         tv_SurveysRejectedCount.setText(""+countReject);
         countComplete = sqliteHelper.getChartValue(1);
         tv_SurveysCompletedcount.setText(""+countComplete);
