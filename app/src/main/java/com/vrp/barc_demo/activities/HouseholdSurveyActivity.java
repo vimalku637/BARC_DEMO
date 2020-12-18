@@ -799,6 +799,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            editText.setText(survey_id);
                        }
                        else if (jsonObjectQuesType.getString("field_name").equals("nccs_matrix")) {
+                           sqliteHelper.getNCCMatrix(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id(),sharedPrefHelper.getString("nccs_matrix", ""));
                            editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
                        }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){

@@ -37,7 +37,7 @@ public class ClusterModel {
     public static final String COLUMN_FLAG="flag";
     public static final String COLUMN_STATUS="status";
     public static final String COLUMN_SAMPLE_SIZE="sample_size";
-    public static final String COLUMN_NCC_CATAGORY="NCC_catagory";
+    public static final String COLUMN_NCC_CATAGORY="nccs_category";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("

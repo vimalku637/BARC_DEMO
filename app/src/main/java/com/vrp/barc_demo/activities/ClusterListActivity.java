@@ -119,6 +119,7 @@ public class ClusterListActivity extends AppCompatActivity {
                     JSONArray jsonArray = new JSONArray(response.body().toString());
                     Log.e(TAG, "onResponse: "+jsonArray.toString());
                     AlertDialogClass.dismissProgressDialog();
+                    sqliteHelper.dropTable("cluster");
                     if (jsonArray.length()>0) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject=jsonArray.getJSONObject(i);
@@ -130,7 +131,6 @@ public class ClusterListActivity extends AppCompatActivity {
                                 String currentDynamicKey = (String) keys.next();
                                 contentValues.put(currentDynamicKey, jsonObject.get(currentDynamicKey).toString());
                             }
-                            sqliteHelper.dropTable("cluster");
                             sqliteHelper.saveMasterTable(contentValues, "cluster");
 
                             ClusterModel clusterModel=new ClusterModel();
@@ -156,7 +156,7 @@ public class ClusterListActivity extends AppCompatActivity {
                             clusterModel.setOperator_Agency(jsonObject.getString("Operator_Agency"));
                             clusterModel.setLock_status(jsonObject.getString("lock_status"));
                             clusterModel.setsample_size(jsonObject.getString("sample_size"));
-                            clusterModel.setNCCCatagory(jsonObject.getString("NCC_catagory"));
+                            clusterModel.setNCCCatagory(jsonObject.getString("nccs_category"));
 
                             clusterModelAL.add(clusterModel);
                         }

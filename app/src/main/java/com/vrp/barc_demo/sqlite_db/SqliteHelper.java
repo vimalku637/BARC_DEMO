@@ -140,7 +140,29 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return city;
     }
 
-
+    public boolean getNCCMatrix(String education_id,String durables_id,String NCC_catagory) {
+        boolean status=false;
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "Select nccs_category from nccs_matrix where education_id="+education_id+" AND durables_id in("+durables_id+")";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        String st_nccs_category=cursor.getString(cursor.getColumnIndex("nccs_category"));
+                        status=true;
+                        cursor.moveToNext();
+                    }
+                    db.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return status;
+    }
 
     public ArrayList<SurveyModel> getSurveyList() {
         SQLiteDatabase db = this.getReadableDatabase();
