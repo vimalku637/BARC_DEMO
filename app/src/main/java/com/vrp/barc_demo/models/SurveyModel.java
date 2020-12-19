@@ -23,6 +23,7 @@ public class SurveyModel {
     public static final String COLUMN_DATE_TIME="date_time";
     public static final String COLUMN_HOUSEHOLD_NAME="household_name";
     public static final String COLUMN_ADDRESS="address";
+    public static final String COLUMN_REASON="reason";
     public static final String COLUMN_TV_DATA="tv_data";
     public static final String COLUMN_FAMILY_DATA="family_data";
     public static final String COLUMN_FLAG="flag";
@@ -42,6 +43,7 @@ public class SurveyModel {
                     + COLUMN_DATE_TIME + " TEXT ,"
                     + COLUMN_HOUSEHOLD_NAME + " TEXT ,"
                     + COLUMN_ADDRESS + " TEXT ,"
+                    + COLUMN_REASON + " TEXT ,"
                     + COLUMN_TV_DATA + " TEXT ,"
                     + COLUMN_FAMILY_DATA + " TEXT ,"
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
@@ -57,12 +59,21 @@ public class SurveyModel {
     private String town;
     private String flag;
     private String status;
+    private String reason;
     private String user_id;
     private String date_time;
     private String household_name;
     private String address;
     private String tv_data;
     private String family_data;
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
     public String getTv_data() {
         return tv_data;

@@ -258,10 +258,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
+    private void setAllDataInPreferences(String user_id, String interviewer_id, String interviewer_name,
+                                         String user_name, String user_type_id, String mdl_id, String supervisor_id,
+                                         String supervisor_name, String agency_name) {
+        sharedPrefHelper.setString("user_id", user_id);
+        sharedPrefHelper.setString("interviewer_id", interviewer_id);
+        sharedPrefHelper.setString("interviewer_name", interviewer_name);
+        sharedPrefHelper.setString("user_name", user_name);
+        sharedPrefHelper.setString("user_type_id", user_type_id);
+        sharedPrefHelper.setString("mdl_id", mdl_id);
+        sharedPrefHelper.setString("supervisor_id", supervisor_id);
+        sharedPrefHelper.setString("supervisor_name", supervisor_name);
+        sharedPrefHelper.setString("agency_name", agency_name);
+    }
 
     public void download_city(String table){
         DataDownloadInput dataDownloadInput = new DataDownloadInput();
         dataDownloadInput.setTable_name(table);
+        dataDownloadInput.setUser_id(sharedPrefHelper.getString("user_id", ""));
         Gson Gson = new Gson();
         String data = Gson.toJson(dataDownloadInput);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -306,20 +320,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }*/
 
 
-    private void setAllDataInPreferences(String user_id, String interviewer_id, String interviewer_name,
-                                         String user_name, String user_type_id, String mdl_id, String supervisor_id,
-                                         String supervisor_name, String agency_name) {
-        sharedPrefHelper.setString("user_id", user_id);
-        sharedPrefHelper.setString("interviewer_id", interviewer_id);
-        sharedPrefHelper.setString("interviewer_name", interviewer_name);
-        sharedPrefHelper.setString("user_name", user_name);
-        sharedPrefHelper.setString("user_type_id", user_type_id);
-        sharedPrefHelper.setString("mdl_id", mdl_id);
-        sharedPrefHelper.setString("supervisor_id", supervisor_id);
-        sharedPrefHelper.setString("supervisor_name", supervisor_name);
-        sharedPrefHelper.setString("agency_name", agency_name);
 
-    }
 
     private boolean isInternetOn() {
 

@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -27,6 +28,7 @@ import android.widget.Spinner;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.models.SurveyModel;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import java.util.ArrayList;
@@ -68,14 +70,22 @@ public class AddressSelection extends AppCompatActivity {
     MaterialTextView tv_previous_address;
     @BindView(R.id.btn_start_previous)
     MaterialButton btn_start_previous;
+    @BindView(R.id.et_reasonOrgAd)
+    EditText et_reasonOrgAd;
+    @BindView(R.id.et_reasonNextAd)
+    EditText et_reasonNextAd;
+    @BindView(R.id.et_reasonPreviousAd)
+    EditText et_reasonPreviousAd;
+    @BindView(R.id.et_reason)
+    EditText et_reason;
 
     /*normal widgets*/
-    private Context context=this;
-    private String original_address="", cluster_id="", cluster_name="", screen_type="",
-            previous_address="", next_address="";
+    private Context context = this;
+    private String original_address = "", cluster_id = "", cluster_name = "", screen_type = "",
+            previous_address = "", next_address = "";
     private ArrayList<String> railwayStationSpnAL;
     private SharedPrefHelper sharedPrefHelper;
-
+SurveyModel surveyModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,14 +94,15 @@ public class AddressSelection extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         ButterKnife.bind(this);
         setTitle(R.string.view_starting_points);
+        surveyModel=new SurveyModel();
         initialization();
         /*get intent values here*/
-        Bundle bundle=getIntent().getExtras();
-        if (bundle!=null) {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
             /*original_address=bundle.getString("original_address", "");
             cluster_id=bundle.getString("cluster_id", "");
             cluster_name=bundle.getString("cluster_name", "");*/
-            screen_type=bundle.getString("screen_type", "");
+            screen_type = bundle.getString("screen_type", "");
             /*previous_address=bundle.getString("previous_address", "");
             next_address=bundle.getString("next_address", "");*/
         }
@@ -104,9 +115,9 @@ public class AddressSelection extends AppCompatActivity {
     }
 
     private void getPreferencesData() {
-        original_address=sharedPrefHelper.getString("original_address", "");
-        next_address=sharedPrefHelper.getString("next_address", "");
-        previous_address=sharedPrefHelper.getString("previous_address", "");
+        original_address = sharedPrefHelper.getString("original_address", "");
+        next_address = sharedPrefHelper.getString("next_address", "");
+        previous_address = sharedPrefHelper.getString("previous_address", "");
     }
 
     private void setRadioButtonClick() {
@@ -119,6 +130,7 @@ public class AddressSelection extends AppCompatActivity {
                         rl_layout.setVisibility(View.VISIBLE);
                         rl_layout_next.setVisibility(View.GONE);
                         rl_layout_previous.setVisibility(View.GONE);
+
                         break;
                     case R.id.rb_next_address:
                         rl_layout_substituted.setVisibility(View.GONE);
@@ -146,7 +158,7 @@ public class AddressSelection extends AppCompatActivity {
     private void setRailwayStationSpinner() {
         railwayStationSpnAL.add(0, getString(R.string.select_railway_station));
         railwayStationSpnAL.add(1, "Railway station 1");
-        ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, railwayStationSpnAL);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, railwayStationSpnAL);
         spn_railway_station.setAdapter(arrayAdapter);
         spn_railway_station.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -165,13 +177,20 @@ public class AddressSelection extends AppCompatActivity {
         tv_original_address.setText(original_address);
         tv_next_address.setText(next_address);
         tv_previous_address.setText(previous_address);
+//        surveyModel.setReason(et_reason.getText().toString());
+//        surveyModel.setReason(et_reasonPreviousAd.getText().toString());
+//        surveyModel.setReason(et_reasonNextAd.getText().toString());
+//        surveyModel.setReason(et_reasonOrgAd.getText().toString());
+//
+
+
     }
 
     private void setButtonClick() {
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentClusterDetails=new Intent(AddressSelection.this, ClusterDetails.class);
+                Intent intentClusterDetails = new Intent(AddressSelection.this, ClusterDetails.class);
                 /*intentClusterDetails.putExtra("cluster_id", cluster_id);
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
@@ -182,7 +201,7 @@ public class AddressSelection extends AppCompatActivity {
         btn_start_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentClusterDetails=new Intent(AddressSelection.this, ClusterDetails.class);
+                Intent intentClusterDetails = new Intent(AddressSelection.this, ClusterDetails.class);
                 /*intentClusterDetails.putExtra("cluster_id", cluster_id);
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
@@ -193,7 +212,7 @@ public class AddressSelection extends AppCompatActivity {
         btn_start_previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentClusterDetails=new Intent(AddressSelection.this, ClusterDetails.class);
+                Intent intentClusterDetails = new Intent(AddressSelection.this, ClusterDetails.class);
                 /*intentClusterDetails.putExtra("cluster_id", cluster_id);
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
@@ -204,18 +223,18 @@ public class AddressSelection extends AppCompatActivity {
     }
 
     private void initialization() {
-        sharedPrefHelper=new SharedPrefHelper(this);
-        railwayStationSpnAL=new ArrayList<>();
+        sharedPrefHelper = new SharedPrefHelper(this);
+        railwayStationSpnAL = new ArrayList<>();
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
-        if (item.getItemId()==R.id.stop_survey) {
+        if (item.getItemId() == R.id.stop_survey) {
             showPopupForTerminateSurvey();
         }
-        if (item.getItemId()==R.id.home_icon) {
-            Intent intentMainMenu=new Intent(context, MainMenu.class);
+        if (item.getItemId() == R.id.home_icon) {
+            Intent intentMainMenu = new Intent(context, MainMenu.class);
             intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentMainMenu);
         }
@@ -244,8 +263,8 @@ public class AddressSelection extends AppCompatActivity {
                 .show();
     }
 
-    public void setTerminattion(){
-        Intent intentTerminate=new Intent(context, TerminateActivity.class);
+    public void setTerminattion() {
+        Intent intentTerminate = new Intent(context, TerminateActivity.class);
         intentTerminate.putExtra("screen_type", "terminate");
         startActivity(intentTerminate);
     }
@@ -257,9 +276,9 @@ public class AddressSelection extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         /*hide and show toolbar items*/
         if (screen_type.equalsIgnoreCase("survey")) {
-            MenuItem item_stop_survey=menu.findItem(R.id.stop_survey);
+            MenuItem item_stop_survey = menu.findItem(R.id.stop_survey);
             item_stop_survey.setVisible(true);
-            MenuItem item_logout=menu.findItem(R.id.logout);
+            MenuItem item_logout = menu.findItem(R.id.logout);
             item_logout.setVisible(false);
         }
 
