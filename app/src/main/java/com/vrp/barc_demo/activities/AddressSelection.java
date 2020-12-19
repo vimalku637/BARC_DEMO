@@ -70,22 +70,21 @@ public class AddressSelection extends AppCompatActivity {
     MaterialTextView tv_previous_address;
     @BindView(R.id.btn_start_previous)
     MaterialButton btn_start_previous;
-    @BindView(R.id.et_reasonOrgAd)
-    EditText et_reasonOrgAd;
     @BindView(R.id.et_reasonNextAd)
     EditText et_reasonNextAd;
     @BindView(R.id.et_reasonPreviousAd)
     EditText et_reasonPreviousAd;
-    @BindView(R.id.et_reason)
-    EditText et_reason;
+    @BindView(R.id.et_reasonSubstituteAd)
+    EditText et_reasonSubstituteAd;
 
     /*normal widgets*/
     private Context context = this;
     private String original_address = "", cluster_id = "", cluster_name = "", screen_type = "",
-            previous_address = "", next_address = "";
+            previous_address = "", next_address = "", address_type="";
     private ArrayList<String> railwayStationSpnAL;
     private SharedPrefHelper sharedPrefHelper;
-SurveyModel surveyModel;
+    SurveyModel surveyModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,14 +114,13 @@ SurveyModel surveyModel;
     }
 
     private void getPreferencesData() {
-
-        sharedPrefHelper.setString("reason",et_reason.getText().toString());
-        sharedPrefHelper.setString("reasonNext",et_reasonNextAd.getText().toString());
-        sharedPrefHelper.setString("reasonOrg",et_reasonOrgAd.getText().toString());
-        sharedPrefHelper.setString("reasonPrevious",et_reasonPreviousAd.getText().toString());
         original_address = sharedPrefHelper.getString("original_address", "");
         next_address = sharedPrefHelper.getString("next_address", "");
         previous_address = sharedPrefHelper.getString("previous_address", "");
+
+        sharedPrefHelper.setString("address_type",et_reasonNextAd.getText().toString().trim()+" ("+address_type+")");
+        sharedPrefHelper.setString("address_type",et_reasonPreviousAd.getText().toString().trim()+" ("+address_type+")");
+        sharedPrefHelper.setString("address_type",et_reasonSubstituteAd.getText().toString().trim()+" ("+address_type+")");
     }
 
     private void setRadioButtonClick() {
@@ -135,21 +133,23 @@ SurveyModel surveyModel;
                         rl_layout.setVisibility(View.VISIBLE);
                         rl_layout_next.setVisibility(View.GONE);
                         rl_layout_previous.setVisibility(View.GONE);
-
                         break;
                     case R.id.rb_next_address:
+                        address_type="Next";
                         rl_layout_substituted.setVisibility(View.GONE);
                         rl_layout.setVisibility(View.GONE);
                         rl_layout_next.setVisibility(View.VISIBLE);
                         rl_layout_previous.setVisibility(View.GONE);
                         break;
                     case R.id.rb_previous_address:
+                        address_type="Previous";
                         rl_layout_substituted.setVisibility(View.GONE);
                         rl_layout.setVisibility(View.GONE);
                         rl_layout_next.setVisibility(View.GONE);
                         rl_layout_previous.setVisibility(View.VISIBLE);
                         break;
                     case R.id.rb_substituted_address:
+                        address_type="Substituted";
                         rl_layout_substituted.setVisibility(View.VISIBLE);
                         rl_layout.setVisibility(View.GONE);
                         rl_layout_next.setVisibility(View.GONE);

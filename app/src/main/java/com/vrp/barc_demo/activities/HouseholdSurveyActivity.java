@@ -906,6 +906,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                String id=rbTag.substring(sepPos+1);
                                int sepPosID = rbTag.indexOf("^");
                                String radioID = rbTag.substring(0, sepPosID);
+                               int iddd=group.getId();
                                if(id.equals("1")){
                                    setTerminattion(id);
                                    //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
@@ -917,11 +918,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         totalScreen=totalScreen-2;
                                     }
                                }
-                               //start recording here
-                               if (checkedId==101){
-                                   iv_recording.setVisibility(View.VISIBLE);
-                                   startRecordingAnimation();
-                                   startRecording();
+                               else if(iddd==24){
+                                   //start recording here
+                                   if (radioID.equals("1")) {
+                                       iv_recording.setVisibility(View.VISIBLE);
+                                       startRecordingAnimation();
+                                       startRecording();
+                                   }
                                }
                            }
                        });

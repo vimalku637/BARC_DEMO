@@ -10,6 +10,7 @@ package com.vrp.barc_demo.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -17,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -58,6 +60,7 @@ import com.vrp.barc_demo.utils.ActivityCommunicator;
 import com.vrp.barc_demo.utils.AlertDialogClass;
 import com.vrp.barc_demo.utils.CommonClass;
 import com.vrp.barc_demo.utils.FragmentCommunicator;
+import com.vrp.barc_demo.utils.LimitTextWatcher;
 import com.vrp.barc_demo.utils.MyJSON;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
@@ -128,6 +131,8 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
     private String activityAssignedValue ="";
     private static final String STRING_VALUE ="stringValue";
     public Context context;
+    private String name="";
+    private int ageInYears=0;
 
     public GroupRelationFragment() {
         // Required empty public constructor
@@ -247,6 +252,27 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                 flag=false;
                                 break;
+                            }else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("33")) {
+                                name=editText.getText().toString().trim();
+                                sharedPrefHelper.setString("name", name);
+                            }else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("35")) {
+                                ageInYears=Integer.parseInt(editText.getText().toString().trim());
+                                sharedPrefHelper.setInt("ageInYears", ageInYears);
+                                if(ageInYears<1){
+                                    Toast.makeText(context, "Age should be greater then 0", Toast.LENGTH_SHORT).show();
+                                    flag=false;
+                                    break;
+                                }
+                                /*else if(ageInYears>99){
+                                    openDialogForAgeConfirmation();
+                                    flag=false;
+                                    break;
+                                }*/
+                                else if(ageInYears>120){
+                                    Toast.makeText(context, "Age should be less then 120", Toast.LENGTH_SHORT).show();
+                                    flag=false;
+                                    break;
+                                }
                             }
                             nextPosition++;
                             count++;
@@ -454,7 +480,8 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                         questionsPopulate();
 
-                    }else{
+                    }
+                    else{
                         Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
                     }
                 }
@@ -623,6 +650,27 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
         });
     }
 
+    private void openDialogForAgeConfirmation() {
+        new AlertDialog.Builder(context).setTitle("Alert!")
+                .setMessage("Are you sure age is greater then "
+                        +sharedPrefHelper.getString("ageInYears", ""))
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //TODO here
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //TODO here
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert).show();
+    }
+
     private void sendSurveyDataOnServer(RequestBody body) {
         AlertDialogClass.showProgressDialog(getActivity());
         ApiClient.getClient().create(BARC_API.class).sendSurveyData(body).enqueue(new Callback<JsonObject>() {
@@ -719,6 +767,28 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }else{
                             editText.setInputType(InputType.TYPE_CLASS_TEXT);
                         }
+                        /*if (jsonObjectQuesType.getString("question_id").equals("33")) {
+                            int maxLength=25;
+                            editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
+                                @Override
+                                public void callback(int left) {
+                                    if(left <= 0) {
+                                        Toast.makeText(getActivity(), "input is full.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }));
+                        }
+                        if (jsonObjectQuesType.getString("question_id").equals("35")) {
+                            int maxLength=3;
+                            editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
+                                @Override
+                                public void callback(int left) {
+                                    if(left <= 0) {
+                                        Toast.makeText(getActivity(), "input is full.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }));
+                        }*/
                         editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
                         if(jsonObjectQuesType.getString("pre_field").equals("1")){
                             editText.setEnabled(false);
@@ -727,7 +797,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             editText.setText(answerModelList.get(startPosition).getOption_value());
                         }
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
                         txtLabel.setText(description);
                         txtLabel.setTypeface(null, Typeface.BOLD);
                         txtLabel.setTextSize(14);
@@ -740,7 +810,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     else if (jsonObjectQuesType.getString("question_type").equals("2")) {
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
@@ -792,7 +862,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     else if (jsonObjectQuesType.getString("question_type").equals("3")) {
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
@@ -834,7 +904,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     else if (jsonObjectQuesType.getString("question_type").equals("4")) {
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
@@ -887,7 +957,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         TextView textView=new TextView(getActivity());
                         textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
                         description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name","Ram"));
                         if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                         }
@@ -923,4 +993,5 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
     public void passDataToFragment(String someValue) {
 
     }
+
 }

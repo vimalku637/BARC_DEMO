@@ -94,6 +94,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 values.put("date_time", "");
                 values.put("household_name", sharedPrefHelper.getString("interviewer_name", ""));
                 values.put("address", "");
+                values.put("address_type", sharedPrefHelper.getString("address_type", ""));
                 values.put("flag", "0");
 
                 values.put("status", "0");

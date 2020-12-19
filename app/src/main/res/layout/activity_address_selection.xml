@@ -40,23 +40,6 @@
                     android:text=""
                     android:layout_marginStart="@dimen/margin30"
                     />
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_reason1234"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin10"
-                    android:layout_marginStart="@dimen/margin30"
-                    app:errorEnabled="true"
-                    android:layout_below="@+id/tv_original_address" >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_reasonOrgAd"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/margin5"
-                        android:hint="@string/reson_of_selecting_substitute_address" />
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_start"
@@ -68,7 +51,7 @@
                     android:paddingBottom="@dimen/margin15"
                     app:cornerRadius="@dimen/margin8"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/til_reason1234"
+                    android:layout_below="@+id/tv_original_address"
                     android:textColor="@android:color/white" />
 
             </RelativeLayout>
@@ -95,7 +78,7 @@
                     android:layout_marginStart="@dimen/margin30"
                     />
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_reason12"
+                    android:id="@+id/til_reason_next_address"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -109,7 +92,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/margin5"
-                        android:hint="@string/reson_of_selecting_substitute_address" />
+                        android:hint="@string/reason_of_selecting_next_address" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -122,7 +105,7 @@
                     android:paddingBottom="@dimen/margin15"
                     app:cornerRadius="@dimen/margin8"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/til_reason12"
+                    android:layout_below="@+id/til_reason_next_address"
                     android:textColor="@android:color/white" />
 
             </RelativeLayout>
@@ -149,7 +132,7 @@
                     android:layout_marginStart="@dimen/margin30"
                     />
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_reason123"
+                    android:id="@+id/til_reason_previous_address"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -163,7 +146,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/margin5"
-                        android:hint="@string/reson_of_selecting_substitute_address" />
+                        android:hint="@string/reason_of_selecting_previous_address" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -176,7 +159,7 @@
                     android:paddingBottom="@dimen/margin15"
                     app:cornerRadius="@dimen/margin8"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/til_reason123"
+                    android:layout_below="@+id/til_reason_previous_address"
                     android:textColor="@android:color/white" />
 
             </RelativeLayout>
@@ -211,7 +194,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_reason"
+                    android:id="@+id/til_reason_substitute_address"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -221,7 +204,7 @@
                     android:layout_below="@+id/ll_spinner" >
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_reason"
+                        android:id="@+id/et_reasonSubstituteAd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/margin5"
@@ -238,7 +221,7 @@
                     android:paddingBottom="@dimen/margin15"
                     app:cornerRadius="@dimen/margin8"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/til_reason"
+                    android:layout_below="@+id/til_reason_substitute_address"
                     android:textColor="@android:color/white" />
 
             </RelativeLayout>

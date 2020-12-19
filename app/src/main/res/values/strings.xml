@@ -43,7 +43,7 @@
     <string name="next_address">Next Address</string>
     <string name="previous_address">Previous Address</string>
     <string name="substituted_address">Substituted Address</string>
-    <string name="reson_of_selecting_substitute_address">Reson of selecting substitute address</string>
+    <string name="reson_of_selecting_substitute_address">Reason of selecting substitute address</string>
     <string name="select_railway_station">Select Railway Station</string>
     <string name="take_survey">Take Survey</string>
     <string name="select_language">Select Language</string>
@@ -80,4 +80,6 @@
     <string name="reason_of_halt">Please choose reason of halt.</string>
     <string name="pending">P</string>
     <string name="recording">Recording</string>
+    <string name="reason_of_selecting_next_address">Reason of selecting next address</string>
+    <string name="reason_of_selecting_previous_address">Reason of selecting previous address</string>
 </resources>
