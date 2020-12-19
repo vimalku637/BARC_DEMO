@@ -103,7 +103,7 @@ public class TerminateActivity extends AppCompatActivity {
     /*normal widgets*/
     private Context context=this;
     private String screen_type="", radio_button_id="", reason="",survey_id,
-            halt_radio_button_id="";
+            halt_radio_button_id="", AudioSavePathInDevice="";
     private SqliteHelper sqliteHelper;
     private SharedPrefHelper sharedPrefHelper;
     public static ArrayList<AnswerModel> answerModelList;
@@ -122,9 +122,14 @@ public class TerminateActivity extends AppCompatActivity {
         if (bundle!=null) {
             screen_type=bundle.getString("screen_type", "");
             radio_button_id=bundle.getString("radio_button_id", "");
+            AudioSavePathInDevice=bundle.getString("AudioSavePathInDevice", "");
             answerModelList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
         }
         survey_id=sharedPrefHelper.getString("survey_id", "");
+        //date-time
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        sharedPrefHelper.setString("dateTime", dateFormat.format(cal.getTime()));
         hideShowOptions();
         setValues();
         getRadioButtonValues();
@@ -209,15 +214,17 @@ public class TerminateActivity extends AppCompatActivity {
                     json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
                     json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                     json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
-                    json_object.put("GPS_latitude", "27.883743");
-                    json_object.put("GPS_longitude", "79.912247");
-                    /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
-                     json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
+                    if (AudioSavePathInDevice!=null) {
+                        json_object.put("audio_recording", AudioSavePathInDevice);
+                    }
+                    json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));
                     if (!radio_button_id.equals("")) {
                         json_object.put("reason", radio_button_id);
                         json_object.put("description", "terminate");
                     }
                     json_object.put("survey_data", json_array);
+                    json_object.put("date_time", sharedPrefHelper.getString("dateTime", ""));
                     Log.e(TAG, "onClick: " + json_object.toString());
 
                     //sqliteHelper.saveSurveyDataInTable(json_object, sharedPrefHelper.getString("survey_id", ""));
@@ -308,10 +315,11 @@ public class TerminateActivity extends AppCompatActivity {
                             json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
                             json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                             json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
-                            json_object.put("GPS_latitude", "27.883743");
-                            json_object.put("GPS_longitude", "79.912247");
-                            /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
-                            json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
+                            if (AudioSavePathInDevice!=null) {
+                                json_object.put("audio_recording", AudioSavePathInDevice);
+                            }
+                            json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                            json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));
                             json_object.put("reason", reason);
                             json_object.put("description", reason);
                             json_object.put("date_time", et_date_time.getText().toString().trim());
@@ -443,5 +451,9 @@ public class TerminateActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

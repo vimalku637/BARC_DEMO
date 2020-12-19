@@ -81,9 +81,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -237,7 +239,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             @Override
             public void onClick(View view) {
                 //save data in to local DB.
-                Gson gson = new Gson();
+                /*Gson gson = new Gson();
                 String listString = gson.toJson(
                         answerModelList,
                         new TypeToken<ArrayList<AnswerModel>>() {}.getType());
@@ -255,7 +257,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
     }
@@ -513,6 +515,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     }
                 if(buttonText.equals("Submit")){
                     //Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
+                    stopRecording();
                     //save data in to local DB.
                     Gson gson = new Gson();
                     String listString = gson.toJson(
@@ -533,13 +536,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         json_object.put("survey_id", survey_id);
                         json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                         json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
-                        json_object.put("GPS_latitude", "27.883743");
-                        json_object.put("GPS_longitude", "79.912247");
-                        /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
-                        json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
+                        if (AudioSavePathInDevice!=null) {
+                            json_object.put("audio_recording", AudioSavePathInDevice);
+                        }
+                        json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                        json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));
                         json_object.put("survey_data", json_array);
                         json_object.put("family_data", json_array_family);
                         json_object.put("tv_data", json_array_TV);
+                        json_object.put("date_time", sharedPrefHelper.getString("dateTime", ""));
                         Log.e(TAG, "onClick: "+json_object.toString());
 
                         if (screen_type.equals("survey_list")) {
@@ -592,10 +597,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     json_object.put("survey_id", survey_id);
                                     json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                                     json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
-                                    json_object.put("GPS_latitude", "27.883743");
-                                    json_object.put("GPS_longitude", "79.912247");
-                                    /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
-                                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
+                                    json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));
                                     json_object.put("survey_data", json_array);
                                     Log.e(TAG, "onClick: "+json_object.toString());
 
@@ -1091,7 +1094,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 e.printStackTrace();
             }
         }
-        Toast.makeText(context, ""+AudioSavePathInDevice, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, ""+AudioSavePathInDevice, Toast.LENGTH_SHORT).show();
     }
     public boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(context,
@@ -1181,7 +1184,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         intentTerminate.putExtra("screen_type", "terminate");
         intentTerminate.putExtra("radio_button_id", id);//id=(reason)
         intentTerminate.putExtra("answerModelList", answerModelList);
+        if (AudioSavePathInDevice!=null) {
+            intentTerminate.putExtra("AudioSavePathInDevice", AudioSavePathInDevice);
+        }
         startActivity(intentTerminate);
+        finish();
         /*//save data in to local DB.
         Gson gson = new Gson();
         String listString = gson.toJson(
@@ -1290,8 +1297,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
     @Override
     protected void onDestroy() {
-        onBackPressedListener = null;
         super.onDestroy();
+        onBackPressedListener = null;
+        stopRecording();
     }
     @Override
     public void passDataToActivity(ArrayList<AnswerModel> answerModelList,int type){
@@ -1321,5 +1329,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         audioManager.startBluetoothSco();
         // Stop Speaker.
         audioManager.setSpeakerphoneOn(false);
+
+        //date-time
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        sharedPrefHelper.setString("dateTime", dateFormat.format(cal.getTime()));
     }
 }
