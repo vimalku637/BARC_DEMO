@@ -115,6 +115,11 @@ SurveyModel surveyModel;
     }
 
     private void getPreferencesData() {
+
+        sharedPrefHelper.setString("reason",et_reason.getText().toString());
+        sharedPrefHelper.setString("reasonNext",et_reasonNextAd.getText().toString());
+        sharedPrefHelper.setString("reasonOrg",et_reasonOrgAd.getText().toString());
+        sharedPrefHelper.setString("reasonPrevious",et_reasonPreviousAd.getText().toString());
         original_address = sharedPrefHelper.getString("original_address", "");
         next_address = sharedPrefHelper.getString("next_address", "");
         previous_address = sharedPrefHelper.getString("previous_address", "");
@@ -173,15 +178,15 @@ SurveyModel surveyModel;
         });
     }
 
+
     private void setValues() {
         tv_original_address.setText(original_address);
         tv_next_address.setText(next_address);
         tv_previous_address.setText(previous_address);
-//        surveyModel.setReason(et_reason.getText().toString());
 //        surveyModel.setReason(et_reasonPreviousAd.getText().toString());
 //        surveyModel.setReason(et_reasonNextAd.getText().toString());
 //        surveyModel.setReason(et_reasonOrgAd.getText().toString());
-//
+
 
 
     }
