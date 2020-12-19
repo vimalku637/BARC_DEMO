@@ -911,7 +911,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
                                }else if(group.getId()==23){
                                     sharedPrefHelper.setString("CWE_Status",radioID);
-                                    if(radioID.equalsIgnoreCase("2")){
+                                    if(radioID.equalsIgnoreCase("1")){
                                         jsonArrayScreen.remove(11);
                                         jsonArrayScreen.remove(11);
                                         totalScreen=totalScreen-2;

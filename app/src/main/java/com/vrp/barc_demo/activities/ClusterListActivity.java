@@ -129,6 +129,7 @@ public class ClusterListActivity extends AppCompatActivity {
                             ContentValues contentValues = new ContentValues();
                             while (keys.hasNext()) {
                                 String currentDynamicKey = (String) keys.next();
+                                if(!currentDynamicKey.equalsIgnoreCase("NCC_catagory"))
                                 contentValues.put(currentDynamicKey, jsonObject.get(currentDynamicKey).toString());
                             }
                             sqliteHelper.saveMasterTable(contentValues, "cluster");
