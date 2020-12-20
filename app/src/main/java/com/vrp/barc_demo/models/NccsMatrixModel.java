@@ -34,11 +34,13 @@ public class NccsMatrixModel {
     public static final String COLUMN_EDUCATION = "education_id";
     public static final String COLUMN_CATEGORY = "nccs_category";
     public static final String COLUMN_DURABLES = "durables_id";
+    public static final String COLUMN_NCCS_EDUCATION = "nccs_education_id";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_EDUCATION + " INTEGER,"
+                    + COLUMN_NCCS_EDUCATION + " INTEGER,"
                     + COLUMN_CATEGORY + " TEXT,"
                     + COLUMN_DURABLES + " TEXT"
                     + ")";

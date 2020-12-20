@@ -143,16 +143,21 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     public boolean getNCCMatrix(String education_id,String durables_id,String NCC_catagory) {
         boolean status=false;
+        String[]  arraydurables = durables_id.split(",");
+        int durableLength=arraydurables.length;
+        int nccs_education_id=getNCCSEducationID(education_id);
         SQLiteDatabase db = this.getReadableDatabase();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "Select nccs_category from nccs_matrix where education_id="+education_id+" AND durables_id in("+durables_id+")";
+                String query = "Select nccs_category from nccs_matrix where nccs_education_id="+nccs_education_id+" AND durables_id in("+durableLength+")";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
                         String st_nccs_category=cursor.getString(cursor.getColumnIndex("nccs_category"));
-                        status=true;
+                        if(NCC_catagory.equals(st_nccs_category)){
+                            status=true;
+                        }
                         cursor.moveToNext();
                     }
                     db.close();
@@ -163,6 +168,28 @@ public class SqliteHelper extends SQLiteOpenHelper {
             db.close();
         }
         return status;
+    }
+    public int getNCCSEducationID(String education_id) {
+        int nccs_education_id=0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "Select nccs_education_id from nccs_matrix where education_id="+education_id+" limit 0,1";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        nccs_education_id=Integer.parseInt(cursor.getString(cursor.getColumnIndex("nccs_education_id")));
+                        cursor.moveToNext();
+                    }
+                    db.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return nccs_education_id;
     }
 
     public ArrayList<SurveyModel> getSurveyList() {
