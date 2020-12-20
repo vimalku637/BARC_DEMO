@@ -22,9 +22,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -236,6 +238,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         if (childView instanceof EditText) {
                             EditText editText = (EditText) childView;
                             int viewID=editText.getId();
+                            String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
                             }
@@ -252,24 +255,17 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                 flag=false;
                                 break;
-                            }else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("33")) {
+                            }else if (questionID.equals("33")) {
                                 name=editText.getText().toString().trim();
                                 sharedPrefHelper.setString("name", name);
-                            }else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("35")) {
+                            }else if (questionID.equals("35")) {
                                 ageInYears=Integer.parseInt(editText.getText().toString().trim());
                                 sharedPrefHelper.setInt("ageInYears", ageInYears);
                                 if(ageInYears<1){
-                                    Toast.makeText(context, "Age should be greater then 0", Toast.LENGTH_SHORT).show();
                                     flag=false;
                                     break;
                                 }
-                                /*else if(ageInYears>99){
-                                    openDialogForAgeConfirmation();
-                                    flag=false;
-                                    break;
-                                }*/
                                 else if(ageInYears>120){
-                                    Toast.makeText(context, "Age should be less then 120", Toast.LENGTH_SHORT).show();
                                     flag=false;
                                     break;
                                 }
@@ -650,22 +646,22 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
         });
     }
 
-    private void openDialogForAgeConfirmation() {
+    private void openDialogForAgeConfirmation(EditText editText) {
         new AlertDialog.Builder(context).setTitle("Alert!")
-                .setMessage("Are you sure age is greater then "
-                        +sharedPrefHelper.getString("ageInYears", ""))
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setMessage("Are you sure age is greater then 99")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         //TODO here
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         //TODO here
+                        editText.setText("");
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert).show();
@@ -767,7 +763,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }else{
                             editText.setInputType(InputType.TYPE_CLASS_TEXT);
                         }
-                        /*if (jsonObjectQuesType.getString("question_id").equals("33")) {
+                        if (jsonObjectQuesType.getString("question_id").equals("33")) {
                             int maxLength=25;
                             editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
                                 @Override
@@ -788,7 +784,34 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     }
                                 }
                             }));
-                        }*/
+                        }
+                        if (jsonObjectQuesType.getString("question_id").equals("35")) {
+                            editText.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    String age=editText.getText().toString().trim();
+                                    if (!age.equals("")) {
+                                        int ageInYear=Integer.parseInt(age);
+                                        if (ageInYear>99){
+                                            //Toast.makeText(getActivity(), "Are you sure age is greater then 99.", Toast.LENGTH_SHORT).show();
+                                            openDialogForAgeConfirmation(editText);
+                                        } else {
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+
+                                }
+                            });
+                        }
+
                         editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
                         if(jsonObjectQuesType.getString("pre_field").equals("1")){
                             editText.setEnabled(false);
@@ -914,14 +937,53 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         ArrayList<String> spinnerAL=new ArrayList<>();
                         for (int j = 0; j <jsonArrayOptions.length() ; j++) {
                             spinnerAL.clear();
-                            for (int k = 0; k < jsonArrayOptions.length(); k++) {
-                                JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
-                                String spinnerOption=jsonObjectOptionValues.getString("option_value");
-                                spinnerAL.add(spinnerOption);
+                            if (jsonObjectQuesType.getString("question_id").equals("36")&&sharedPrefHelper.getInt("ageInYears",0)<15){
+                                for (int k = 0; k < 5; k++) {
+                                    JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
+                                    String spinnerOption=jsonObjectOptionValues.getString("option_value");
+                                    spinnerAL.add(spinnerOption);
+                                }
+                            }
+                            else if(jsonObjectQuesType.getString("question_id").equals("37")&&sharedPrefHelper.getInt("ageInYears",0)<5){
+                                for (int k = 0; k < 1; k++) {
+                                    JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
+                                    String spinnerOption=jsonObjectOptionValues.getString("option_value");
+                                    spinnerAL.add(spinnerOption);
+                                }
+                            }
+                            else {
+                                for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                    JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
+                                    String spinnerOption=jsonObjectOptionValues.getString("option_value");
+                                    spinnerAL.add(spinnerOption);
+                                }
                             }
                             spinnerAL.add(0, getString(R.string.select_option));
                             ArrayAdapter arrayAdapter=new ArrayAdapter(getActivity(), R.layout.custom_spinner_dropdown, spinnerAL);
                             spinner.setAdapter(arrayAdapter);
+                            if(jsonObjectQuesType.getString("question_id").equals("36")&&sharedPrefHelper.getInt("ageInYears",0) < 5) {
+                                /*if (sharedPrefHelper.getInt("ageInYears",0) < 5) {*/
+                                    String education = "Illiterate";
+                                    int spinnerPosition = 0;
+                                    String strpos1 = education;
+                                    if (strpos1 != null || !strpos1.equals(null) || !strpos1.equals("")) {
+                                        strpos1 = education;
+                                        spinnerPosition = arrayAdapter.getPosition(strpos1);
+                                        spinner.setSelection(spinnerPosition);
+                                        spinnerPosition = 0;
+                                    /*}*/
+                                }
+                            }if (jsonObjectQuesType.getString("question_id").equals("37")&&sharedPrefHelper.getInt("ageInYears",0) < 5){
+                                String workingStatus = "Not Working";
+                                int spinnerPosition = 0;
+                                String strpos1 = workingStatus;
+                                if (strpos1 != null || !strpos1.equals(null) || !strpos1.equals("")) {
+                                    strpos1 = workingStatus;
+                                    spinnerPosition = arrayAdapter.getPosition(strpos1);
+                                    spinner.setSelection(spinnerPosition);
+                                    spinnerPosition = 0;
+                                }
+                            }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                                 spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
                             }
