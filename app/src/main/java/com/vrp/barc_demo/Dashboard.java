@@ -3,6 +3,8 @@ package com.vrp.barc_demo;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -38,7 +41,7 @@ public class Dashboard extends AppCompatActivity {
     @BindView(R.id.tv_Totalcluster)
     TextView tv_Totalcluster;
     @BindView(R.id.et_clucode)
-    TextView et_clucode;
+    AutoCompleteTextView et_clucode;
     @BindView(R.id.tv_totalsurvey)
     TextView tv_totalsurvey;
     @BindView(R.id.spn_city)
@@ -50,6 +53,7 @@ public class Dashboard extends AppCompatActivity {
     ArrayList<String> CityArrayList;
     boolean isEditable = false;
     String city_name;
+    String clid;
     int CityName;
     Context context = this;
     int strTotalSurvey;
@@ -58,7 +62,7 @@ public class Dashboard extends AppCompatActivity {
     int countComplete;
     int countTerminate;
     int TotalclusterLock;
-
+    ArrayList<String> clu_id = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,9 +146,18 @@ public class Dashboard extends AppCompatActivity {
 //        dataSet.setColors(new int[]{R.color.color_green_google, R.color.color_red_google, R.color.color_yellow_google}, Dashboard.this);
 
         //PieChart Ends Here
-
+        clu_id = sqliteHelper.getClusterID();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (this, android.R.layout.select_dialog_item, clu_id);
+        et_clucode.setThreshold(1); //will start working from first character
+        et_clucode.setAdapter(adapter);
+        clid = et_clucode.getText().toString();
 
     }
+
+
+
+
 
     private void setCitySpinner() {
         CityArrayList.clear();

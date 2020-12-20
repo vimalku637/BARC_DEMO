@@ -183,12 +183,6 @@ public class AddressSelection extends AppCompatActivity {
         tv_original_address.setText(original_address);
         tv_next_address.setText(next_address);
         tv_previous_address.setText(previous_address);
-//        surveyModel.setReason(et_reasonPreviousAd.getText().toString());
-//        surveyModel.setReason(et_reasonNextAd.getText().toString());
-//        surveyModel.setReason(et_reasonOrgAd.getText().toString());
-
-
-
     }
 
     private void setButtonClick() {

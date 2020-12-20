@@ -309,6 +309,40 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return inserted_id;
     }
 
+
+
+
+    public ArrayList<String> getClusterID() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<String> arrayList = new ArrayList<>();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "select cluster_no from cluster";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+
+                    while (!cursor.isAfterLast()) {
+//                        PhcPojo phcPojo = new PhcPojo();
+                        String name = cursor.getString(cursor.getColumnIndex("cluster_no"));
+
+                        cursor.moveToNext();
+                        arrayList.add(name);
+                    }
+                    db.close();
+                }
+            }
+        } catch (Exception e) {
+
+
+            e.printStackTrace();
+            db.close();
+        }
+        return arrayList;
+    }
+
+
+
     public String getSurveyData(String survey_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String surveyJSON="";
