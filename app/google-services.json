@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "59815770322",
+    "project_id": "barc-rm-app",
+    "storage_bucket": "barc-rm-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59815770322:android:224bb658617c5f1b36550b",
+        "android_client_info": {
+          "package_name": "com.vrp.barc_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "59815770322-j2tbvsek33ocholh9jas9cfegp66njs1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqKo-Rm7Bp6ZopNYjWFaw_JutzTYg9rzs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "59815770322-j2tbvsek33ocholh9jas9cfegp66njs1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

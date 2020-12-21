@@ -38,7 +38,8 @@ import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class AddressSelection extends AppCompatActivity {
-    @BindView(R.id.rg_address)
+    @BindView
+            (R.id.rg_address)
     RadioGroup rg_address;
     @BindView(R.id.rb_original_address)
     RadioButton rb_original_address;
