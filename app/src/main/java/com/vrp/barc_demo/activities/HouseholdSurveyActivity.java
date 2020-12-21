@@ -608,7 +608,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     }
                                 }
                                 if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("29")){
+                                    if(selectedOptions.contains("4"))
                                     sharedPrefHelper.setString("selectedDurables",selectedOptions);
+                                    else
+                                        setTerminattion("Durables");
+
                                 }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("78")){
                                     sharedPrefHelper.setString("family_language",""+selectedOptions);
@@ -1006,7 +1010,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        }
                        else if (jsonObjectQuesType.getString("field_name").equals("nccs_matrix")) {
                            boolean status=sqliteHelper.getNCCMatrix(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id(),sharedPrefHelper.getString("nccs_matrix", ""));
+                           if(status)
                            editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
+                           else
+                               setTerminattion("NCCS Calculator");
                        }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
