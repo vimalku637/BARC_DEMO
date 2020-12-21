@@ -62,7 +62,7 @@ public class NotificationUtils {
             return;
 
         // notification icon
-        final int icon = R.drawable.ic_person;
+        final int icon = R.drawable.bilogo;
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         final PendingIntent resultPendingIntent =
@@ -117,7 +117,7 @@ public class NotificationUtils {
         notificationBuilder.setSound(alarmSound);
         notificationBuilder.setStyle(inboxStyle);
         notificationBuilder.setWhen(Calendar.getInstance().getTimeInMillis());
-        notificationBuilder.setSmallIcon(R.drawable.ic_person);
+        notificationBuilder.setSmallIcon(R.drawable.bilogo);
         notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon));
         notificationBuilder.setContentText(message);
         notificationBuilder.setPriority(Notification.PRIORITY_HIGH);
@@ -154,7 +154,7 @@ public class NotificationUtils {
         notificationBuilder.setSound(alarmSound);
         notificationBuilder.setStyle(bigPictureStyle);
         notificationBuilder.setWhen(Calendar.getInstance().getTimeInMillis());
-        notificationBuilder.setSmallIcon(R.drawable.ic_person);
+        notificationBuilder.setSmallIcon(R.drawable.bilogo);
         notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon));
         notificationBuilder.setContentText(message);
         notificationBuilder.setPriority(Notification.PRIORITY_HIGH);

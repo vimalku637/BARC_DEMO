@@ -233,6 +233,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                         loginModel.setUser_name(et_user_name.getText().toString());
                         loginModel.setUser_password(et_password.getText().toString());
+                    //    loginModel.setFirebase_token(sharedPrefHelper.getString("Token",""));
                         Gson gson = new Gson();
                         String data = gson.toJson(loginModel);
                         MediaType JSON = MediaType.parse("application/json; charset=utf-8");

@@ -27,4 +27,13 @@ public class LoginModel {
 
     private  String user_name;
     private  String user_password;
+    private  String firebase_token;
+
+    public String getFirebase_token() {
+        return firebase_token;
+    }
+
+    public void setFirebase_token(String firebase_token) {
+        this.firebase_token = firebase_token;
+    }
 }
