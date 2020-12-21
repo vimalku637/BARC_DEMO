@@ -764,7 +764,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             editText.setInputType(InputType.TYPE_CLASS_TEXT);
                         }
                         if (jsonObjectQuesType.getString("question_id").equals("33")) {
-                            int maxLength=25;
+                            int maxLength=50;
                             editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
                                 @Override
                                 public void callback(int left) {

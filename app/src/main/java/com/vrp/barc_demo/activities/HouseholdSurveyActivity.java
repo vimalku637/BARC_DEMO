@@ -10,6 +10,7 @@ package com.vrp.barc_demo.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -22,9 +23,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,6 +52,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -72,6 +76,7 @@ import com.vrp.barc_demo.utils.ActivityCommunicator;
 import com.vrp.barc_demo.utils.AlertDialogClass;
 import com.vrp.barc_demo.utils.CommonClass;
 import com.vrp.barc_demo.utils.FragmentCommunicator;
+import com.vrp.barc_demo.utils.LimitTextWatcher;
 import com.vrp.barc_demo.utils.MyJSON;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
@@ -152,6 +157,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     public static String AudioSavePathInDevice = null;
     //initialization MediaPlayer
     MediaPlayer mediaPlayer=new MediaPlayer();
+    private String name="";
+    private int ageInYears=0;
+    private String mobileNo="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -396,6 +404,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             if (childView instanceof EditText) {
                                 EditText editText = (EditText) childView;
                                 int viewID=editText.getId();
+                                String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
                                 editFieldValues=editText.getText().toString().trim();
                                 groupQuestionID=Integer.parseInt(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
@@ -414,6 +423,27 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                     flag=false;
                                     break;
+                                }else if (questionID.equals("46")) {
+                                    name=editText.getText().toString().trim();
+                                    sharedPrefHelper.setString("name", name);
+                                }else if (questionID.equals("47")) {
+                                    ageInYears=Integer.parseInt(editText.getText().toString().trim());
+                                    sharedPrefHelper.setInt("ageInYears", ageInYears);
+                                    if(ageInYears<1){
+                                        flag=false;
+                                        break;
+                                    }
+                                    else if(ageInYears>120){
+                                        flag=false;
+                                        break;
+                                    }
+                                }else if(questionID.equals("88")||questionID.equals("108")){
+                                    mobileNo=editText.getText().toString().trim();
+                                    sharedPrefHelper.setString("mobile_no", mobileNo);
+                                    if (mobileNo.length()>10){
+                                        flag=false;
+                                        break;
+                                    }
                                 }
                                 nextPosition++;
                                 count++;
@@ -433,6 +463,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 }
                                 if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("71")){
                                     sharedPrefHelper.setString("stayWith",""+radioID);
+                                }else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("83")){
+                                    sharedPrefHelper.setString("accessInternetOnMobile",""+radioID);
                                 }
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     //if((back_status==true || screen_type.equals("survey_list")) && answerModelList.get(startPositionBefore).getQuestionID().equals(jsonArrayQuestions.getJSONObject(count).getString("question_id"))){
@@ -456,7 +488,21 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             flag=false;
                                             break;
                                         }
-                                    }else{
+                                    }else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("82")){
+                                        String selectedOptions=sharedPrefHelper.getString("type_of_mobile","");
+                                        if (selectedOptions.equals("1")){
+                                            flag=true;
+                                        }else if(selectedOptions.equals("4")){
+                                            flag=true;
+                                        }else if(selectedOptions.equals("1,4")){
+                                            flag=true;
+                                        }
+                                        else{
+                                            flag=false;
+                                            break;
+                                        }
+                                    }
+                                    else{
                                         flag=false;
                                         break;
                                     }
@@ -468,6 +514,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 Spinner spinner = (Spinner) childView;
                                 if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("75")){
                                     sharedPrefHelper.setString("tenement_type",""+spinner.getSelectedItemId());
+                                }else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("84")){
+                                    sharedPrefHelper.setString("last_time_access_internet",""+spinner.getSelectedItemId());
                                 }
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
@@ -517,6 +565,23 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
+                                    else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("84")){
+                                        String accessInternetOnMobile=sharedPrefHelper.getString("accessInternetOnMobile","");
+                                        if (!accessInternetOnMobile.equals("1")){
+                                            flag=true;
+                                        }else{
+                                            flag=false;
+                                            break;
+                                        }
+                                    }else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("85")){
+                                        String lastTimeAccessInternet=sharedPrefHelper.getString("last_time_access_internet","");
+                                        if (lastTimeAccessInternet.equals("9")){
+                                            flag=true;
+                                        }else{
+                                            flag=false;
+                                            break;
+                                        }
+                                    }
                                     else{
                                         flag=false;
                                         break;
@@ -547,6 +612,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("78")){
                                     sharedPrefHelper.setString("family_language",""+selectedOptions);
+                                }
+                                else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("81")){
+                                    sharedPrefHelper.setString("type_of_mobile",""+selectedOptions);
                                 }
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     answerModelList.get(nextPosition).setOption_id(selectedOptions);
@@ -924,6 +992,66 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        }else{
                            editText.setInputType(InputType.TYPE_CLASS_TEXT);
                        }
+                       if (jsonObjectQuesType.getString("question_id").equals("46")) {
+                           int maxLength=50;
+                           editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
+                               @Override
+                               public void callback(int left) {
+                                   if(left <= 0) {
+                                       Toast.makeText(context, "input is full.", Toast.LENGTH_SHORT).show();
+                                   }
+                               }
+                           }));
+                       }
+                       if (jsonObjectQuesType.getString("question_id").equals("47")) {
+                           int maxLength=3;
+                           editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
+                               @Override
+                               public void callback(int left) {
+                                   if(left <= 0) {
+                                       Toast.makeText(context, "input is full.", Toast.LENGTH_SHORT).show();
+                                   }
+                               }
+                           }));
+                       }
+                       if (jsonObjectQuesType.getString("question_id").equals("47")) {
+                           editText.addTextChangedListener(new TextWatcher() {
+                               @Override
+                               public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                               }
+
+                               @Override
+                               public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                   String age=editText.getText().toString().trim();
+                                   if (!age.equals("")) {
+                                       int ageInYear=Integer.parseInt(age);
+                                       if (ageInYear>99){
+                                           //Toast.makeText(getActivity(), "Are you sure age is greater then 99.", Toast.LENGTH_SHORT).show();
+                                           openDialogForAgeConfirmation(editText);
+                                       } else {
+                                       }
+                                   }
+                               }
+
+                               @Override
+                               public void afterTextChanged(Editable editable) {
+
+                               }
+                           });
+                       }
+                       if (jsonObjectQuesType.getString("question_id").equals("88")
+                               ||jsonObjectQuesType.getString("question_id").equals("108")){
+                           int maxLength=10;
+                           editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
+                               @Override
+                               public void callback(int left) {
+                                   if(left <= 0) {
+                                       Toast.makeText(context, "input is full.", Toast.LENGTH_SHORT).show();
+                                   }
+                               }
+                           }));
+                       }
                        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
                        if(jsonObjectQuesType.getString("pre_field").equals("1")){
                            editText.setEnabled(false);
@@ -933,7 +1061,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        }
                        String description=jsonObjectQuesType.getString("question_name");
                        //description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
-                       description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                       description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
                        txtLabel.setText(description);
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        txtLabel.setTextSize(14);
@@ -984,6 +1112,26 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                String tenement_type=sharedPrefHelper.getString("tenement_type","");
                                if(tenement_type.equals("1") && jsonObjectOptionValues.getString("option_id").equals("1")){
                                    radioButton.setChecked(true);
+                               }
+                           }
+                           else if(jsonObjectQuesType.getString("question_id").equals("82")){
+                               String type_of_mobile=sharedPrefHelper.getString("type_of_mobile","");
+                               if (type_of_mobile.equals("1")){
+                                   txtLabel.setVisibility(View.GONE);
+                                   radioButton.setVisibility(View.GONE);
+                               }if (type_of_mobile.equals("4")){
+                                   txtLabel.setVisibility(View.GONE);
+                                   radioButton.setVisibility(View.GONE);
+                               }if(type_of_mobile.equals("1,4")){
+                                   txtLabel.setVisibility(View.GONE);
+                                   radioButton.setVisibility(View.GONE);
+                               }
+                           }
+                           else if(jsonObjectQuesType.getString("question_id").equals("84")){
+                               String accessInternetOnMobile=sharedPrefHelper.getString("accessInternetOnMobile","");
+                               if(!accessInternetOnMobile.equals("1")){
+                                   txtLabel.setVisibility(View.GONE);
+                                   radioButton.setVisibility(View.GONE);
                                }
                            }
                            if (radioGroup != null) {
@@ -1054,7 +1202,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                    else if (jsonObjectQuesType.getString("question_type").equals("3")) {
                        TextView txtLabel = new TextView(this);
                        String description=jsonObjectQuesType.getString("question_name");
-                       description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
+                       description=description.replaceAll("$name",sharedPrefHelper.getString("name",""));
                        txtLabel.setText(description);
                        txtLabel.setTextSize(14);
                        txtLabel.setTypeface(null, Typeface.BOLD);
@@ -1125,7 +1273,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                    else if (jsonObjectQuesType.getString("question_type").equals("4")) {
                        TextView txtLabel = new TextView(this);
                        String description=jsonObjectQuesType.getString("question_name");
-                       description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
+                       description=description.replaceAll("$name",sharedPrefHelper.getString("name",""));
                        txtLabel.setText(description);
                        txtLabel.setTextSize(14);
                        txtLabel.setTypeface(null, Typeface.BOLD);
@@ -1189,6 +1337,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                spinner.setVisibility(View.GONE);
                            }
                        }
+                       if (questionID.equals("85")){
+                           String lastTimeAccessInternet=sharedPrefHelper.getString("last_time_access_internet","");
+                           if (lastTimeAccessInternet.equals("9")){
+                               txtLabel.setVisibility(View.GONE);
+                               spinner.setVisibility(View.GONE);
+                           }
+                       }
                        startPosition++;
                        endPosition++;
                        ll_parent.addView(spinner);
@@ -1220,7 +1375,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        TextView textView=new TextView(this);
                        textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                        String description=jsonObjectQuesType.getString("question_name");
-                       description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                       description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
                        description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name","Ram"));
                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                        }
@@ -1238,6 +1393,27 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             e.printStackTrace();
         }
 
+    }
+
+    private void openDialogForAgeConfirmation(EditText editText) {
+        new AlertDialog.Builder(context).setTitle("Alert!")
+                .setMessage("Are you sure age is greater then 99")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //TODO here
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //TODO here
+                        editText.setText("");
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert).show();
     }
 
     private void startRecording() {
