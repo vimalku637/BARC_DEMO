@@ -1,6 +1,5 @@
 package com.vrp.barc_demo.service;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,11 +14,9 @@ import com.vrp.barc_demo.Dashboard;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Iterator;
 
 /**
  * Created by Ravi Tamada on 08/08/16.
@@ -85,7 +82,7 @@ import java.util.Iterator;
             String timestamp = data.getString("timestamp");
             JSONObject payload = data.getJSONObject("payload");
 
-                Log.e(TAG, "title: " + title);
+            Log.e(TAG, "title: " + title);
             Log.e(TAG, "message: " + message);
             Log.e(TAG, "isBackground: " + isBackground);
             Log.e(TAG, "payload: " + payload.toString());
