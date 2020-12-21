@@ -944,6 +944,13 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     spinnerAL.add(spinnerOption);
                                 }
                             }
+                            else if(jsonObjectQuesType.getString("question_id").equals("36")&&sharedPrefHelper.getInt("ageInYears",0)<5){
+                                for (int k = 0; k < 1; k++) {
+                                    JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
+                                    String spinnerOption=jsonObjectOptionValues.getString("option_value");
+                                    spinnerAL.add(spinnerOption);
+                                }
+                            }
                             else if(jsonObjectQuesType.getString("question_id").equals("37")&&sharedPrefHelper.getInt("ageInYears",0)<5){
                                 for (int k = 0; k < 1; k++) {
                                     JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);

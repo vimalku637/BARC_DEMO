@@ -159,7 +159,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     MediaPlayer mediaPlayer=new MediaPlayer();
     private String name="";
     private int ageInYears=0;
-    private String mobileNo="";
+    private String mobileNo="",reMobileNo;
+    private String sixDigitCode="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -437,10 +438,27 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         flag=false;
                                         break;
                                     }
-                                }else if(questionID.equals("88")||questionID.equals("108")){
+                                }
+                                if(questionID.equals("86")){
+                                    sixDigitCode=editText.getText().toString().trim();
+                                    sharedPrefHelper.setString("sixDigitCode", sixDigitCode);
+                                    if (sharedPrefHelper.getString("sixDigitCode","").length()<6){
+                                        flag=false;
+                                        break;
+                                    }
+                                }
+                                if(questionID.equals("88")){
                                     mobileNo=editText.getText().toString().trim();
                                     sharedPrefHelper.setString("mobile_no", mobileNo);
-                                    if (mobileNo.length()>10){
+                                    if (sharedPrefHelper.getString("mobile_no", "").length()<10){
+                                        flag=false;
+                                        break;
+                                    }
+                                }
+                                if(questionID.equals("108")){
+                                    reMobileNo=editText.getText().toString().trim();
+                                    sharedPrefHelper.setString("confirm_mobile_no", reMobileNo);
+                                    if (sharedPrefHelper.getString("confirm_mobile_no", "").length()<10){
                                         flag=false;
                                         break;
                                     }
@@ -1068,8 +1086,18 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                            });
                        }
-                       if (jsonObjectQuesType.getString("question_id").equals("88")
-                               ||jsonObjectQuesType.getString("question_id").equals("108")){
+                       if (jsonObjectQuesType.getString("question_id").equals("88")){
+                           int maxLength=10;
+                           editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
+                               @Override
+                               public void callback(int left) {
+                                   if(left <= 0) {
+                                       Toast.makeText(context, "input is full.", Toast.LENGTH_SHORT).show();
+                                   }
+                               }
+                           }));
+                       }
+                       if (jsonObjectQuesType.getString("question_id").equals("108")){
                            int maxLength=10;
                            editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
                                @Override

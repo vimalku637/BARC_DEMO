@@ -860,7 +860,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         ArrayList<String> spinnerAL=new ArrayList<>();
                         for (int j = 0; j <jsonArrayOptions.length() ; j++) {
                             spinnerAL.clear();
-                            if (jsonObjectQuesType.getString("question_id").equals("60")&&sharedPrefHelper.getString("spinnerOptionId", "").equals("2")){
+                            if (jsonObjectQuesType.getString("question_id").equals("60")&&sharedPrefHelper.getString("spinnerOptionId", "").equals("1")){
                                 for (int k = 0; k < 1; k++) {
                                     JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
                                     String spinnerOption=jsonObjectOptionValues.getString("option_value");
