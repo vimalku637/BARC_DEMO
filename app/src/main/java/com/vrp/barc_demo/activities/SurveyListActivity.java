@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
@@ -146,14 +147,18 @@ public class SurveyListActivity extends AppCompatActivity {
             mSurveyListAdapter.onItemClick(new ClickListener() {
                 @Override
                 public void onItemClick(int position) {
-                    sharedPrefHelper.setInt("startPosition", 0);
-                    sharedPrefHelper.setInt("endPosition", 0);
-                    Intent intentSurveyActivity=new Intent(context, HouseholdSurveyActivity.class);
-                    intentSurveyActivity.putExtra("survey_id", surveyModelAl.get(position).getSurvey_id());
-                    getAllSurveyDataFromTable(surveyModelAl.get(position).getSurvey_id());
-                    intentSurveyActivity.putExtra("answerModelList", answerModelList);
-                    intentSurveyActivity.putExtra("screen_type", "survey_list");
-                    startActivity(intentSurveyActivity);
+                    if (surveyModelAl.get(position).getStatus().equals("2")||surveyModelAl.get(position).getStatus().equals("4")) {
+                        sharedPrefHelper.setInt("startPosition", 0);
+                        sharedPrefHelper.setInt("endPosition", 0);
+                        Intent intentSurveyActivity = new Intent(context, HouseholdSurveyActivity.class);
+                        intentSurveyActivity.putExtra("survey_id", surveyModelAl.get(position).getSurvey_id());
+                        getAllSurveyDataFromTable(surveyModelAl.get(position).getSurvey_id());
+                        intentSurveyActivity.putExtra("answerModelList", answerModelList);
+                        intentSurveyActivity.putExtra("screen_type", "survey_list");
+                        startActivity(intentSurveyActivity);
+                    }else{
+                        Toast.makeText(context, "You are not able to edit this survey.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 

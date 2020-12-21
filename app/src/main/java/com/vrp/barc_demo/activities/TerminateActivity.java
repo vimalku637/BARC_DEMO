@@ -103,7 +103,7 @@ public class TerminateActivity extends AppCompatActivity {
     /*normal widgets*/
     private Context context=this;
     private String screen_type="", radio_button_id="", reason="",survey_id,
-            halt_radio_button_id="", AudioSavePathInDevice="";
+            halt_radio_button_id="", AudioSavePathInDevice=null;
     private SqliteHelper sqliteHelper;
     private SharedPrefHelper sharedPrefHelper;
     public static ArrayList<AnswerModel> answerModelList;
@@ -238,7 +238,10 @@ public class TerminateActivity extends AppCompatActivity {
                         //send data on server
                         sendSurveyDataOnServer(body);
                     } else {
-                        CommonClass.showPopupForNoInternet(context);
+                        cl_terminate.setVisibility(View.GONE);
+                        tv_survey_terminate.setVisibility(View.VISIBLE);
+                        btn_start_new_survey.setVisibility(View.VISIBLE);
+                        Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (JSONException e) {
@@ -339,7 +342,10 @@ public class TerminateActivity extends AppCompatActivity {
                                 //send data on server
                                 sendHaltSurveyDataOnServer(body);
                             } else {
-                                CommonClass.showPopupForNoInternet(context);
+                                cl_terminate.setVisibility(View.GONE);
+                                tv_survey_terminate.setVisibility(View.VISIBLE);
+                                btn_start_new_survey.setVisibility(View.VISIBLE);
+                                Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                             }
 
                         } catch (JSONException e) {

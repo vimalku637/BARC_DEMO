@@ -375,7 +375,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         String surveyJSON="";
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_data from survey where survey_id='"+survey_id+"' and flag=0 and status=0";
+                String query = "select survey_data from survey where survey_id='"+survey_id+"' and flag=1 and status IN(2,4)";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();

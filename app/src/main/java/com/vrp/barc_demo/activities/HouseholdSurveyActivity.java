@@ -699,9 +699,22 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
                         if (screen_type.equals("survey_list")) {
                             sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
-                            Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
-                            startActivity(intentSurveyActivity1);
-                            finish();
+                            if (CommonClass.isInternetOn(context)) {
+                                //get all data from survey table
+                                //sqliteHelper.getAllSurveyDataFromTable(survey_id);
+                                /*Gson gson = new Gson();
+                                String data = gson.toJson(clusterModel);*/
+                                String data = json_object.toString();
+                                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                RequestBody body = RequestBody.create(JSON, data);
+                                //send data on server
+                                sendSurveyDataOnServer(body);
+                            } else {
+                                Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                                Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
+                                startActivity(intentSurveyActivity1);
+                                finish();
+                            }
                         } else {
                             //sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
                             //update data in to local DB
@@ -718,6 +731,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 sendSurveyDataOnServer(body);
                             } else {
                                 Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                                Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 startActivity(intentSurveyActivity1);
                                 finish();
                             }
@@ -752,17 +766,24 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     json_object.put("survey_data", json_array);
                                     Log.e(TAG, "onClick: "+json_object.toString());
 
-                                if (endScreenPosition==1) {
-                                    //save data in to local DB.
-                                    sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
-                                    sqliteHelper.updateLocalFlag("partial", "survey",
-                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                } else {
-                                    //update data in to local DB
-                                    sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
-                                    sqliteHelper.updateLocalFlag("partial", "survey",
-                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                }
+                                    if (screen_type.equals("survey_list")){
+                                        //update data in to local DB
+                                        sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
+                                        sqliteHelper.updateLocalFlag("partial", "survey",
+                                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                    } else {
+                                        if (endScreenPosition==1) {
+                                            //save data in to local DB.
+                                            sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                                            sqliteHelper.updateLocalFlag("partial", "survey",
+                                                    Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                        } else {
+                                            //update data in to local DB
+                                            sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
+                                            sqliteHelper.updateLocalFlag("partial", "survey",
+                                                    Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                        }
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -1127,13 +1148,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    radioButton.setVisibility(View.GONE);
                                }
                            }
-                           else if(jsonObjectQuesType.getString("question_id").equals("84")){
-                               String accessInternetOnMobile=sharedPrefHelper.getString("accessInternetOnMobile","");
-                               if(!accessInternetOnMobile.equals("1")){
-                                   txtLabel.setVisibility(View.GONE);
-                                   radioButton.setVisibility(View.GONE);
-                               }
-                           }
                            if (radioGroup != null) {
                                radioGroup.addView(radioButton);
                            }
@@ -1333,6 +1347,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        if((questionID.equals("75"))) {
                            String town_village_class=sharedPrefHelper.getString("town_village_class","");
                            if(!town_village_class.equals("Urban")){
+                               txtLabel.setVisibility(View.GONE);
+                               spinner.setVisibility(View.GONE);
+                           }
+                       }
+                       if(jsonObjectQuesType.getString("question_id").equals("84")){
+                           String accessInternetOnMobile=sharedPrefHelper.getString("accessInternetOnMobile","");
+                           if(!accessInternetOnMobile.equals("1")){
                                txtLabel.setVisibility(View.GONE);
                                spinner.setVisibility(View.GONE);
                            }

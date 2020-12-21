@@ -69,7 +69,7 @@ public class SurveyListAdapter extends RecyclerView.Adapter<SurveyListAdapter.Vi
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#00ACEE")));
         }
 
-        holder.tv_survey_id.setOnClickListener(new View.OnClickListener() {
+        holder.btn_status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clickListener.onItemClick(position);
