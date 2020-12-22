@@ -133,6 +133,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     private int endScreenPosition=1;
     SharedPrefHelper sharedPrefHelper;
     int totalQuestions;
+    int tvTotalGroup;
+    int familyTotalGroup;
     int totalScreen;
     JSONObject jsonQuestions = null;
     JSONArray jsonArrayQuestions=null;
@@ -140,7 +142,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     JSONArray jsonArrayScreenbackup=null;
     public static ArrayList<AnswerModel> answerModelList;
     public static ArrayList<AnswerModel> answerModelHouseholdMemberList;
+    public static ArrayList<ArrayList<AnswerModel>> answerModelHouseholdMemberListTotal;
     public static ArrayList<AnswerModel> answerModelTVList;
+    public static ArrayList<ArrayList<AnswerModel>> answerModelTVListTotal;
     public FragmentCommunicator fragmentCommunicator;
     ArrayList<ScreenWiseQuestionModel> arrayScreenWiseQuestionModel= new ArrayList<>();
     String screen_id=null;
@@ -386,6 +390,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         answerModelList=new ArrayList<>();
         answerModelHouseholdMemberList=new ArrayList<>();
         answerModelTVList=new ArrayList<>();
+        answerModelHouseholdMemberListTotal=new ArrayList<>();
+        answerModelTVListTotal=new ArrayList<>();
     }
 
     private void setButtonClick() {
@@ -694,10 +700,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             answerModelList,
                             new TypeToken<ArrayList<AnswerModel>>() {}.getType());
                     String listStringFamily = gson.toJson(
-                            answerModelHouseholdMemberList,
+                            answerModelHouseholdMemberListTotal,
                             new TypeToken<ArrayList<AnswerModel>>() {}.getType());
                     String listStringTV = gson.toJson(
-                            answerModelTVList,
+                            answerModelTVListTotal,
                             new TypeToken<ArrayList<AnswerModel>>() {}.getType());
                     try {
                         JSONArray json_array =  new JSONArray(listString);
@@ -842,6 +848,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         }
                         if (groupRelationId!=null&&!groupRelationId.equalsIgnoreCase("0")) {
                            if (groupRelationId.equalsIgnoreCase("1")) {
+                               familyTotalGroup=Integer.parseInt(editFieldValues);
                                 Bundle bundle=new Bundle();
                                 bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
                                 bundle.putInt("startScreenPosition", startScreenPosition);
@@ -857,6 +864,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             }
                             if (groupRelationId.equalsIgnoreCase("2")) {
                                 Bundle bundle=new Bundle();
+                                tvTotalGroup=Integer.parseInt(editFieldValues);
                                 bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
                                 bundle.putInt("startScreenPosition", startScreenPosition);
                                 bundle.putInt("endScreenPosition", endScreenPosition);
@@ -1729,16 +1737,20 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         stopRecording();
     }
     @Override
-    public void passDataToActivity(ArrayList<AnswerModel> answerModelList,int type){
+    public void passDataToActivity(ArrayList<ArrayList<AnswerModel>> answerModelListTotal,ArrayList<AnswerModel> answerModelList,int type){
        // Log.e("Fragment Dismissed",someValue);
         if(type==1){
             //answerModelHouseholdMemberList.clear();
+            ArrayList<ArrayList<AnswerModel>> answerModelListNTotal=answerModelListTotal;
             ArrayList<AnswerModel> answerModelListN=answerModelList;
             answerModelHouseholdMemberList=answerModelListN;
+            answerModelHouseholdMemberListTotal=answerModelListNTotal;
         }else if(type==2){
             //answerModelTVList.clear();
+            ArrayList<ArrayList<AnswerModel>> answerModelListNTotal=answerModelListTotal;
             ArrayList<AnswerModel> answerModelListN=answerModelList;
             answerModelTVList=answerModelListN;
+            answerModelTVListTotal=answerModelListNTotal;
         }
         questionsPopulate();
         //textView.setText(someValue);
