@@ -164,7 +164,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     private String name="";
     private int ageInYears=0;
     private String mobileNo="",reMobileNo;
-    private String sixDigitCode="";
+    private String sixDigitCode="",pinCode="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -427,46 +427,64 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                     answerModelList.add(answerModel);
                                 }
-                                if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
-                                    flag=false;
-                                    break;
-                                }else if (questionID.equals("46")) {
-                                    name=editText.getText().toString().trim();
-                                    sharedPrefHelper.setString("name", name);
-                                }else if (questionID.equals("47")) {
-                                    ageInYears=Integer.parseInt(editText.getText().toString().trim());
-                                    sharedPrefHelper.setInt("ageInYears", ageInYears);
-                                    if(ageInYears<1){
+                                if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
+                                        &&questionID.equals("94")&&editText.getText().toString().trim().equals("")){
+                                    flag=true;
+
+                                } else {
+                                    if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                         flag=false;
                                         break;
+                                    }else if (questionID.equals("46")) {
+                                        name=editText.getText().toString().trim();
+                                        sharedPrefHelper.setString("name", name);
+                                    }else if (questionID.equals("47")) {
+                                        ageInYears=Integer.parseInt(editText.getText().toString().trim());
+                                        sharedPrefHelper.setInt("ageInYears", ageInYears);
+                                        if(ageInYears<1){
+                                            flag=false;
+                                            break;
+                                        }
+                                        else if(ageInYears>120){
+                                            flag=false;
+                                            break;
+                                        }
                                     }
-                                    else if(ageInYears>120){
-                                        flag=false;
-                                        break;
+                                    if(questionID.equals("86")){
+                                        sixDigitCode=editText.getText().toString().trim();
+                                        sharedPrefHelper.setString("sixDigitCode", sixDigitCode);
+                                        if (sharedPrefHelper.getString("sixDigitCode","").length()<6){
+                                            flag=false;
+                                            break;
+                                        }
                                     }
-                                }
-                                if(questionID.equals("86")){
-                                    sixDigitCode=editText.getText().toString().trim();
-                                    sharedPrefHelper.setString("sixDigitCode", sixDigitCode);
-                                    if (sharedPrefHelper.getString("sixDigitCode","").length()<6){
-                                        flag=false;
-                                        break;
+                                    if (questionID.equals("99")){
+                                        pinCode=editText.getText().toString().trim();
+                                        sharedPrefHelper.setString("pinCode", pinCode);
+                                        if (sharedPrefHelper.getString("pinCode","").length()<6){
+                                            flag=false;
+                                            break;
+                                        }
                                     }
-                                }
-                                if(questionID.equals("88")){
-                                    mobileNo=editText.getText().toString().trim();
-                                    sharedPrefHelper.setString("mobile_no", mobileNo);
-                                    if (sharedPrefHelper.getString("mobile_no", "").length()<10){
-                                        flag=false;
-                                        break;
+                                    if(questionID.equals("88")){
+                                        mobileNo=editText.getText().toString().trim();
+                                        sharedPrefHelper.setString("mobile_no", mobileNo);
+                                        if (sharedPrefHelper.getString("mobile_no", "").length()<10){
+                                            flag=false;
+                                            break;
+                                        }
                                     }
-                                }
-                                if(questionID.equals("108")){
-                                    reMobileNo=editText.getText().toString().trim();
-                                    sharedPrefHelper.setString("confirm_mobile_no", reMobileNo);
-                                    if (sharedPrefHelper.getString("confirm_mobile_no", "").length()<10){
-                                        flag=false;
-                                        break;
+                                    if(questionID.equals("108")){
+                                        reMobileNo=editText.getText().toString().trim();
+                                        sharedPrefHelper.setString("confirm_mobile_no", reMobileNo);
+                                        if (sharedPrefHelper.getString("confirm_mobile_no", "").length()<10){
+                                            flag=false;
+                                            break;
+                                        }
+                                    }
+                                    if (questionID.equals("57")){
+                                        String TvWorkingCondition=editText.getText().toString().trim();
+                                        sharedPrefHelper.setString("TvWorkingCondition", TvWorkingCondition);
                                     }
                                 }
                                 nextPosition++;
@@ -609,6 +627,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else{
                                         flag=false;
                                         break;
+                                    }
+                                }
+                                else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("77")){
+                                    String TvWorkingCondition=sharedPrefHelper.getString("TvWorkingCondition", "");
+                                    String spinnerIds=Long.toString(spinner.getSelectedItemId());
+                                    if (spinner.getSelectedItemId()<=TvWorkingCondition.length()){
+                                        flag=false;
+                                        break;
+                                    }else{
+                                        flag=true;
                                     }
                                 }
                                 nextPosition++;
@@ -1116,6 +1144,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                            }));
                        }
+                       if (jsonObjectQuesType.getString("question_id").equals("94")){
+                           String town_village_class=sharedPrefHelper.getString("town_village_class","");
+                           if(!town_village_class.equals("Rural")){
+                               txtLabel.setVisibility(View.GONE);
+                               editText.setVisibility(View.GONE);
+                           }
+                       }
+
                        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
                        if(jsonObjectQuesType.getString("pre_field").equals("1")){
                            editText.setEnabled(false);

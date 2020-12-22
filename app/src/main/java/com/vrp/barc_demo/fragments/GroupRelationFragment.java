@@ -958,15 +958,14 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         ArrayList<String> spinnerAL=new ArrayList<>();
                         for (int j = 0; j <jsonArrayOptions.length() ; j++) {
                             spinnerAL.clear();
-                            if (jsonObjectQuesType.getString("question_id").equals("36")&&sharedPrefHelper.getInt("ageInYears",0)<15){
-                                for (int k = 0; k < 5; k++) {
+                            if(jsonObjectQuesType.getString("question_id").equals("36")&&sharedPrefHelper.getInt("ageInYears",0)<=5){
+                                for (int k = 0; k < 1; k++) {
                                     JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
                                     String spinnerOption=jsonObjectOptionValues.getString("option_value");
                                     spinnerAL.add(spinnerOption);
                                 }
-                            }
-                            else if(jsonObjectQuesType.getString("question_id").equals("36")&&sharedPrefHelper.getInt("ageInYears",0)<5){
-                                for (int k = 0; k < 1; k++) {
+                            }else if (jsonObjectQuesType.getString("question_id").equals("36")&&sharedPrefHelper.getInt("ageInYears",0)<15){
+                                for (int k = 0; k < 5; k++) {
                                     JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
                                     String spinnerOption=jsonObjectOptionValues.getString("option_value");
                                     spinnerAL.add(spinnerOption);

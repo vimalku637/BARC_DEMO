@@ -316,10 +316,10 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             }else if (questionID.equals("60")){
                                 String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
                                 sharedPrefHelper.setString("spinnerOptionIdTV", spinnerOptionIdTV);
-                            }else if (questionID.equals("64")){
+                            }/*else if (questionID.equals("64")){
                                 String spinnerOptionIdTVConnection=Long.toString(spinner.getSelectedItemId());
                                 sharedPrefHelper.setString("spinnerOptionIdTVConnection", spinnerOptionIdTVConnection);
-                            }
+                            }*/
                             nextPosition++;
                             count++;
                         }
@@ -340,6 +340,11 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                     }
                                 }
                             }
+                            if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("64")){
+                                if(selectedOptions.contains("1")||selectedOptions.contains("3")
+                                        ||selectedOptions.contains("5"))
+                                    sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
+                            }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_id(selectedOptions);
                             }else{
@@ -356,6 +361,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 flag=false;
                                 break;
                             }
+
                             nextPosition++;
                             count++;
                         }
@@ -902,7 +908,10 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
-                            if (jsonObjectQuesType.getString("question_id").equals("67")&&sharedPrefHelper.getString("spinnerOptionIdTVConnection","").equals("1")){
+                            if (jsonObjectQuesType.getString("question_id").equals("67")&&sharedPrefHelper.getString("spinnerOptionIdTV","").equals("1")){
+                                txtLabel.setVisibility(View.GONE);
+                                spinner.setVisibility(View.GONE);
+                            }if (jsonObjectQuesType.getString("question_id").equals("67")&&sharedPrefHelper.getString("spinnerOptionIdTVConnection","").equals("1")){
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
@@ -946,7 +955,13 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
-
+                            if (jsonObjectQuesType.getString("question_id").equals("67")
+                                    &&sharedPrefHelper.getString("selectedTVConnection","").equals("1")
+                                    ||sharedPrefHelper.getString("selectedTVConnection","").equals("3")
+                                    ||sharedPrefHelper.getString("selectedTVConnection","").equals("5")){
+                                txtLabel.setVisibility(View.GONE);
+                                spinner.setVisibility(View.GONE);
+                            }
                             spinnerAL.add(0, getString(R.string.select_option));
                             ArrayAdapter arrayAdapter=new ArrayAdapter(getActivity(), R.layout.custom_spinner_dropdown, spinnerAL);
                             spinner.setAdapter(arrayAdapter);
