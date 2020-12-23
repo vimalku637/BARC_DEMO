@@ -171,6 +171,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
             endScreenParentPosition=getArguments().getInt("endScreenPosition");
             groupRelationId=getArguments().getInt("groupRelationId");
             questionID=getArguments().getInt("questionID");
+            screen_type=getArguments().getString("screen_type", "");
         }
         survey_id=sharedPrefHelper.getString("survey_id", "");
 

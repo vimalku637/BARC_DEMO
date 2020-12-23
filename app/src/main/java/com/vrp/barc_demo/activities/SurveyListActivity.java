@@ -77,10 +77,18 @@ public class SurveyListActivity extends AppCompatActivity {
     private ArrayList<SurveyModel> surveyModelAl;
     private SurveyListAdapter mSurveyListAdapter;
     private String surveyObjectJSON=null;
+    private String surveyFamilyObjectJSON=null;
+    private String surveyTVObjectJSON=null;
     JSONObject jsonAnswers=null;
+    JSONObject jsonAnswersFamily=null;
+    JSONObject jsonAnswersTV=null;
     JSONArray jsonArrayAnswers=null;
-    int totalAnswers;
+    JSONArray jsonFamilyArrayAnswers=null;
+    JSONArray jsonTVArrayAnswers=null;
+    int totalAnswers=0;
     ArrayList<AnswerModel> answerModelList;
+    ArrayList<AnswerModel> answerModelHouseholdMemberList;
+    ArrayList<AnswerModel> answerModelTVList;
     private String original_address="", cluster_id="", cluster_name="",
             next_address="", previous_address="";
 
@@ -154,6 +162,8 @@ public class SurveyListActivity extends AppCompatActivity {
                         intentSurveyActivity.putExtra("survey_id", surveyModelAl.get(position).getSurvey_id());
                         getAllSurveyDataFromTable(surveyModelAl.get(position).getSurvey_id());
                         intentSurveyActivity.putExtra("answerModelList", answerModelList);
+                        intentSurveyActivity.putExtra("answerModelListFamily", answerModelHouseholdMemberList);
+                        intentSurveyActivity.putExtra("answerModelListTV", answerModelTVList);
                         intentSurveyActivity.putExtra("screen_type", "survey_list");
                         startActivity(intentSurveyActivity);
                     }else{
@@ -170,6 +180,8 @@ public class SurveyListActivity extends AppCompatActivity {
 
     private void getAllSurveyDataFromTable(String survey_id) {
         surveyObjectJSON = sqliteHelper.getSurveyData(survey_id);
+        surveyFamilyObjectJSON = sqliteHelper.getSurveyFamilyData(survey_id);
+        surveyTVObjectJSON = sqliteHelper.getSurveyTvData(survey_id);
         try {
             jsonAnswers= new JSONObject(surveyObjectJSON);
             if (jsonAnswers.has("survey_data")) {
@@ -189,6 +201,46 @@ public class SurveyListActivity extends AppCompatActivity {
                     }
                 }
             }
+            if (surveyFamilyObjectJSON!=null&&!surveyFamilyObjectJSON.isEmpty()) {
+                jsonAnswersFamily = new JSONObject(surveyFamilyObjectJSON);
+                if (jsonAnswersFamily.has("family_data")) {
+                    jsonFamilyArrayAnswers = jsonAnswersFamily.getJSONArray("family_data");
+                    totalAnswers = jsonFamilyArrayAnswers.length();
+                    Log.e("family_data", "onCreate: " + jsonFamilyArrayAnswers.toString());
+                    if (totalAnswers > 0) {
+                        for (int i = 0; i < totalAnswers; i++) {
+                            JSONObject jsonObjectAns = jsonFamilyArrayAnswers.getJSONObject(i);
+                            AnswerModel answerModel = new AnswerModel();
+                            answerModel.setOption_id(jsonObjectAns.getString("option_id"));
+                            answerModel.setOption_value(jsonObjectAns.getString("option_value"));
+                            answerModel.setQuestionID(jsonObjectAns.getString("question_id"));
+                            answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
+                            answerModel.setField_name(jsonObjectAns.getString("field_name"));
+                            answerModelHouseholdMemberList.add(answerModel);
+                        }
+                    }
+                }
+            }
+            if (surveyTVObjectJSON!=null&&!surveyTVObjectJSON.isEmpty()) {
+                jsonAnswersTV = new JSONObject(surveyTVObjectJSON);
+                if (jsonAnswersTV.has("tv_data")) {
+                    jsonTVArrayAnswers = jsonAnswersTV.getJSONArray("tv_data");
+                    totalAnswers = jsonTVArrayAnswers.length();
+                    Log.e("tv_data", "onCreate: " + jsonTVArrayAnswers.toString());
+                    if (totalAnswers > 0) {
+                        for (int i = 0; i < totalAnswers; i++) {
+                            JSONObject jsonObjectAns = jsonTVArrayAnswers.getJSONObject(i);
+                            AnswerModel answerModel = new AnswerModel();
+                            answerModel.setOption_id(jsonObjectAns.getString("option_id"));
+                            answerModel.setOption_value(jsonObjectAns.getString("option_value"));
+                            answerModel.setQuestionID(jsonObjectAns.getString("question_id"));
+                            answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
+                            answerModel.setField_name(jsonObjectAns.getString("field_name"));
+                            answerModelTVList.add(answerModel);
+                        }
+                    }
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -199,6 +251,8 @@ public class SurveyListActivity extends AppCompatActivity {
         sharedPrefHelper=new SharedPrefHelper(this);
         surveyModelAl=new ArrayList<>();
         answerModelList=new ArrayList<>();
+        answerModelHouseholdMemberList=new ArrayList<>();
+        answerModelTVList=new ArrayList<>();
     }
 
     @Override

@@ -393,7 +393,52 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return surveyJSON;
     }
+    public String getSurveyFamilyData(String survey_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String surveyJSON="";
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "select family_data from survey where survey_id='"+survey_id+"' and flag=1 and status IN(2,4)";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        surveyJSON=cursor.getString(cursor.getColumnIndex("family_data"));
 
+                        cursor.moveToNext();
+                    }
+                    db.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return surveyJSON;
+    }
+    public String getSurveyTvData(String survey_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String surveyJSON="";
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "select tv_data from survey where survey_id='"+survey_id+"' and flag=1 and status IN(2,4)";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        surveyJSON=cursor.getString(cursor.getColumnIndex("tv_data"));
+
+                        cursor.moveToNext();
+                    }
+                    db.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return surveyJSON;
+    }
 
     public void saveMasterTable(ContentValues contentValues, String table_name) {
         SQLiteDatabase db = this.getWritableDatabase();

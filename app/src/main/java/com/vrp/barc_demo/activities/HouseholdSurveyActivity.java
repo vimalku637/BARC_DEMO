@@ -190,6 +190,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             screen_type=bundle.getString("screen_type", "");
             if (screen_type.equals("survey_list")) {
                 answerModelList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
+                answerModelHouseholdMemberList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListFamily");
+                answerModelTVList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListTV");
             }
         }
         /*get survey data according to survey id*/
@@ -883,6 +885,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 bundle.putInt("endScreenPosition", endScreenPosition);
                                 bundle.putInt("groupRelationId", Integer.parseInt(groupRelationId));
                                 bundle.putInt("questionID", groupQuestionID);
+                                bundle.putString("screen_type", screen_type);
                                 Fragment fragment = new GroupRelationFragment();
                                 fragment.setArguments(bundle);
                                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -898,6 +901,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 bundle.putInt("endScreenPosition", endScreenPosition);
                                 bundle.putInt("groupRelationId", Integer.parseInt(groupRelationId));
                                 bundle.putInt("questionID", groupQuestionID);
+                                bundle.putString("screen_type", screen_type);
                                 Fragment fragment = new GroupTVFragment();
                                 fragment.setArguments(bundle);
                                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

@@ -180,6 +180,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
             endScreenParentPosition=getArguments().getInt("endScreenPosition");
             groupRelationId=getArguments().getInt("groupRelationId");
             questionID=getArguments().getInt("questionID");
+            screen_type=getArguments().getString("screen_type", "");
         }
         survey_id=sharedPrefHelper.getString("survey_id", "");
 
@@ -259,11 +260,15 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 flag=false;
                                 break;
                             }else if (questionID.equals("33")) {
+                                ArrayList<String> nameAL=new ArrayList<>();
                                 name=editText.getText().toString().trim();
                                 sharedPrefHelper.setString("name", name);
+                                nameAL.add(name);
                             }else if (questionID.equals("35")) {
+                                ArrayList<String> ageAL=new ArrayList<>();
                                 ageInYears=Integer.parseInt(editText.getText().toString().trim());
                                 sharedPrefHelper.setInt("ageInYears", ageInYears);
+                                ageAL.add(ageInYears+"");
                                 if(ageInYears<1){
                                     flag=false;
                                     break;
@@ -976,6 +981,22 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
                                     String spinnerOption=jsonObjectOptionValues.getString("option_value");
                                     spinnerAL.add(spinnerOption);
+                                }
+                            }
+                            else if(jsonObjectQuesType.getString("question_id").equals("38")){
+                                String town_village_class=sharedPrefHelper.getString("town_village_class","");
+                                if (town_village_class.equals("Urban")){
+                                    for (int k = 0; k < 15; k++) {
+                                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                        spinnerAL.add(spinnerOption);
+                                    }
+                                }else{
+                                    for (int k = 16; k < 40; k++) {
+                                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                        spinnerAL.add(spinnerOption);
+                                    }
                                 }
                             }
                             else {
