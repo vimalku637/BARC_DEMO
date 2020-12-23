@@ -190,8 +190,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             screen_type=bundle.getString("screen_type", "");
             if (screen_type.equals("survey_list")) {
                 answerModelList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
-                answerModelHouseholdMemberList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListFamily");
-                answerModelTVList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListTV");
+                ArrayList<AnswerModel> modelArrayList=new ArrayList<>();
+                modelArrayList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListFamily");
+                answerModelHouseholdMemberListTotal.add(modelArrayList);
+                ArrayList<AnswerModel> modelArrayList1=new ArrayList<>();
+                modelArrayList1 = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListTV");
+                answerModelTVListTotal.add(modelArrayList1);
             }
         }
         /*get survey data according to survey id*/
@@ -819,8 +823,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     json_object.put("survey_id", survey_id);
                                     json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                                     json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
-                                    json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
-                                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));
+                                    json_object.put("GPS_latitude", "27.883743");
+                                    json_object.put("GPS_longitude", "79.912247");
+                                    /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
                                     json_object.put("survey_data", json_array);
                                     Log.e(TAG, "onClick: "+json_object.toString());
 
