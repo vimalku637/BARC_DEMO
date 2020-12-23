@@ -959,12 +959,13 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         Spinner spinner=new Spinner(getActivity());
                         ArrayList<String> spinnerAL=new ArrayList<>();
                         if (jsonObjectQuesType.getString("question_id").equals("41")){
-                          //  ArrayList<String> nameAL=new ArrayList<>();
+                            //ArrayList<String> nameAL=new ArrayList<>();
                             for (int k = 0; k <editFieldValues; k++) {
-                               // nameAL.clear();
-                                if (!nameAL.contains(sharedPrefHelper.getString("name", "")))
-                                if (ageInYears>12){
-                                    nameAL.add(sharedPrefHelper.getString("name", ""));
+                                //nameAL.clear();
+                                if (!nameAL.contains(sharedPrefHelper.getString("name", ""))){
+                                    if (ageInYears>12){
+                                        nameAL.add(sharedPrefHelper.getString("name", ""));
+                                    }
                                 }
                             }
                             nameAL.add(0, getString(R.string.select_option));
