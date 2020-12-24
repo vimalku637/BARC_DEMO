@@ -74,6 +74,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -138,6 +141,9 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
     private String name="";
     private int ageInYears=0;
     ArrayList<String> nameAL=new ArrayList<>();
+    HashMap<Integer,String> nameVL=new HashMap<>();
+    HashMap<Integer,String> ageVL=new HashMap<>();
+    int totalScreenCount=0;
 
     public GroupRelationFragment() {
         // Required empty public constructor
@@ -260,9 +266,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                 flag=false;
                                 break;
-                            }else if (questionID.equals("33")) {
+                            }
+                            else if (questionID.equals("33")) {
                                 name=editText.getText().toString().trim();
                                 sharedPrefHelper.setString("name", name);
+                                nameVL.put(totalScreenCount,""+name);
                             }else if (questionID.equals("35")) {
                                 ageInYears=Integer.parseInt(editText.getText().toString().trim());
                                 sharedPrefHelper.setInt("ageInYears", ageInYears);
@@ -274,6 +282,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     flag=false;
                                     break;
                                 }
+                                ageVL.put(totalScreenCount-1,""+ageInYears);
                             }
                             nextPosition++;
                             count++;
@@ -313,11 +322,24 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                         else if (childView instanceof Spinner) {
                             Spinner spinner = (Spinner) childView;
+                            String selectedItem=Long.toString(spinner.getSelectedItemId());
+                            if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("41")) {
+                                if (ageInYears <= 12) {
+                                    int spinnnnnc=0;
+                                    Map<Integer, String> map = new TreeMap<>(nameVL);
+                                    for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                                        if (entry.getValue().equals(spinner.getSelectedItem())) {
+                                            selectedItem=String.valueOf(spinnnnnc+1);
+                                        }
+                                        spinnnnnc++;
+                                    }
+                                }
+                            }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                                answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                answerModelList.get(nextPosition).setOption_id(selectedItem);
                             }else{
                                 AnswerModel answerModel= new AnswerModel();
-                                answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                answerModel.setOption_id(selectedItem);
                                 answerModel.setOption_value("");
                                 //answerModel.setSurveyID(survey_id);
                                 answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
@@ -326,8 +348,15 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 answerModelList.add(answerModel);
                             }
                             if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId()==0){
-                                flag=false;
-                                break;
+                                if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("41")){
+                                    if(ageInYears<=12){
+                                        flag=false;
+                                        break;
+                                    }
+                                }else{
+                                    flag=false;
+                                    break;
+                                }
                             }
                             nextPosition++;
                             count++;
@@ -371,7 +400,6 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         else{
                             childView.getRootView();
                         }
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -479,6 +507,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             btn_stop.setVisibility(View.VISIBLE);
                             btn_next.setVisibility(View.GONE);
                         }
+                        totalScreenCount++;
                         questionsPopulate();
 
                     }
@@ -507,6 +536,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     btn_next.setVisibility(View.VISIBLE);
                     btn_stop.setVisibility(View.GONE);
                     startPosition=startPosition-(endPosition+Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions()));
+                    totalScreenCount--;
                     questionsPopulate();
                 }
             }
@@ -582,11 +612,24 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                         else if (childView instanceof Spinner) {
                             Spinner spinner = (Spinner) childView;
+                            String selectedItem=Long.toString(spinner.getSelectedItemId());
+                            if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("41")) {
+                                if (ageInYears <= 12) {
+                                    int spinnnnnc=0;
+                                    Map<Integer, String> map = new TreeMap<>(nameVL);
+                                    for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                                        if (entry.getValue().equals(spinner.getSelectedItem())) {
+                                            selectedItem=String.valueOf(spinnnnnc+1);
+                                        }
+                                        spinnnnnc++;
+                                    }
+                                }
+                            }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                                answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                answerModelList.get(nextPosition).setOption_id(selectedItem);
                             }else{
                                 AnswerModel answerModel= new AnswerModel();
-                                answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                answerModel.setOption_id(selectedItem);
                                 answerModel.setOption_value("");
                                 //answerModel.setSurveyID(survey_id);
                                 answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
@@ -955,22 +998,46 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
                         ll_parent.addView(txtLabel);
+
                         JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                         Spinner spinner=new Spinner(getActivity());
                         ArrayList<String> spinnerAL=new ArrayList<>();
-                        if (jsonObjectQuesType.getString("question_id").equals("41")){
-                            //ArrayList<String> nameAL=new ArrayList<>();
-                            for (int k = 0; k <editFieldValues; k++) {
-                                //nameAL.clear();
-                                if (!nameAL.contains(sharedPrefHelper.getString("name", ""))){
-                                    if (ageInYears>12){
-                                        nameAL.add(sharedPrefHelper.getString("name", ""));
+                        if (jsonObjectQuesType.getString("question_id").equals("41")) {
+                            ArrayList<String> nameAL = new ArrayList<>();
+                            if (ageInYears > 12) {
+                                spinner.setVisibility(View.GONE);
+                                txtLabel.setVisibility(View.GONE);
+                            }else {
+                                Map<Integer, String> treeMapAge = new TreeMap<>(ageVL);
+                                Map<Integer, String> treeMapName = new TreeMap<>(nameVL);
+                                for (Map.Entry<Integer, String> entry : treeMapAge.entrySet()) {
+                                    if (Integer.parseInt(entry.getValue()) > 15) {
+                                        nameAL.add(treeMapName.get(entry.getKey()));
                                     }
                                 }
                             }
                             nameAL.add(0, getString(R.string.select_option));
                             ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), R.layout.custom_spinner_dropdown, nameAL);
                             spinner.setAdapter(arrayAdapter);
+                            if ((back_status == true || screen_type.equals("survey_list")) && answerModelList.size() > startPosition) {
+                                if(!answerModelList.get(startPosition).getOption_id().equals("0")) {
+                                    int position = 0;
+                                    int spnposI = 0;
+                                    int spnposP = 0;
+                                    Map<Integer, String> treeMapAge = new TreeMap<>(ageVL);
+                                    for (Map.Entry<Integer, String> entry : treeMapAge.entrySet()) {
+                                        if (Integer.parseInt(entry.getValue()) > 15) {
+                                            if (Integer.parseInt(answerModelList.get(startPosition).getOption_id()) - 1 == spnposP) {
+                                                position = spnposI;
+                                                break;
+                                            }
+                                            spnposI++;
+                                        }
+                                        spnposP++;
+                                    }
+                                    spinner.setSelection(position + 1);
+                                }
+                            }
                         }
                         else {
                             for (int j = 0; j < jsonArrayOptions.length(); j++) {

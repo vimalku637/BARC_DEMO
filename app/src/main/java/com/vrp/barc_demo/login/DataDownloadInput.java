@@ -34,10 +34,10 @@ public class DataDownloadInput {
         this.city_name = city_name;
     }
 
-    public static final String TABLE_NAME = "cities";
-    public static final String COLUMN_CITY_ID = "city_id";
-    public static final String COLUMN_CITY_CODE = "city_code";
-    public static final String COLUMN_CITY_NAME = "city_name";
+    public static final String TABLE_NAME = "sub_districts";
+    public static final String COLUMN_CITY_ID = "sub_district_id";
+    public static final String COLUMN_CITY_CODE = "sub_district_code";
+    public static final String COLUMN_CITY_NAME = "sub_district_name";
     public static final String COLUMN_FLAG = "flag";
 
     public static final String CREATE_TABLE =

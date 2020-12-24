@@ -155,10 +155,6 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-
-
-
-
     private void setCitySpinner() {
         CityArrayList.clear();
         CityNameHM = sqliteHelper.getCity();
@@ -193,8 +189,9 @@ public class Dashboard extends AppCompatActivity {
                 if (!spn_city.getSelectedItem().toString().trim().equalsIgnoreCase(getString(R.string.select_city))) {
                     if (spn_city.getSelectedItem().toString().trim() != null) {
                         CityName = CityNameHM.get(spn_city.getSelectedItem().toString().trim());
-
                     }
+                }else{
+                    CityName =0;
                 }
             }
 

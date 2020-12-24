@@ -105,6 +105,7 @@ public class ClusterListActivity extends AppCompatActivity {
 
         clusterModel.setClu_code(CluCode);
         clusterModel.setCity_code(cityCLU);
+        clusterModel.setCity_id(cityCLU);
         clusterModel.setUser_id(sharedPrefHelper.getString("user_id","" ));
         Gson gson = new Gson();
         String data = gson.toJson(clusterModel);

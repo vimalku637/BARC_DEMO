@@ -456,7 +456,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
-                                    if(questionID.equals("86")){
+                                    else if(questionID.equals("86")){
                                         sixDigitCode=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("sixDigitCode", sixDigitCode);
                                         if (sharedPrefHelper.getString("sixDigitCode","").length()<6){
@@ -464,7 +464,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
-                                    if (questionID.equals("99")){
+                                    else if (questionID.equals("99")){
                                         pinCode=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("pinCode", pinCode);
                                         if (sharedPrefHelper.getString("pinCode","").length()<6){
@@ -472,7 +472,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
-                                    if(questionID.equals("88")){
+                                    else if(questionID.equals("88")){
                                         mobileNo=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("mobile_no", mobileNo);
                                         if (sharedPrefHelper.getString("mobile_no", "").length()<10){
@@ -480,7 +480,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
-                                    if(questionID.equals("108")){
+                                    else if(questionID.equals("108")){
                                         reMobileNo=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("confirm_mobile_no", reMobileNo);
                                         if (sharedPrefHelper.getString("confirm_mobile_no", "").length()<10){
@@ -488,10 +488,22 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
-                                    if (questionID.equals("57")){
+                                    else if (questionID.equals("57")){
                                         String TvWorkingCondition=editText.getText().toString().trim();
-                                        sharedPrefHelper.setString("TvWorkingCondition", TvWorkingCondition);
+                                        if(Integer.parseInt(TvWorkingCondition)>5 || Integer.parseInt(TvWorkingCondition)==0){
+                                            flag=false;
+                                            break;
+                                        }else{
+                                            sharedPrefHelper.setString("TvWorkingCondition", TvWorkingCondition);
+                                        }
                                     }
+                                    else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("31") ){
+                                        if(Integer.parseInt(editText.getText().toString().trim())>20 || Integer.parseInt(editText.getText().toString().trim())==0){
+                                            flag=false;
+                                            break;
+                                        }
+                                    }
+
                                 }
                                 nextPosition++;
                                 count++;
@@ -648,7 +660,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 nextPosition++;
                                 count++;
                             }
-                        else if(childView instanceof TableLayout){
+                            else if(childView instanceof TableLayout){
                                 TableLayout tableLayout = (TableLayout) childView;
                                 String selectedOptions="";
                                 for (int k = 0; k < tableLayout.getChildCount(); k++) {
@@ -929,20 +941,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
-                /*if(endScreenPosition==totalScreen){
-                    startPosition=startPosition-1;
-                }else{
-                    startPosition=startPosition-length;
-                }*/
                 startScreenPosition=startScreenPosition-1;
                 endScreenPosition=endScreenPosition-1;
-                /*endPosition=startPosition;
-                startPosition=endPosition-length;
-                //endPosition = endPosition + length;
-                sharedPrefHelper.setInt("endPosition", endPosition);
-                Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition);*/
                 back_status=true;
-
                 if(endScreenPosition<=0){
                 Intent intentHom= new Intent(HouseholdSurveyActivity.this, ClusterDetails.class);
                 startActivity(intentHom);
@@ -1101,10 +1102,41 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                @Override
                                public void callback(int left) {
                                    if(left <= 0) {
-                                       Toast.makeText(context, "input is full.", Toast.LENGTH_SHORT).show();
+                                       Toast.makeText(context, "Please enter correct value", Toast.LENGTH_SHORT).show();
                                    }
                                }
                            }));
+                       }
+                       if (questionID.equals("32") || questionID.equals("57")) {
+                           editText.addTextChangedListener(new TextWatcher() {
+                               @Override
+                               public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                               }
+
+                               @Override
+                               public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                   int limit=0;
+                                   if(questionID.equals("32")){
+                                       limit=20;
+                                   }else{
+                                       limit=5;
+                                   }
+                                   if (!editText.getText().toString().trim().equals("")) {
+                                       int value=Integer.parseInt(editText.getText().toString().trim());
+                                       if (value>limit){
+                                           //Toast.makeText(getActivity(), "Are you sure age is greater then 99.", Toast.LENGTH_SHORT).show();
+                                           Toast.makeText(context, "Please enter correct value", Toast.LENGTH_SHORT).show();
+                                       } else {
+                                       }
+                                   }
+                               }
+
+                               @Override
+                               public void afterTextChanged(Editable editable) {
+
+                               }
+                           });
                        }
                        if (jsonObjectQuesType.getString("question_id").equals("47")) {
                            editText.addTextChangedListener(new TextWatcher() {
@@ -1138,7 +1170,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                @Override
                                public void callback(int left) {
                                    if(left <= 0) {
-                                       Toast.makeText(context, "input is full.", Toast.LENGTH_SHORT).show();
+                                       Toast.makeText(context, "Please enter correct value", Toast.LENGTH_SHORT).show();
                                    }
                                }
                            }));
@@ -1149,7 +1181,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                @Override
                                public void callback(int left) {
                                    if(left <= 0) {
-                                       Toast.makeText(context, "input is full.", Toast.LENGTH_SHORT).show();
+                                       Toast.makeText(context, "Please enter correct value", Toast.LENGTH_SHORT).show();
                                    }
                                }
                            }));
