@@ -11,7 +11,10 @@ package com.vrp.barc_demo.forgot_password;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -44,11 +47,12 @@ import retrofit2.Response;
 public class ForgotPassword extends AppCompatActivity {
     @BindView(R.id.btn_submit)
     Button btn_submit;
-
+String password;
     @BindView(R.id.et_email)
     EditText et_email;
     ProgressDialog mprogressDialog;
     LoginModel loginModel;
+    Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,62 +77,77 @@ public class ForgotPassword extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 loginModel.setUser_name(et_email.getText().toString());
-
-
-                if (isInternetOn()) {
-
-                    Gson gson = new Gson();
-                    String data = gson.toJson(loginModel);
-                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                    RequestBody body = RequestBody.create(JSON, data);
-
-                    forgetpasswordData(body);
-
+                password = et_email.getText().toString().trim();
+                if (password.equalsIgnoreCase("")) {
+                    if (password.equalsIgnoreCase("")) {
+                        et_email.setError("Please enter User Name");
+                    }
+                    // Snackbar.make(view, "Please enter user name & password", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 } else {
 
-                    Toast.makeText(ForgotPassword.this, "internet on please ", Toast.LENGTH_SHORT).show();
-                }
+                    if (!isInternetOn()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPassword.this);
+                        builder.setMessage("Network Error, check your network connection.")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setCancelable(false)
+                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        AlertDialog alert = builder.create();
+                        alert.setTitle(getString(R.string.Alert));
+                        alert.show();
 
 
-            }
-        });
-    }
+                    }else if (isInternetOn()){
+                        loginModel.setUser_name(et_email.getText().toString());
+                        Gson gson = new Gson();
+                        String data = gson.toJson(loginModel);
+                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                        RequestBody body = RequestBody.create(JSON, data);
 
-    private void forgetpasswordData(RequestBody body) {
-        mprogressDialog = ProgressDialog.show(this, "", getString(R.string.sending_password), true);
-        ApiClient.getClient().create(BARC_API.class).getForgetPassword(body).enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response.body().toString().trim());
-                    String success = jsonObject.optString("success");
-                    if (Integer.valueOf(success) == 1) {
-                        String message = jsonObject.optString("message");
+                        mprogressDialog = ProgressDialog.show(context, "", getString(R.string.sending_password), true);
+                            ApiClient.getClient().create(BARC_API.class).getForgetPassword(body).enqueue(new Callback<JsonObject>() {
+                                @Override
+                                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response.body().toString().trim());
+                                        String success = jsonObject.optString("success");
+                                        if (Integer.valueOf(success) == 1) {
+                                            String message = jsonObject.optString("message");
+                                            Toast.makeText(context, "New Password sent successfully in Email", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(ForgotPassword.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
+                                            Intent intent = new Intent(ForgotPassword.this, LoginActivity.class);
+                                            startActivity(intent);
+                                            finish();
 
-                    } else {
-                        Snackbar.make(findViewById(android.R.id.content), "Please Enter Valid User  ", Snackbar.LENGTH_LONG).show();
+                                        } else {
+                                            Snackbar.make(findViewById(android.R.id.content), "Please Enter Valid User  ", Snackbar.LENGTH_LONG).show();
 
-                        // Toast.makeText(LoginActivity.this, "Server error", Toast.LENGTH_SHORT).show();
-                        mprogressDialog.dismiss();
+                                            // Toast.makeText(LoginActivity.this, "Server error", Toast.LENGTH_SHORT).show();
+                                            mprogressDialog.dismiss();
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<JsonObject> call, Throwable t) {
+                                    if (mprogressDialog.isShowing()) {
+                                        mprogressDialog.dismiss();
+                                    }
+                                }
+                            });
+
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                if (mprogressDialog.isShowing()) {
-                    mprogressDialog.dismiss();
                 }
             }
         });
     }
+
 
     private void initialization() {
     }
