@@ -37,7 +37,7 @@ public interface BARC_API {
     @POST("lock_cluster.php")
     Call<JsonObject> lockCluster(@Body RequestBody body);
 
-    @POST("survey_data_upload.php")
+    @POST("survey_data_upload_v2.php")
     Call<JsonObject> sendSurveyData(@Body RequestBody body);
 
     @POST("download_general.php")

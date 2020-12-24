@@ -201,6 +201,10 @@ public class AddressSelection extends AppCompatActivity {
         btn_start_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (et_reasonNextAd.getText().toString().equals("")){
+                    et_reasonNextAd.setError("Required !");
+                    return;
+                }
                 Intent intentClusterDetails = new Intent(AddressSelection.this, ClusterDetails.class);
                 /*intentClusterDetails.putExtra("cluster_id", cluster_id);
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/
@@ -212,6 +216,10 @@ public class AddressSelection extends AppCompatActivity {
         btn_start_previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (et_reasonPreviousAd.getText().toString().equals("")){
+                    et_reasonPreviousAd.setError("Required !");
+                    return;
+                }
                 Intent intentClusterDetails = new Intent(AddressSelection.this, ClusterDetails.class);
                 /*intentClusterDetails.putExtra("cluster_id", cluster_id);
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/

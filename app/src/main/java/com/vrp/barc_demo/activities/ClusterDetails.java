@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
@@ -114,6 +115,10 @@ public class ClusterDetails extends AppCompatActivity {
         btn_take_survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (spn_language.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.select_language))){
+                    Toast.makeText(context, "Please choose language..", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Long aLong = System.currentTimeMillis()/1000;
                 String uuid = aLong.toString();
                 sharedPrefHelper.setString("survey_id", uuid);

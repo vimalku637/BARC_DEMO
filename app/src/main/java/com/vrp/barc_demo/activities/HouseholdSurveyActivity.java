@@ -1074,12 +1074,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            editText.setText(survey_id);
                        }
                        else if (jsonObjectQuesType.getString("field_name").equals("nccs_matrix")) {
-                           boolean status=sqliteHelper.getNCCMatrix(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id(),sharedPrefHelper.getString("nccs_matrix", ""));
+                          /* boolean status=sqliteHelper.getNCCMatrix(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id(),sharedPrefHelper.getString("nccs_matrix", ""));
                            if(status)
                            editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
                            else
                                setTerminattion("NCCS Calculator");
-                       }
+                      */ }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
                        }else{
