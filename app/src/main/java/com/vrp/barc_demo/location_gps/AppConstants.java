@@ -8,6 +8,6 @@
 
 package com.vrp.barc_demo.location_gps;
 
-class AppConstants {
+public class AppConstants {
     public static final int GPS_REQUEST = 3033;
 }

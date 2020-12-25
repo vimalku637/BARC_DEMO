@@ -17,6 +17,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/margin10"
         android:visibility="gone"
+        android:animateLayoutChanges="true"
         />
 
     <com.google.android.material.button.MaterialButton
@@ -103,14 +104,12 @@
                 android:textColor="@android:color/white" />
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/group_relation_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-
         </RelativeLayout>
 
     </ScrollView>
-
+    <FrameLayout
+        android:id="@+id/group_relation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 </RelativeLayout>

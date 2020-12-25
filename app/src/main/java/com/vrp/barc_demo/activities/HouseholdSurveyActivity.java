@@ -8,6 +8,7 @@
 
 package com.vrp.barc_demo.activities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -67,6 +68,8 @@ import com.google.gson.reflect.TypeToken;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.fragments.GroupRelationFragment;
 import com.vrp.barc_demo.fragments.GroupTVFragment;
+import com.vrp.barc_demo.location_gps.AppConstants;
+import com.vrp.barc_demo.location_gps.GpsUtils;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.ScreenWiseQuestionModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
@@ -93,6 +96,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -165,6 +170,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     private int ageInYears=0;
     private String mobileNo="",reMobileNo;
     private String sixDigitCode="",pinCode="";
+    boolean isGPS=false;
+    int isGPSClicked=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -475,7 +482,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else if(questionID.equals("88")){
                                         mobileNo=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("mobile_no", mobileNo);
+                                        Pattern ps = Pattern.compile("^[6-9][0-9]{9}+$");
+                                        Matcher ms = ps.matcher(mobileNo);
+                                        boolean bs = ms.matches();
                                         if (sharedPrefHelper.getString("mobile_no", "").length()<10){
+                                            flag=false;
+                                            break;
+                                        }else if (!bs) {
                                             flag=false;
                                             break;
                                         }
@@ -483,14 +496,25 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else if(questionID.equals("108")){
                                         reMobileNo=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("confirm_mobile_no", reMobileNo);
+                                        Pattern ps = Pattern.compile("^[6-9][0-9]{9}+$");
+                                        Matcher ms = ps.matcher(reMobileNo);
+                                        boolean bs = ms.matches();
                                         if (sharedPrefHelper.getString("confirm_mobile_no", "").length()<10){
+                                            flag=false;
+                                            break;
+                                        }
+                                       else if (!sharedPrefHelper.getString("confirm_mobile_no", "").equals(mobileNo)){
+                                            flag=false;
+                                            break;
+                                        }
+                                        else if (!bs) {
                                             flag=false;
                                             break;
                                         }
                                     }
                                     else if (questionID.equals("57")){
                                         String TvWorkingCondition=editText.getText().toString().trim();
-                                        if(Integer.parseInt(TvWorkingCondition)>5 || Integer.parseInt(TvWorkingCondition)==0){
+                                        if(Integer.parseInt(TvWorkingCondition)>10 || Integer.parseInt(TvWorkingCondition)==0){
                                             flag=false;
                                             break;
                                         }else{
@@ -648,9 +672,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     }
                                 }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("77")){
-                                    String TvWorkingCondition=sharedPrefHelper.getString("TvWorkingCondition", "");
+                                    int TvWorkingCondition=Integer.parseInt(sharedPrefHelper.getString("TvWorkingCondition", ""));
                                     String spinnerIds=Long.toString(spinner.getSelectedItemId());
-                                    if (spinner.getSelectedItemId()<=TvWorkingCondition.length()){
+                                    if (spinner.getSelectedItemId()<TvWorkingCondition && spinner.getSelectedItemId()<5){
                                         flag=false;
                                         break;
                                     }else{
@@ -816,10 +840,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 }
                 else {
                     //back_status=false;
-                    if(flag==true){
+                    checkGPSEnable();
+                    if(flag==true && isGPS==true && isGPSClicked!=1){
                         sharedPrefHelper.setInt("startPosition", startPosition);
                         endPosition = endPosition + length;
-                        if (endScreenPosition<totalScreen) {
+                        if (endScreenPosition<totalScreen-1) {
                             btn_next.setText("Next");
                             sharedPrefHelper.setInt("endPosition", endPosition);
                             //save survey data JSON on every next click in DB
@@ -932,7 +957,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         }
                         Log.e(TAG, "onNextClick- " + jsonObject.toString());
                     }else{
-                        Toast.makeText(context,"Please fill all required fields",Toast.LENGTH_LONG).show();
+                        if(isGPSClicked==1)
+                            Toast.makeText(context,"Please clicked on GPS location button",Toast.LENGTH_LONG).show();
+                        else if(isGPS==true)
+                        Toast.makeText(context,"Please fill all required correct fields/values",Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -949,6 +977,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 startActivity(intentHom);
                 finish();
                 }else{
+                    isGPSClicked=0;
                     btn_next.setText("Next");
                     startPosition=startPosition-(endPosition+Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions()));
                     questionsPopulate();
@@ -1074,6 +1103,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            editText.setText(survey_id);
                        }
                        else if (jsonObjectQuesType.getString("field_name").equals("nccs_matrix")) {
+                           editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
                           /* boolean status=sqliteHelper.getNCCMatrix(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id(),sharedPrefHelper.getString("nccs_matrix", ""));
                            if(status)
                            editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
@@ -1091,7 +1121,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                @Override
                                public void callback(int left) {
                                    if(left <= 0) {
-                                       Toast.makeText(context, "input is full.", Toast.LENGTH_SHORT).show();
+                                       Toast.makeText(context, "Please enter correct value", Toast.LENGTH_SHORT).show();
                                    }
                                }
                            }));
@@ -1117,17 +1147,31 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                @Override
                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                                    int limit=0;
-                                   if(questionID.equals("32")){
-                                       limit=20;
-                                   }else{
-                                       limit=5;
-                                   }
-                                   if (!editText.getText().toString().trim().equals("")) {
-                                       int value=Integer.parseInt(editText.getText().toString().trim());
-                                       if (value>limit){
-                                           //Toast.makeText(getActivity(), "Are you sure age is greater then 99.", Toast.LENGTH_SHORT).show();
-                                           Toast.makeText(context, "Please enter correct value", Toast.LENGTH_SHORT).show();
+                                   if(editText.getText().toString().trim().length()>0) {
+                                       int value = Integer.parseInt(editText.getText().toString().trim());
+                                       if (questionID.equals("32")) {
+                                           limit = 20;
+                                           if (!editText.getText().toString().trim().equals("")) {
+                                               if (value > limit) {
+                                                   //Toast.makeText(getActivity(), "Are you sure age is greater then 99.", Toast.LENGTH_SHORT).show();
+                                                   Toast.makeText(context, "Household member can't be greater than 20", Toast.LENGTH_SHORT).show();
+                                               } else if (value == 0) {
+                                                   Toast.makeText(context, "Household member can't be 0", Toast.LENGTH_SHORT).show();
+                                               }
+                                           }
                                        } else {
+                                           limit = 10;
+                                           if (!editText.getText().toString().trim().equals("")) {
+                                               if (value > limit) {
+                                                   //Toast.makeText(getActivity(), "Are you sure age is greater then 99.", Toast.LENGTH_SHORT).show();
+                                                   Toast.makeText(context, "No. of TV can't be greater then 10", Toast.LENGTH_SHORT).show();
+                                               }
+                                               else if (value > 5) {
+                                                   openDialogForAgeConfirmation(editText, "Are you sure TV more than 5");
+                                               } else if (value == 0) {
+                                                   Toast.makeText(context, "No. of TV can't be 0", Toast.LENGTH_SHORT).show();
+                                               }
+                                           }
                                        }
                                    }
                                }
@@ -1152,7 +1196,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        int ageInYear=Integer.parseInt(age);
                                        if (ageInYear>99){
                                            //Toast.makeText(getActivity(), "Are you sure age is greater then 99.", Toast.LENGTH_SHORT).show();
-                                           openDialogForAgeConfirmation(editText);
+                                           openDialogForAgeConfirmation(editText,"Are you sure age is greater then 99");
                                        } else {
                                        }
                                    }
@@ -1325,9 +1369,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                else if(iddd==24){
                                    //start recording here
                                    if (radioID.equals("1")) {
+                                       sharedPrefHelper.setBoolean("isRecording",true);
                                        iv_recording.setVisibility(View.VISIBLE);
-                                       startRecordingAnimation();
+                                       startRecordingAnimation(1);
                                        startRecording();
+                                   }else{
+                                       iv_recording.setVisibility(View.GONE);
+                                       startRecordingAnimation(2);
+                                       //iv_recording.startAnimation(null);
+                                       sharedPrefHelper.setBoolean("isRecording",false);
+                                       stopRecording();
                                    }
                                }
                            }
@@ -1496,8 +1547,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        Button button=new Button(this);
                        TextView textView=new TextView(this);
                        textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
-                       if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
-                       }
                        button.setText(jsonObjectQuesType.getString("question_name"));
                        button.setTypeface(null, Typeface.BOLD);
                        button.setTextColor(Color.WHITE);
@@ -1505,11 +1554,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
                        ll_parent.addView(button);
                        ll_parent.addView(textView);
+                       isGPSClicked=1;
                        button.setOnClickListener(new View.OnClickListener() {
                            @Override
                            public void onClick(View view) {
-                               textView.setText("Latitude: "+sharedPrefHelper.getString("LAT", "") +"\n"+
-                                       "Longitude: "+sharedPrefHelper.getString("LONG", ""));
+                               checkGPSEnable();
+                               if(isGPS==true){
+                                   isGPSClicked=2;
+                                   textView.setText("Latitude: "+sharedPrefHelper.getString("LAT", "") +"\n"+
+                                           "Longitude: "+sharedPrefHelper.getString("LONG", ""));
+                               }
                            }
                        });
                    }
@@ -1537,9 +1591,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
     }
 
-    private void openDialogForAgeConfirmation(EditText editText) {
+    private void openDialogForAgeConfirmation(EditText editText,String value) {
         new AlertDialog.Builder(context).setTitle("Alert!")
-                .setMessage("Are you sure age is greater then 99")
+                .setMessage(value)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -1553,6 +1607,25 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         dialog.dismiss();
                         //TODO here
                         editText.setText("");
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert).show();
+    }
+    private void openDialogForAgeConfirmationSpinner(String value) {
+        new AlertDialog.Builder(context).setTitle("Alert!")
+                .setMessage(value)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //TODO here
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //TODO here
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert).show();
@@ -1581,18 +1654,18 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
             } catch (IllegalStateException e) {
                 // TODO Auto-generated catch block
-                Toast.makeText(context, "Recording Failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "Recording Failed", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
                 isRecording = false;
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                Toast.makeText(context, "Recording Failed", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, "Recording Failed", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
                 isRecording = false;
             }
         } else {
             requestPermission();
-            Toast.makeText(this, "Failed to create recording folder.", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, "Failed to create recording folder.", Toast.LENGTH_SHORT).show();
             isRecording = false;
         }
     }
@@ -1771,13 +1844,41 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         return true;
     }
 
-    private void startRecordingAnimation() {
-        Animation animation = new AlphaAnimation((float) 0.5, 0); //to change visibility from visible to invisible
+    private void startRecordingAnimation(int type) {
+        Animation animation=null;
+        if(type==2){
+            animation = new AlphaAnimation((float) 0, 0); //to change visibility from visible to invisible
+        }else{
+            animation = new AlphaAnimation((float) 0.5, 0); //to change visibility from visible to invisible
+        }
         animation.setDuration(1000); //1 second duration for each animation cycle
         animation.setInterpolator(new LinearInterpolator());
         animation.setRepeatCount(Animation.INFINITE); //repeating indefinitely
         animation.setRepeatMode(Animation.REVERSE); //animation will start from end point once ended.
         iv_recording.startAnimation(animation); //to start animation
+    }
+    public void checkGPSEnable(){
+        new GpsUtils(this).turnGPSOn(new GpsUtils.onGpsListener() {
+            @Override
+            public void gpsStatus(boolean isGPSEnable) {
+                // turn on GPS
+                isGPS = isGPSEnable;
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == AppConstants.GPS_REQUEST) {
+                isGPS = true; // flag maintain before get location
+            }
+        }
+        else if (resultCode == Activity.RESULT_CANCELED) {
+            if (requestCode == AppConstants.GPS_REQUEST) {
+                isGPS=false;
+            }
+        }
     }
 
     @Override

@@ -23,6 +23,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -40,6 +43,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -88,10 +92,13 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
     MaterialButton btn_save;
     @BindView(R.id.ll_parent)
     LinearLayout ll_parent;
+    @BindView(R.id.iv_recording)
+    ShapeableImageView iv_recording;
 
     /*normal widgets*/
     private Unbinder unbinder;
     private String survey_id="";
+    private boolean isRecording=false;
     private String screen_type="";
     private int length=1;
     private int startPosition;
@@ -174,6 +181,13 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
             screen_type=getArguments().getString("screen_type", "");
         }
         survey_id=sharedPrefHelper.getString("survey_id", "");
+        isRecording=sharedPrefHelper.getBoolean("isRecording", false);
+        if(isRecording){
+            iv_recording.setVisibility(View.VISIBLE);
+            startRecordingAnimation();
+        }else{
+            iv_recording.setVisibility(View.GONE);
+        }
 
         try {
             jsonQuestions = new JSONObject(MyJSON.loadJSONFromAsset(getActivity()));
@@ -656,6 +670,14 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                 doBack();
             }
         });
+    }
+    private void startRecordingAnimation() {
+        Animation animation = new AlphaAnimation((float) 0.5, 0); //to change visibility from visible to invisible
+        animation.setDuration(1000); //1 second duration for each animation cycle
+        animation.setInterpolator(new LinearInterpolator());
+        animation.setRepeatCount(Animation.INFINITE); //repeating indefinitely
+        animation.setRepeatMode(Animation.REVERSE); //animation will start from end point once ended.
+        iv_recording.startAnimation(animation); //to start animation
     }
 
     private void sendSurveyDataOnServer(RequestBody body) {

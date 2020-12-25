@@ -261,7 +261,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         String agency_name = jsonObject.optString("agency_name");
 
                                        //download_city("sub_districts");
-                                        download_city("cities");
+                                        download_city("sub_districts");
                                         download_city("nccs_matrix");
                                         ///set preference data/
                                         setAllDataInPreferences(user_id, interviewer_id, interviewer_name, user_name,
