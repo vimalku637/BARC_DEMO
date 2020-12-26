@@ -969,19 +969,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
-                startScreenPosition=startScreenPosition-1;
-                endScreenPosition=endScreenPosition-1;
-                back_status=true;
-                if(endScreenPosition<=0){
-                Intent intentHom= new Intent(HouseholdSurveyActivity.this, ClusterDetails.class);
-                startActivity(intentHom);
-                finish();
-                }else{
-                    isGPSClicked=0;
-                    btn_next.setText("Next");
-                    startPosition=startPosition-(endPosition+Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions()));
-                    questionsPopulate();
-                }
+                btnPrevious();
             }
         });
         btn_stop.setOnClickListener(new View.OnClickListener() {
@@ -990,6 +978,37 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 CommonClass.setPopupForStopSurvey(context);
             }
         });
+    }
+
+    private void btnPreviousFragment(){
+        startScreenPosition=startScreenPosition-1;
+        endScreenPosition=endScreenPosition-1;
+        back_status=true;
+        if(endScreenPosition<=0){
+            Intent intentHom= new Intent(HouseholdSurveyActivity.this, ClusterDetails.class);
+            startActivity(intentHom);
+            finish();
+        }else{
+            isGPSClicked=0;
+            btn_next.setText("Next");
+            startPosition=startPosition-Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions());
+            questionsPopulate();
+        }
+    }
+    private void btnPrevious(){
+        startScreenPosition=startScreenPosition-1;
+        endScreenPosition=endScreenPosition-1;
+        back_status=true;
+        if(endScreenPosition<=0){
+            Intent intentHom= new Intent(HouseholdSurveyActivity.this, ClusterDetails.class);
+            startActivity(intentHom);
+            finish();
+        }else{
+            isGPSClicked=0;
+            btn_next.setText("Next");
+            startPosition=startPosition-(endPosition+Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions()));
+            questionsPopulate();
+        }
     }
 
     private void sendSurveyDataOnServer(RequestBody body) {
@@ -1916,7 +1935,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         stopRecording();
     }
     @Override
-    public void passDataToActivity(ArrayList<ArrayList<AnswerModel>> answerModelListTotal,ArrayList<AnswerModel> answerModelList,int type){
+    public void passDataToActivity(ArrayList<ArrayList<AnswerModel>> answerModelListTotal,ArrayList<AnswerModel> answerModelList,int type,int mode){
        // Log.e("Fragment Dismissed",someValue);
         if(type==1){
             //answerModelHouseholdMemberList.clear();
@@ -1924,14 +1943,19 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             ArrayList<AnswerModel> answerModelListN=answerModelList;
             answerModelHouseholdMemberList=answerModelListN;
             answerModelHouseholdMemberListTotal=answerModelListNTotal;
-        }else if(type==2){
+        }
+        else if(type==2){
             //answerModelTVList.clear();
             ArrayList<ArrayList<AnswerModel>> answerModelListNTotal=answerModelListTotal;
             ArrayList<AnswerModel> answerModelListN=answerModelList;
             answerModelTVList=answerModelListN;
             answerModelTVListTotal=answerModelListNTotal;
         }
-        questionsPopulate();
+        if(mode==2){
+            btnPreviousFragment();
+        }else{
+            questionsPopulate();
+        }
         //textView.setText(someValue);
     }
 

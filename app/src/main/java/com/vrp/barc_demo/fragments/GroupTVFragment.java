@@ -108,7 +108,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
     private int endPosition;
     private int endScreenPosition=1;
     private int endScreenParentPosition=1;
-    private int endScreenCount=0;
+    private int endScreenCount=1;
     private SharedPrefHelper sharedPrefHelper;
     int totalQuestions;
     int totalScreen;
@@ -491,6 +491,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             btn_stop.setVisibility(View.VISIBLE);
                             btn_next.setVisibility(View.GONE);
                         }
+                        endScreenCount++;
                         questionsPopulate();
 
                     }else{
@@ -504,15 +505,22 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
             @Override
             public void onClick(View view) {
 
-                startScreenPosition=startScreenPosition-1;
-                endScreenPosition=endScreenPosition-1;
+                /*startScreenPosition=startScreenPosition-1;
+                endScreenPosition=endScreenPosition-1;*/
                 endScreenCount=endScreenCount-1;
+                if(startScreenPosition==0){
+                    startScreenPosition=totalScreen-1;
+                    endScreenPosition=totalScreen;
+                }else{
+                    startScreenPosition=startScreenPosition-1;
+                    endScreenPosition=endScreenPosition-1;
+                }
 
                 back_status=true;
 
                 if(endScreenCount<=0){
                     //getActivity().onBackPressed();
-                    activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2);
+                    activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2,2);
                     doBack();
                 }else{
                     btn_next.setVisibility(View.VISIBLE);
@@ -538,7 +546,6 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         if (childView instanceof EditText) {
                             EditText editText = (EditText) childView;
                             int viewID=editText.getId();
-                            String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
                             }
@@ -594,6 +601,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         }
                         else if (childView instanceof Spinner) {
                             Spinner spinner = (Spinner) childView;
+                            String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
                             }else{
@@ -606,10 +614,26 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                 answerModelList.add(answerModel);
                             }
-                            if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId()==0){
-                                flag=false;
-                                break;
+                            if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
+                                    &&questionID.equals("62")||questionID.equals("65")||questionID.equals("66")
+                                    ||questionID.equals("67")||questionID.equals("68")&&spinner.getSelectedItemId()==0){
+                                flag=true;
+                            } else {
+                                if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
+                                    flag = false;
+                                    break;
+                                }
                             }
+                            if (questionID.equals("59")){
+                                String spinnerOptionId=Long.toString(spinner.getSelectedItemId());
+                                sharedPrefHelper.setString("spinnerOptionId", spinnerOptionId);
+                            }else if (questionID.equals("60")){
+                                String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
+                                sharedPrefHelper.setString("spinnerOptionIdTV", spinnerOptionIdTV);
+                            }/*else if (questionID.equals("64")){
+                                String spinnerOptionIdTVConnection=Long.toString(spinner.getSelectedItemId());
+                                sharedPrefHelper.setString("spinnerOptionIdTVConnection", spinnerOptionIdTVConnection);
+                            }*/
                             nextPosition++;
                             count++;
                         }
@@ -630,6 +654,11 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                     }
                                 }
                             }
+                            if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("64")){
+                                if(selectedOptions.contains("1")||selectedOptions.contains("3")
+                                        ||selectedOptions.contains("5"))
+                                    sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
+                            }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_id(selectedOptions);
                             }else{
@@ -646,6 +675,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 flag=false;
                                 break;
                             }
+
                             nextPosition++;
                             count++;
                         }
@@ -657,17 +687,21 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         e.printStackTrace();
                     }
                 }
-                int lenSingle = answerModelListSingle.size();
-                int len = answerModelList.size();
-                if (answerModelList != null) {
-                    answerModelListSingle.clear();
-                    for (int i = lenSingle; i < len; i++) {
-                        answerModelListSingle.add(answerModelList.get(i));
+                if(flag==true){
+                    int lenSingle = answerModelListSingle.size();
+                    int len = answerModelList.size();
+                    if (answerModelList != null) {
+                        answerModelListSingle.clear();
+                        for (int i = lenSingle; i < len; i++) {
+                            answerModelListSingle.add(answerModelList.get(i));
+                        }
                     }
+                    answerTVtotal.add(answerModelListSingle);
+                    activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2,1);
+                    doBack();
+                }else{
+                    Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
                 }
-                answerTVtotal.add(answerModelListSingle);
-                activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2);
-                doBack();
             }
         });
     }
@@ -1037,7 +1071,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     }
                 }
             }
-            endScreenCount++;
+           // endScreenCount++;
         } catch (JSONException e) {
             e.printStackTrace();
         }
