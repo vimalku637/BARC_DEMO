@@ -120,7 +120,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
     private int endPosition;
     private int endScreenPosition=1;
     private int endScreenParentPosition=1;
-    private int endScreenCount=0;
+    private int endScreenCount=1;
     private SharedPrefHelper sharedPrefHelper;
     int totalQuestions;
     int totalScreen;
@@ -534,6 +534,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             btn_next.setVisibility(View.GONE);
                         }
                         totalScreenCount++;
+                        endScreenCount++;
                         questionsPopulate();
 
                     }
@@ -548,21 +549,26 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
             @Override
             public void onClick(View view) {
 
-                startScreenPosition=startScreenPosition-1;
-                endScreenPosition=endScreenPosition-1;
                 endScreenCount=endScreenCount-1;
+                if(startScreenPosition==0){
+                    startScreenPosition=totalScreen-1;
+                    endScreenPosition=totalScreen;
+                }else{
+                    startScreenPosition=startScreenPosition-1;
+                    endScreenPosition=endScreenPosition-1;
+                }
 
                 back_status=true;
 
                 if(endScreenCount<=0){
                     //getActivity().onBackPressed();
-                    activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2);
+                    activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,1,2);
                     doBack();
                 }else{
                     btn_next.setVisibility(View.VISIBLE);
                     btn_stop.setVisibility(View.GONE);
-                    startPosition=startPosition-(endPosition+Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions()));
                     totalScreenCount--;
+                    startPosition=startPosition-(endPosition+Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions()));
                     questionsPopulate();
                 }
             }
@@ -583,6 +589,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         if (childView instanceof EditText) {
                             EditText editText = (EditText) childView;
                             int viewID=editText.getId();
+                            String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
                             }
@@ -599,6 +606,23 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                 flag=false;
                                 break;
+                            }
+                            else if (questionID.equals("33")) {
+                                name=editText.getText().toString().trim();
+                                sharedPrefHelper.setString("name", name);
+                                nameVL.put(totalScreenCount,""+name);
+                            }else if (questionID.equals("35")) {
+                                ageInYears=Integer.parseInt(editText.getText().toString().trim());
+                                sharedPrefHelper.setInt("ageInYears", ageInYears);
+                                if(ageInYears<1){
+                                    flag=false;
+                                    break;
+                                }
+                                else if(ageInYears>120){
+                                    flag=false;
+                                    break;
+                                }
+                                ageVL.put(totalScreenCount-1,""+ageInYears);
                             }
                             nextPosition++;
                             count++;
@@ -664,8 +688,15 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 answerModelList.add(answerModel);
                             }
                             if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId()==0){
-                                flag=false;
-                                break;
+                                if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("41")){
+                                    if(ageInYears<=12){
+                                        flag=false;
+                                        break;
+                                    }
+                                }else{
+                                    flag=false;
+                                    break;
+                                }
                             }
                             nextPosition++;
                             count++;
@@ -709,22 +740,26 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         else{
                             childView.getRootView();
                         }
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                int lenSingle = answerModelListSingle.size();
-                int len = answerModelList.size();
-                if (answerModelList != null) {
-                    answerModelListSingle.clear();
-                    for (int i = lenSingle; i < len; i++) {
-                        answerModelListSingle.add(answerModelList.get(i));
+                if(flag==true){
+                    int lenSingle = answerModelListSingle.size();
+                    int len = answerModelList.size();
+                    if (answerModelList != null) {
+                        answerModelListSingle.clear();
+                        for (int i = lenSingle; i < len; i++) {
+                            answerModelListSingle.add(answerModelList.get(i));
+                        }
                     }
+                    answerTVtotal.add(answerModelListSingle);
+                    activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,1,1);
+                    doBack();
                 }
-                answerTVtotal.add(answerModelListSingle);
-                activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,1);
-                doBack();
+                else{
+                    Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -1189,7 +1224,6 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     }
                 }
             }
-            endScreenCount++;
         } catch (JSONException e) {
             e.printStackTrace();
         }
