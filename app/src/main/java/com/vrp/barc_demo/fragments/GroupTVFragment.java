@@ -449,8 +449,8 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             if (!survey_id.equals("")) {
                                 Gson gson = new Gson();
                                 String listString = gson.toJson(
-                                        arrayScreenWiseQuestionModel,
-                                        new TypeToken<ArrayList<ScreenWiseQuestionModel>>() {}.getType());
+                                        answerModelList,
+                                        new TypeToken<ArrayList<AnswerModel>>() {}.getType());
                                 try {
                                     JSONArray json_array =  new JSONArray(listString);
                                     JSONObject json_object=new JSONObject();
@@ -1023,8 +1023,8 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         TextView textView=new TextView(getActivity());
                         textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
-                        description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
+                        description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name",""));
                         if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

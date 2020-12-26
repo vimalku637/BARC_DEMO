@@ -83,4 +83,8 @@
     <string name="reason_of_selecting_next_address">Reason of selecting next address</string>
     <string name="reason_of_selecting_previous_address">Reason of selecting previous address</string>
     <string name="default_notification_channel_id">Channel ID</string>
+    <string name="enter_reason_of_selecting_next_address">Enter reason of selecting next address!</string>
+    <string name="enter_reason_of_selecting_previous_address">Enter reason of selecting previous address!</string>
+    <string name="enter_reason_of_selecting_substitute_address">Enter reason of selecting substitute address!</string>
+    <string name="app_version">App Version :</string>
 </resources>

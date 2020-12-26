@@ -198,6 +198,7 @@ public class TerminateActivity extends AppCompatActivity {
 
     private void hideShowOptions() {
         if (!radio_button_id.equals("")) {
+            cl_terminate.setVisibility(View.GONE);
             //save data in to local DB.
             Gson gson = new Gson();
             String listString = gson.toJson(

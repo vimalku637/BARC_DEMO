@@ -292,6 +292,10 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             else if (questionID.equals("33")) {
                                 name=editText.getText().toString().trim();
                                 sharedPrefHelper.setString("name", name);
+                                if (name.length()==1){
+                                    flag=false;
+                                    break;
+                                }
                                 nameVL.put(totalScreenCount,""+name);
                             }else if (questionID.equals("35")) {
                                 ageInYears=Integer.parseInt(editText.getText().toString().trim());
@@ -487,8 +491,8 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             if (!survey_id.equals("")) {
                                 Gson gson = new Gson();
                                 String listString = gson.toJson(
-                                        arrayScreenWiseQuestionModel,
-                                        new TypeToken<ArrayList<ScreenWiseQuestionModel>>() {}.getType());
+                                        answerModelList,
+                                        new TypeToken<ArrayList<AnswerModel>>() {}.getType());
                                 try {
                                     JSONArray json_array =  new JSONArray(listString);
                                     JSONObject json_object=new JSONObject();
@@ -1172,7 +1176,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                         String description=jsonObjectQuesType.getString("question_name");
                         description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
-                        description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name","Ram"));
+                        description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name",""));
                         if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

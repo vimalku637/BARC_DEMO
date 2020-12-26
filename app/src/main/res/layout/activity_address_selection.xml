@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_screen"
     tools:context=".activities.AddressSelection">
 
     <LinearLayout
@@ -46,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/start"
-                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:backgroundTint="@color/color_green_google"
                     android:paddingTop="@dimen/margin15"
                     android:paddingBottom="@dimen/margin15"
                     app:cornerRadius="@dimen/margin8"
@@ -100,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/start"
-                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:backgroundTint="@color/color_green_google"
                     android:paddingTop="@dimen/margin15"
                     android:paddingBottom="@dimen/margin15"
                     app:cornerRadius="@dimen/margin8"
@@ -154,7 +153,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/start"
-                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:backgroundTint="@color/color_green_google"
                     android:paddingTop="@dimen/margin15"
                     android:paddingBottom="@dimen/margin15"
                     app:cornerRadius="@dimen/margin8"
@@ -216,7 +215,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/start"
-                    android:backgroundTint="@android:color/holo_orange_dark"
+                    android:backgroundTint="@color/color_green_google"
                     android:paddingTop="@dimen/margin15"
                     android:paddingBottom="@dimen/margin15"
                     app:cornerRadius="@dimen/margin8"

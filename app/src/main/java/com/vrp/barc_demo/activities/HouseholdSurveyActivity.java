@@ -198,11 +198,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             if (screen_type.equals("survey_list")) {
                 answerModelList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
                 ArrayList<AnswerModel> modelArrayList=new ArrayList<>();
-                modelArrayList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListFamily");
-                answerModelHouseholdMemberListTotal.add(modelArrayList);
+                answerModelHouseholdMemberList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListFamily");
+                // answerModelHouseholdMemberListTotal.add(modelArrayList);
                 ArrayList<AnswerModel> modelArrayList1=new ArrayList<>();
-                modelArrayList1 = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListTV");
-                answerModelTVListTotal.add(modelArrayList1);
+                answerModelTVList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelListTV");
+                // answerModelTVListTotal.add(modelArrayList1);
             }
         }
         /*get survey data according to survey id*/
@@ -860,10 +860,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     json_object.put("survey_id", survey_id);
                                     json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                                     json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
-                                    json_object.put("GPS_latitude", "27.883743");
-                                    json_object.put("GPS_longitude", "79.912247");
-                                    /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
-                                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
+                                    json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));
                                     json_object.put("survey_data", json_array);
                                     Log.e(TAG, "onClick: "+json_object.toString());
 
@@ -1291,6 +1289,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    radioButton.setChecked(true);
                                }
                            }
+                           if(jsonObjectQuesType.getString("pre_field").equals("1")){
+                               radioButton.setEnabled(false);
+                           }
                            else if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
                                radioButton.setChecked(true);
                            }
@@ -1331,10 +1332,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                int sepPosID = rbTag.indexOf("^");
                                String radioID = rbTag.substring(0, sepPosID);
                                int iddd=group.getId();
-                               if(id.equals("1")){
-                                   setTerminattion(id);
-                                   //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
-                               }else if(group.getId()==23){
+                               if (rb.isChecked()){
+                                   if(id.equals("1")){
+                                       //setTerminattion(id);
+                                       showPopupForTerminateSurveyOnRadio(id,jsonObjectQuesType,rb);
+                                       //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
+                                   }
+                               }
+                               else if(group.getId()==23){
                                     sharedPrefHelper.setString("CWE_Status",radioID);
                                     if(radioID.equalsIgnoreCase("1")){
                                         /*jsonArrayScreen.remove(11);
@@ -1571,8 +1576,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        TextView textView=new TextView(this);
                        textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                        String description=jsonObjectQuesType.getString("question_name");
-                       description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
-                       description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name","Ram"));
+                       description=description.replaceAll("\\$name",sharedPrefHelper.getString("user_name",""));
+                       description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name",""));
                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                        }
                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -1828,18 +1833,49 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 })
                 .show();
     }
+    private void showPopupForTerminateSurveyOnRadio(String id, JSONObject jsonObjectQuesType,
+                                                    RadioButton radioButton) {
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Are you sure?")
+                .setContentText("Want to terminate the interview!")
+                .setConfirmText("Yes")
+                .setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        setTerminattion(id);
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        try {
+                            if (jsonObjectQuesType.getString("question_id").equals("25")){
+                                if (radioButton.isChecked()){
+                                    radioButton.setChecked(false);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         /*hide and show toolbar items*/
-        if (screen_type.equalsIgnoreCase("survey")) {
+        //if (screen_type.equalsIgnoreCase("survey")) {
             MenuItem item_stop_survey=menu.findItem(R.id.stop_survey);
             item_stop_survey.setVisible(true);
             MenuItem item_logout=menu.findItem(R.id.logout);
             item_logout.setVisible(false);
-        }
+        //}
 
         return true;
     }

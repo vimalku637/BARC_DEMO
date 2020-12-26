@@ -80,7 +80,7 @@ public class UpdateQuestions extends AppCompatActivity {
 
     private void setSurveySpinner() {
         //surveySpnAL.add(0, getString(R.string.select_survey));
-        surveySpnAL.add(0, "Household Survey");
+        surveySpnAL.add(0, "Survey");
         ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, surveySpnAL);
         spn_select_survey.setAdapter(arrayAdapter);
         spn_select_survey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

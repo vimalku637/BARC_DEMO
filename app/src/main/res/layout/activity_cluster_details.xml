@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/background_screen"
     tools:context=".activities.ClusterDetails">
 
 
@@ -91,12 +90,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/take_survey"
-            android:backgroundTint="@android:color/holo_orange_dark"
+            android:backgroundTint="@color/color_green_google"
             android:paddingTop="@dimen/margin15"
             android:paddingBottom="@dimen/margin15"
             app:cornerRadius="@dimen/margin8"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/til_reason"
             android:textColor="@android:color/white" />
         </RelativeLayout>
     </LinearLayout>

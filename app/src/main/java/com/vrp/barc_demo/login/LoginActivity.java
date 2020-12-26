@@ -52,6 +52,7 @@ import com.google.gson.JsonObject;
 import com.vrp.barc_demo.forgot_password.ForgotPassword;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.activities.UpdateQuestions;
+import com.vrp.barc_demo.location_gps.AppConstants;
 import com.vrp.barc_demo.location_gps.GpsUtils;
 import com.vrp.barc_demo.models.LoginModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
@@ -86,6 +87,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @BindView(R.id.til_user_name)
     TextInputLayout til_user_name;
     ProgressDialog mprogressDialog;
+    @BindView(R.id.tv_app_version)
+    MaterialTextView tv_app_version;
 
     // /normal widgets/
     private Context context = this;
@@ -116,6 +119,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
         }
+        setValues();
 
         if (Build.VERSION.SDK_INT >= 23) {
             Log.d("TAG","@@@ IN IF Build.VERSION.SDK_INT >= 23");
@@ -159,6 +163,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         };
         displayFirebaseRegId();
     }
+
+    private void setValues() {
+        tv_app_version.setText(getString(R.string.app_version)+AppConstants.APP_VERSION);
+    }
+
     private void displayFirebaseRegId() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<InstanceIdResult>() {
@@ -260,7 +269,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         String supervisor_name = jsonObject.optString("supervisor_name");
                                         String agency_name = jsonObject.optString("agency_name");
 
-                                       //download_city("sub_districts");
                                         download_city("sub_districts");
                                         download_city("nccs_matrix");
                                         ///set preference data/

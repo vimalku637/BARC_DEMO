@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.gson.JsonArray;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.adapters.SurveyListAdapter;
 import com.vrp.barc_demo.interfaces.ClickListener;
@@ -186,10 +187,9 @@ public class SurveyListActivity extends AppCompatActivity {
             jsonAnswers= new JSONObject(surveyObjectJSON);
             if (jsonAnswers.has("survey_data")) {
                 jsonArrayAnswers=jsonAnswers.getJSONArray("survey_data");
-                totalAnswers=jsonArrayAnswers.length();
                 Log.e("survey_data", "onCreate: " + jsonArrayAnswers.toString());
-                if(totalAnswers>0){
-                    for (int i = 0; i < totalAnswers; i++) {
+                if(jsonArrayAnswers.length()>0){
+                    for (int i = 0; i < jsonArrayAnswers.length(); i++) {
                         JSONObject jsonObjectAns=jsonArrayAnswers.getJSONObject(i);
                         AnswerModel answerModel=new AnswerModel();
                         answerModel.setOption_id(jsonObjectAns.getString("option_id"));
@@ -205,18 +205,21 @@ public class SurveyListActivity extends AppCompatActivity {
                 jsonAnswersFamily = new JSONObject(surveyFamilyObjectJSON);
                 if (jsonAnswersFamily.has("family_data")) {
                     jsonFamilyArrayAnswers = jsonAnswersFamily.getJSONArray("family_data");
-                    totalAnswers = jsonFamilyArrayAnswers.length();
                     Log.e("family_data", "onCreate: " + jsonFamilyArrayAnswers.toString());
-                    if (totalAnswers > 0) {
-                        for (int i = 0; i < totalAnswers; i++) {
-                            JSONObject jsonObjectAns = jsonFamilyArrayAnswers.getJSONObject(i);
-                            AnswerModel answerModel = new AnswerModel();
-                            answerModel.setOption_id(jsonObjectAns.getString("option_id"));
-                            answerModel.setOption_value(jsonObjectAns.getString("option_value"));
-                            answerModel.setQuestionID(jsonObjectAns.getString("question_id"));
-                            answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
-                            answerModel.setField_name(jsonObjectAns.getString("field_name"));
-                            answerModelHouseholdMemberList.add(answerModel);
+                    if (jsonFamilyArrayAnswers.length() > 0) {
+                        for (int i = 0; i < jsonFamilyArrayAnswers.length(); i++) {
+                            JSONArray jsonElements=new JSONArray();
+                            jsonElements  =jsonFamilyArrayAnswers.getJSONArray(i);
+                            for (int j = 0; j <jsonElements.length() ; j++) {
+                                JSONObject jsonObjectAns = new JSONObject(jsonElements.get(j).toString());
+                                AnswerModel answerModel=new AnswerModel();
+                                answerModel.setOption_id(jsonObjectAns.getString("option_id"));
+                                answerModel.setOption_value(jsonObjectAns.getString("option_value"));
+                                answerModel.setQuestionID(jsonObjectAns.getString("question_id"));
+                                answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
+                                answerModel.setField_name(jsonObjectAns.getString("field_name"));
+                                answerModelHouseholdMemberList.add(answerModel);
+                            }
                         }
                     }
                 }
@@ -225,18 +228,21 @@ public class SurveyListActivity extends AppCompatActivity {
             jsonAnswersTV= new JSONObject(surveyTVObjectJSON);
             if (jsonAnswersTV.has("tv_data")) {
                 jsonTVArrayAnswers=jsonAnswersTV.getJSONArray("tv_data");
-                totalAnswers=jsonTVArrayAnswers.length();
                 Log.e("tv_data", "onCreate: " + jsonTVArrayAnswers.toString());
-                if(totalAnswers>0){
-                    for (int i = 0; i < totalAnswers; i++) {
-                        JSONObject jsonObjectAns=jsonTVArrayAnswers.getJSONObject(i);
-                        AnswerModel answerModel=new AnswerModel();
-                        answerModel.setOption_id(jsonObjectAns.getString("option_id"));
-                        answerModel.setOption_value(jsonObjectAns.getString("option_value"));
-                        answerModel.setQuestionID(jsonObjectAns.getString("question_id"));
-                        answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
-                        answerModel.setField_name(jsonObjectAns.getString("field_name"));
-                        answerModelTVList.add(answerModel);
+                if(jsonTVArrayAnswers.length()>0){
+                    for (int i = 0; i < jsonTVArrayAnswers.length(); i++) {
+                        JSONArray jsonElements=new JSONArray();
+                        jsonElements  =jsonTVArrayAnswers.getJSONArray(i);
+                        for (int j = 0; j <jsonElements.length() ; j++) {
+                            JSONObject jsonObjectAns = new JSONObject(jsonElements.get(j).toString());
+                            AnswerModel answerModel=new AnswerModel();
+                            answerModel.setOption_id(jsonObjectAns.getString("option_id"));
+                            answerModel.setOption_value(jsonObjectAns.getString("option_value"));
+                            answerModel.setQuestionID(jsonObjectAns.getString("question_id"));
+                            answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
+                            answerModel.setField_name(jsonObjectAns.getString("field_name"));
+                            answerModelTVList.add(answerModel);
+                        }
                     }
                 }
             }

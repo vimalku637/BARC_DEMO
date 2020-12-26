@@ -47,7 +47,7 @@ import retrofit2.Response;
 public class ForgotPassword extends AppCompatActivity {
     @BindView(R.id.btn_submit)
     Button btn_submit;
-String password;
+    String password;
     @BindView(R.id.et_email)
     EditText et_email;
     ProgressDialog mprogressDialog;

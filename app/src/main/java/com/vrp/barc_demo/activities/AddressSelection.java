@@ -26,6 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.models.SurveyModel;
@@ -38,8 +40,7 @@ import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class AddressSelection extends AppCompatActivity {
-    @BindView
-            (R.id.rg_address)
+    @BindView(R.id.rg_address)
     RadioGroup rg_address;
     @BindView(R.id.rb_original_address)
     RadioButton rb_original_address;
@@ -53,6 +54,8 @@ public class AddressSelection extends AppCompatActivity {
     MaterialTextView tv_original_address;
     @BindView(R.id.btn_start)
     MaterialButton btn_start;
+    @BindView(R.id.btn_start_sub)
+    MaterialButton btn_start_sub;
     @BindView(R.id.spn_railway_station)
     Spinner spn_railway_station;
     @BindView(R.id.rl_layout_substituted)
@@ -72,11 +75,17 @@ public class AddressSelection extends AppCompatActivity {
     @BindView(R.id.btn_start_previous)
     MaterialButton btn_start_previous;
     @BindView(R.id.et_reasonNextAd)
-    EditText et_reasonNextAd;
+    TextInputEditText et_reasonNextAd;
     @BindView(R.id.et_reasonPreviousAd)
-    EditText et_reasonPreviousAd;
+    TextInputEditText et_reasonPreviousAd;
     @BindView(R.id.et_reasonSubstituteAd)
-    EditText et_reasonSubstituteAd;
+    TextInputEditText et_reasonSubstituteAd;
+    @BindView(R.id.til_reason_next_address)
+    TextInputLayout til_reason_next_address;
+    @BindView(R.id.til_reason_previous_address)
+    TextInputLayout til_reason_previous_address;
+    @BindView(R.id.til_reason_substitute_address)
+    TextInputLayout til_reason_substitute_address;
 
     /*normal widgets*/
     private Context context = this;
@@ -201,9 +210,11 @@ public class AddressSelection extends AppCompatActivity {
         btn_start_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (et_reasonNextAd.getText().toString().equals("")){
-                    et_reasonNextAd.setError("Required !");
+                if (et_reasonNextAd.getText().toString().trim().equals("")){
+                    til_reason_next_address.setError(getString(R.string.enter_reason_of_selecting_next_address));
                     return;
+                } else {
+                    til_reason_next_address.setError(null);
                 }
                 Intent intentClusterDetails = new Intent(AddressSelection.this, ClusterDetails.class);
                 /*intentClusterDetails.putExtra("cluster_id", cluster_id);
@@ -216,15 +227,34 @@ public class AddressSelection extends AppCompatActivity {
         btn_start_previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (et_reasonPreviousAd.getText().toString().equals("")){
-                    et_reasonPreviousAd.setError("Required !");
+                if (et_reasonPreviousAd.getText().toString().trim().equals("")){
+                    til_reason_previous_address.setError(getString(R.string.enter_reason_of_selecting_previous_address));
                     return;
+                } else {
+                    til_reason_previous_address.setError(null);
                 }
                 Intent intentClusterDetails = new Intent(AddressSelection.this, ClusterDetails.class);
                 /*intentClusterDetails.putExtra("cluster_id", cluster_id);
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
                 sharedPrefHelper.setString("address_type", "3");
+                startActivity(intentClusterDetails);
+            }
+        });
+        btn_start_sub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (et_reasonPreviousAd.getText().toString().trim().equals("")){
+                    til_reason_substitute_address.setError(getString(R.string.enter_reason_of_selecting_substitute_address));
+                    return;
+                } else {
+                    til_reason_substitute_address.setError(null);
+                }
+                Intent intentClusterDetails = new Intent(AddressSelection.this, ClusterDetails.class);
+                /*intentClusterDetails.putExtra("cluster_id", cluster_id);
+                intentClusterDetails.putExtra("cluster_name", cluster_name);*/
+                intentClusterDetails.putExtra("screen_type", "survey");
+                sharedPrefHelper.setString("address_type", "4");
                 startActivity(intentClusterDetails);
             }
         });
