@@ -1358,7 +1358,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
                                    }
                                }
-                               else if(group.getId()==23){
+                               if(group.getId()==23){
                                     sharedPrefHelper.setString("CWE_Status",radioID);
                                     if(radioID.equalsIgnoreCase("1")){
                                         /*jsonArrayScreen.remove(11);
@@ -1390,7 +1390,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         totalScreen=jsonArrayScreen.length();
                                     }
                                }
-                               else if(group.getId()==24){
+                               if(group.getId()==24){
                                    //start recording here
                                    if (radioID.equals("1")) {
                                        sharedPrefHelper.setBoolean("isRecording",true);
