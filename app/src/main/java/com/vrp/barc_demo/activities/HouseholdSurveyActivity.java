@@ -243,6 +243,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     Log.e("Screen", "onCreate: " + jsonArrayScreen.toString());
                     if(totalScreen>0){
                         questionsPopulate();
+                        sharedPrefHelper.setString("CWE_Yes","0");
                     }
                 }
 
@@ -1307,11 +1308,59 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
                                    radioButton.setChecked(true);
                                }
+                               if(jsonObjectQuesType.getString("question_id").equals("23")){
+                                   if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
+                                       if(jsonObjectOptionValues.getString("option_id").equals("1")){
+                                           try{
+                                               JSONArray list = new JSONArray();
+                                               int len = jsonArrayScreen.length();
+                                               if (jsonArrayScreen != null) {
+                                                   for (int ii=0;ii<len;ii++)
+                                                   {
+                                                       if (ii != 11 && ii != 12)
+                                                       {
+                                                           list.put(jsonArrayScreen.get(ii));
+                                                       }
+                                                   }
+                                               }
+                                               jsonArrayScreen=list;
+                                               totalScreen=jsonArrayScreen.length();
+                                           } catch (JSONException e) {
+                                               e.printStackTrace();
+                                           }
+                                       }else{
+                                           try {
+                                               //jsonArrayScreen=new JSONArray();
+                                               jsonArrayScreen=jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
+                                           } catch (JSONException e) {
+                                               e.printStackTrace();
+                                           }
+                                           totalScreen=jsonArrayScreen.length();
+                                       }
+                                   }
+                               }
+                               else if(jsonObjectQuesType.getString("question_id").equals("24")){
+                                   //start recording here
+                                   if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))) {
+                                       if (jsonObjectOptionValues.getString("option_id").equals("1")) {
+                                           sharedPrefHelper.setBoolean("isRecording", true);
+                                           iv_recording.setVisibility(View.VISIBLE);
+                                           startRecordingAnimation(1);
+                                           startRecording();
+                                       } else {
+                                           iv_recording.setVisibility(View.GONE);
+                                           startRecordingAnimation(2);
+                                           //iv_recording.startAnimation(null);
+                                           sharedPrefHelper.setBoolean("isRecording", false);
+                                           stopRecording();
+                                       }
+                                   }
+                               }
                            }
                            if(jsonObjectQuesType.getString("pre_field").equals("1")){
                                radioButton.setEnabled(false);
                            }
-                           else if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
+                           if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
                                radioButton.setChecked(true);
                            }
                            else if(jsonObjectQuesType.getString("question_id").equals("76")){
@@ -1365,21 +1414,21 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         jsonArrayScreen.remove(11);*/
                                         try{
                                             JSONArray list = new JSONArray();
-                                        int len = jsonArrayScreen.length();
-                                        if (jsonArrayScreen != null) {
-                                            for (int i=0;i<len;i++)
-                                            {
-                                                if (i != 11 && i != 12)
+                                            int len = jsonArrayScreen.length();
+                                            if (jsonArrayScreen != null) {
+                                                for (int i=0;i<len;i++)
                                                 {
-                                                    list.put(jsonArrayScreen.get(i));
+                                                    if (i != 11 && i != 12)
+                                                    {
+                                                        list.put(jsonArrayScreen.get(i));
+                                                    }
                                                 }
                                             }
-                                        }
-                                        jsonArrayScreen=list;
-                                        totalScreen=jsonArrayScreen.length();
-                                    } catch (JSONException e) {
-                                       e.printStackTrace();
-                                   }
+                                            jsonArrayScreen=list;
+                                            totalScreen=jsonArrayScreen.length();
+                                        } catch (JSONException e) {
+                                           e.printStackTrace();
+                                       }
                                     }else{
                                         try {
                                             //jsonArrayScreen=new JSONArray();
@@ -1390,7 +1439,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         totalScreen=jsonArrayScreen.length();
                                     }
                                }
-                               if(group.getId()==24){
+                               else if(group.getId()==24){
                                    //start recording here
                                    if (radioID.equals("1")) {
                                        sharedPrefHelper.setBoolean("isRecording",true);

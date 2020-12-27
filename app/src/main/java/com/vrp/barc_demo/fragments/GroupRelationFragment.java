@@ -967,7 +967,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         ll_parent.addView(txtLabel);
                         JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                         RadioGroup radioGroup=new RadioGroup(getActivity());
-                        radioGroup.setId(i);
+                        radioGroup.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                         for (int j = 0; j <jsonArrayOptions.length() ; j++) {
                             RadioButton radioButton=new RadioButton(getActivity());
                             radioButton.setLayoutParams(new LinearLayout.LayoutParams
@@ -983,8 +983,33 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
                                     radioButton.setChecked(true);
                                 }
-                            }else if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
+                                if(jsonObjectQuesType.getString("question_id").equals("40") && answerModelList.get(startPosition).getOption_id().equals("1")){
+                                    radioButton.setEnabled(true);
+                                    sharedPrefHelper.setString("CWE_Yes","1");
+                                }
+                                else if(jsonObjectQuesType.getString("question_id").equals("39") && answerModelList.get(startPosition+1).getOption_id().equals("1")){
+                                    radioButton.setEnabled(true);
+                                }
+                                else if(jsonObjectQuesType.getString("question_id").equals("40") || jsonObjectQuesType.getString("question_id").equals("39") ) {
+                                    if(sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
+                                        radioButton.setEnabled(false);
+                                    }
+                                }
+                            }
+                            else if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
                                 radioButton.setChecked(true);
+                            }
+                            else if(jsonObjectQuesType.getString("question_id").equals("39") && sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
+                                radioButton.setEnabled(false);
+                                if(jsonObjectOptionValues.getString("option_id").equals("1")){
+                                    radioButton.setChecked(true);
+                                }
+                            }
+                            else if(jsonObjectQuesType.getString("question_id").equals("40") && sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
+                                radioButton.setEnabled(false);
+                                if(jsonObjectOptionValues.getString("option_id").equals("2")){
+                                    radioButton.setChecked(true);
+                                }
                             }
                             if (radioGroup != null) {
                                 radioGroup.addView(radioButton);
@@ -1001,9 +1026,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 String rbTag=rb.getTag().toString();
                                 int sepPos = rbTag.indexOf("^");
                                 String id=rbTag.substring(sepPos+1);
-                                if(id.equals("1")){
-                                    setTerminattion(id);
-                                    //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
+                                String radioID = rbTag.substring(0, sepPos);
+                                String radioGroupID=String.valueOf(group.getId());
+                                if(radioGroupID.equals("40") && radioID.equals("1")){
+                                    sharedPrefHelper.setString("CWE_Yes","1");
+                                }else if(radioGroupID.equals("40") && radioID.equals("2")){
+                                    sharedPrefHelper.setString("CWE_Yes","");
                                 }
                             }
                         });
