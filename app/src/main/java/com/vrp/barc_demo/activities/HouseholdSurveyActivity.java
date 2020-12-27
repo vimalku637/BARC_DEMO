@@ -1350,11 +1350,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                String id=rbTag.substring(sepPos+1);
                                int sepPosID = rbTag.indexOf("^");
                                String radioID = rbTag.substring(0, sepPosID);
-                               int iddd=group.getId();
+                               String iddd=String.valueOf(rb.getId());
                                if (rb.isChecked()){
                                    if(id.equals("1")){
                                        //setTerminattion(id);
-                                       showPopupForTerminateSurveyOnRadio(id,jsonObjectQuesType,rb);
+                                       showPopupForTerminateSurveyOnRadio(iddd,jsonObjectQuesType,radioGroup);
                                        //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
                                    }
                                }
@@ -1390,7 +1390,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         totalScreen=jsonArrayScreen.length();
                                     }
                                }
-                               else if(iddd==24){
+                               else if(group.getId()==24){
                                    //start recording here
                                    if (radioID.equals("1")) {
                                        sharedPrefHelper.setBoolean("isRecording",true);
@@ -1853,7 +1853,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 .show();
     }
     private void showPopupForTerminateSurveyOnRadio(String id, JSONObject jsonObjectQuesType,
-                                                    RadioButton radioButton) {
+                                                    RadioGroup radiogroup) {
         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Are you sure?")
                 .setContentText("Want to terminate the interview!")
@@ -1871,12 +1871,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismiss();
                         try {
-                            if (jsonObjectQuesType.getString("question_id").equals("25")){
-                                if (radioButton.isChecked()){
-                                    radioButton.setChecked(false);
-                                }
-                            }
-                        } catch (JSONException e) {
+                            radiogroup.clearCheck();
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }

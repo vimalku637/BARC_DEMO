@@ -269,8 +269,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         String supervisor_name = jsonObject.optString("supervisor_name");
                                         String agency_name = jsonObject.optString("agency_name");
 
-                                        download_city("sub_districts");
-                                        download_city("nccs_matrix");
+                                        download_city("sub_districts",user_id);
+                                        download_city("nccs_matrix",user_id);
+                                        mprogressDialog.dismiss();
                                         ///set preference data/
                                         setAllDataInPreferences(user_id, interviewer_id, interviewer_name, user_name,
                                                 user_type_id, mdl_id, supervisor_id, supervisor_name, agency_name);
@@ -331,10 +332,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         sharedPrefHelper.setString("agency_name", agency_name);
     }
 
-    public void download_city(String table){
+    public void download_city(String table,String user_id){
         DataDownloadInput dataDownloadInput = new DataDownloadInput();
         dataDownloadInput.setTable_name(table);
-        dataDownloadInput.setUser_id(sharedPrefHelper.getString("user_id", ""));
+        dataDownloadInput.setUser_id(user_id);
         Gson Gson = new Gson();
         String data = Gson.toJson(dataDownloadInput);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -346,6 +347,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 try {
                     //JSONObject data=new JSONObject(response.body().toString().trim());
                     JsonArray data = response.body();
+                    Log.i("City Data ",""+data.toString());
 
                     sqliteHelper.dropTable(table);
                     for (int i = 0; i < data.size(); i++) {
@@ -456,6 +458,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         editor.putString("LATTITUDE>>>", latitude);
         editor.putString("LONGITUDE>>>", longitude);
         editor.putString("ALTITUDE>>>", altitude);
+        sharedPrefHelper.setString("LAT", latitude);
+        sharedPrefHelper.setString("LONG", longitude);
+        sharedPrefHelper.setString("ALTI", altitude);
+
 
         //editor.putString("Address", Address);
 
