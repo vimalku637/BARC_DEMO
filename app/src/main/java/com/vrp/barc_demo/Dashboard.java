@@ -26,6 +26,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.vrp.barc_demo.activities.ClusterListActivity;
 import com.vrp.barc_demo.activities.MainMenu;
+import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 
 import java.util.ArrayList;
@@ -225,6 +226,13 @@ public class Dashboard extends AppCompatActivity {
             Intent intentMainMenu = new Intent(context, MainMenu.class);
             intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentMainMenu);
+        }
+        if (item.getItemId() == R.id.logout) {
+            Intent i = new Intent(Dashboard.this, LoginActivity.class);
+// set the new task and clear flags
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+
         }
         return super.onOptionsItemSelected(item);
     }

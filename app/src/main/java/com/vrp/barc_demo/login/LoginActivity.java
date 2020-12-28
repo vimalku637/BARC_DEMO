@@ -528,4 +528,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
         return true;
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+//        startActivity(intent);
+//        finish();
+//    }
 }

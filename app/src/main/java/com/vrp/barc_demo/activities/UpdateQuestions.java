@@ -28,6 +28,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.JsonObject;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
 import com.vrp.barc_demo.utils.AlertDialogClass;
@@ -155,6 +156,13 @@ public class UpdateQuestions extends AppCompatActivity {
             Intent intentMainMenu=new Intent(context, MainMenu.class);
             intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentMainMenu);
+        }
+        if (item.getItemId()==R.id.logout) {
+            Intent i = new Intent(UpdateQuestions.this, LoginActivity.class);
+// set the new task and clear flags
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+
         }
         return super.onOptionsItemSelected(item);
     }

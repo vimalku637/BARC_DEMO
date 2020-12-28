@@ -30,6 +30,7 @@ import com.google.gson.JsonArray;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.adapters.SurveyListAdapter;
 import com.vrp.barc_demo.interfaces.ClickListener;
+import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.SurveyModel;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
@@ -64,6 +65,8 @@ public class SurveyListActivity extends AppCompatActivity {
     TextView tv_HouseHoldcount;
     @BindView(R.id.tv_teminated)
     TextView tv_teminated;
+    @BindView(R.id.logout)
+    TextView logout;
     int strTotalSurvey;
     int countProgress;
     int countReject;
@@ -269,6 +272,13 @@ public class SurveyListActivity extends AppCompatActivity {
             intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentMainMenu);
         }
+        if (item.getItemId()==R.id.logout) {
+            Intent i = new Intent(SurveyListActivity.this, LoginActivity.class);
+// set the new task and clear flags
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -278,4 +288,6 @@ public class SurveyListActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
+
+
 }

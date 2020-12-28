@@ -30,6 +30,7 @@ import com.google.gson.JsonObject;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.adapters.ClusterAdapter;
 import com.vrp.barc_demo.interfaces.ClickListener;
+import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.models.ClusterModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
@@ -377,6 +378,13 @@ public class ClusterListActivity extends AppCompatActivity {
             Intent intentMainMenu=new Intent(context, MainMenu.class);
             intentMainMenu.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentMainMenu);
+        }
+        if (item.getItemId()==R.id.logout) {
+            Intent i = new Intent(ClusterListActivity.this, LoginActivity.class);
+// set the new task and clear flags
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+
         }
         return super.onOptionsItemSelected(item);
     }

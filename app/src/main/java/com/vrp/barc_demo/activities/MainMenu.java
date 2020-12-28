@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.android.material.card.MaterialCardView;
 import com.vrp.barc_demo.Dashboard;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import butterknife.BindView;
@@ -104,14 +105,20 @@ SharedPrefHelper sharedPrefHelper;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId() == R.id.logout) {
+            Intent i = new Intent(MainMenu.this, LoginActivity.class);
+// set the new task and clear flags
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        }
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+
+
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
+
 }
