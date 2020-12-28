@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -49,6 +50,9 @@ public class Dashboard extends AppCompatActivity {
     SqliteHelper sqliteHelper;
     @BindView(R.id.pieChart)
     PieChart pieChart;
+    @BindView(R.id.ll_graph)
+    LinearLayout ll_graph;
+
     HashMap<String, Integer> CityNameHM;
     ArrayList<String> CityArrayList;
     boolean isEditable = false;
@@ -63,6 +67,7 @@ public class Dashboard extends AppCompatActivity {
     int countTerminate;
     int TotalclusterLock;
     ArrayList<String> clu_id = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +101,11 @@ public class Dashboard extends AppCompatActivity {
 
         TotalclusterLock = sqliteHelper.getTotallockrd();
         tv_Totalcluster.setText(""+TotalclusterLock);
+
+        //show graph here
+        if (strTotalSurvey>0){
+            ll_graph.setVisibility(View.VISIBLE);
+        }
 
     }
 

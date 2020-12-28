@@ -20,7 +20,6 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Editable;
 import android.text.Html;
@@ -74,8 +73,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -85,7 +82,6 @@ import java.util.TreeMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -764,25 +760,48 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
         });
     }
 
-    private void openDialogForAgeConfirmation(EditText editText) {
-        new AlertDialog.Builder(context).setTitle("Alert!")
-                .setMessage("Are you sure age is greater then 99")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //TODO here
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //TODO here
-                        editText.setText("");
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert).show();
+    private void openDialogForAgeConfirmation(EditText editText, int ageInYear) {
+        if (ageInYear>120){
+            new AlertDialog.Builder(context).setTitle("Alert!")
+                    .setMessage("Age can't be greater then 120")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            //TODO here
+                            editText.setText(null);
+                        }
+                    })
+                    /*.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            //TODO here
+                            editText.setText(null);
+                        }
+                    })*/
+                    .setIcon(android.R.drawable.ic_dialog_alert).show();
+        }
+        else {
+            new AlertDialog.Builder(context).setTitle("Alert!")
+                    .setMessage("Are you sure age is greater then 99")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            //TODO here
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            //TODO here
+                            editText.setText(null);
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert).show();
+        }
     }
 
     private void sendSurveyDataOnServer(RequestBody body) {
@@ -926,8 +945,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                         int ageInYear=Integer.parseInt(age);
                                         if (ageInYear>99){
                                             //Toast.makeText(getActivity(), "Are you sure age is greater then 99.", Toast.LENGTH_SHORT).show();
-                                            openDialogForAgeConfirmation(editText);
-                                        } else {
+                                            openDialogForAgeConfirmation(editText, ageInYear);
                                         }
                                     }
                                 }
@@ -987,10 +1005,15 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     radioButton.setEnabled(true);
                                     sharedPrefHelper.setString("CWE_Yes","1");
                                 }
-                                else if(jsonObjectQuesType.getString("question_id").equals("39") && answerModelList.get(startPosition+1).getOption_id().equals("1")){
+                                /*else if(jsonObjectQuesType.getString("question_id").equals("39") && answerModelList.get(startPosition+1).getOption_id().equals("1")){
                                     radioButton.setEnabled(true);
-                                }
-                                else if(jsonObjectQuesType.getString("question_id").equals("40") || jsonObjectQuesType.getString("question_id").equals("39") ) {
+                                }*/
+                                /*else if(jsonObjectQuesType.getString("question_id").equals("40") || jsonObjectQuesType.getString("question_id").equals("39") ) {
+                                    if(sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
+                                        radioButton.setEnabled(false);
+                                    }
+                                }*/
+                                else if(jsonObjectQuesType.getString("question_id").equals("40")) {
                                     if(sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
                                         radioButton.setEnabled(false);
                                     }
@@ -999,12 +1022,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             else if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
                                 radioButton.setChecked(true);
                             }
-                            else if(jsonObjectQuesType.getString("question_id").equals("39") && sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
+                            /*else if(jsonObjectQuesType.getString("question_id").equals("39") && sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
                                 radioButton.setEnabled(false);
                                 if(jsonObjectOptionValues.getString("option_id").equals("1")){
                                     radioButton.setChecked(true);
                                 }
-                            }
+                            }*/
                             else if(jsonObjectQuesType.getString("question_id").equals("40") && sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
                                 radioButton.setEnabled(false);
                                 if(jsonObjectOptionValues.getString("option_id").equals("2")){

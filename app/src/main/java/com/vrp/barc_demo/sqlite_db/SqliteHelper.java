@@ -95,6 +95,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 values.put("household_name", sharedPrefHelper.getString("interviewer_name", ""));
                 values.put("address", "");
                 values.put("address_type", sharedPrefHelper.getString("address_type", ""));
+                values.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
                 values.put("flag", "0");
 
                 values.put("status", "0");
@@ -167,6 +168,36 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return status;
     }
+    public String getNCCMatrix2(String education_id,String durables_id,String NCC_catagory) {
+        //boolean status=false;
+        String status="";
+        String[]  arraydurables = durables_id.split(",");
+        int durableLength=arraydurables.length;
+        int nccs_education_id=getNCCSEducationID(education_id);
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "Select nccs_category from nccs_matrix where nccs_education_id="+nccs_education_id+" AND durables_id in("+durableLength+")";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        status=cursor.getString(cursor.getColumnIndex("nccs_category"));
+                        /*if(NCC_catagory.equals(st_nccs_category)){
+                            status=true;
+                        }*/
+                        cursor.moveToNext();
+                    }
+                    db.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return status;
+    }
+
     public int getNCCSEducationID(String education_id) {
         int nccs_education_id=0;
         SQLiteDatabase db = this.getReadableDatabase();

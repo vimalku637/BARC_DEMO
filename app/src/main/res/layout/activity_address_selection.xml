@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin10"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
         android:orientation="vertical">
 
         <RadioGroup
@@ -67,6 +69,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                android:focusableInTouchMode="true"
+                android:focusable="true"
                 >
 
                 <com.google.android.material.textview.MaterialTextView
@@ -121,6 +125,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                android:focusableInTouchMode="true"
+                android:focusable="true"
                 >
 
                 <com.google.android.material.textview.MaterialTextView
@@ -175,6 +181,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                android:focusableInTouchMode="true"
+                android:focusable="true"
                 >
 
                 <LinearLayout

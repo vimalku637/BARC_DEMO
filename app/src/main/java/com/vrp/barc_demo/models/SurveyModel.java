@@ -27,6 +27,7 @@ public class SurveyModel {
     public static final String COLUMN_TV_DATA="tv_data";
     public static final String COLUMN_FAMILY_DATA="family_data";
     public static final String COLUMN_ADDRESS_TYPE="address_type";
+    public static final String COLUMN_REASON_OF_CHANGE="reason_of_change";
     public static final String COLUMN_FLAG="flag";
     public static final String COLUMN_STATUS="status";
 
@@ -48,6 +49,7 @@ public class SurveyModel {
                     + COLUMN_TV_DATA + " TEXT ,"
                     + COLUMN_FAMILY_DATA + " TEXT ,"
                     + COLUMN_ADDRESS_TYPE+ " TEXT ,"
+                    + COLUMN_REASON_OF_CHANGE+ " TEXT ,"
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
                     + COLUMN_STATUS + " INTEGER DEFAULT 0 "
                     + ")";
@@ -69,6 +71,15 @@ public class SurveyModel {
     private String tv_data;
     private String family_data;
     private String address_type;
+    private String reason_of_change;
+
+    public String getReason_of_change() {
+        return reason_of_change;
+    }
+
+    public void setReason_of_change(String reason_of_change) {
+        this.reason_of_change = reason_of_change;
+    }
 
     public String getAddress_type() {
         return address_type;

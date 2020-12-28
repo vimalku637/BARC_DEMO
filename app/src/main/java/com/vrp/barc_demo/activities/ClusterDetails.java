@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +29,12 @@ import com.google.android.material.textview.MaterialTextView;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.activities.HouseholdSurveyActivity;
 import com.vrp.barc_demo.activities.SurveyActivity;
+import com.vrp.barc_demo.utils.MyJSON;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -73,6 +79,20 @@ public class ClusterDetails extends AppCompatActivity {
         if (bundle!=null) {
             screen_type=bundle.getString("screen_type", "");
         }
+        try {
+            JSONObject jsonObject = new JSONObject(MyJSON.loadJSONFromAsset(context));
+            if (jsonObject.has("language")) {
+                JSONArray jsonArray = jsonObject.getJSONArray("language");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObjectLanguage=jsonArray.getJSONObject(i);
+                    String language=jsonObjectLanguage.getString("language_name");
+                    languagesSpnAL.add(language);
+                }
+            }
+        }
+        catch (JSONException ex){
+            Log.e("questions", "onCreate: " + ex.getMessage());
+        }
         getPreferencesData();
         setValues();
         setLanguageSpinner();
@@ -86,8 +106,8 @@ public class ClusterDetails extends AppCompatActivity {
 
     private void setLanguageSpinner() {
         languagesSpnAL.add(0, getString(R.string.select_language));
-        languagesSpnAL.add(1, "English");
-        languagesSpnAL.add(2, "Hindi");
+        //languagesSpnAL.add(1, "English");
+        //languagesSpnAL.add(2, "Hindi");
         ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, languagesSpnAL);
         spn_language.setAdapter(arrayAdapter);
         spn_language.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

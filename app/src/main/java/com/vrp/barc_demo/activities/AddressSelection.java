@@ -143,6 +143,9 @@ public class AddressSelection extends AppCompatActivity {
                         rl_layout.setVisibility(View.VISIBLE);
                         rl_layout_next.setVisibility(View.GONE);
                         rl_layout_previous.setVisibility(View.GONE);
+                        et_reasonNextAd.setText(null);
+                        et_reasonPreviousAd.setText(null);
+                        et_reasonSubstituteAd.setText(null);
                         break;
                     case R.id.rb_next_address:
                         address_type="Next";
@@ -150,6 +153,8 @@ public class AddressSelection extends AppCompatActivity {
                         rl_layout.setVisibility(View.GONE);
                         rl_layout_next.setVisibility(View.VISIBLE);
                         rl_layout_previous.setVisibility(View.GONE);
+                        et_reasonPreviousAd.setText(null);
+                        et_reasonSubstituteAd.setText(null);
                         break;
                     case R.id.rb_previous_address:
                         address_type="Previous";
@@ -157,6 +162,8 @@ public class AddressSelection extends AppCompatActivity {
                         rl_layout.setVisibility(View.GONE);
                         rl_layout_next.setVisibility(View.GONE);
                         rl_layout_previous.setVisibility(View.VISIBLE);
+                        et_reasonNextAd.setText(null);
+                        et_reasonSubstituteAd.setText(null);
                         break;
                     case R.id.rb_substituted_address:
                         address_type="Substituted";
@@ -164,6 +171,8 @@ public class AddressSelection extends AppCompatActivity {
                         rl_layout.setVisibility(View.GONE);
                         rl_layout_next.setVisibility(View.GONE);
                         rl_layout_previous.setVisibility(View.GONE);
+                        et_reasonNextAd.setText(null);
+                        et_reasonPreviousAd.setText(null);
                         break;
                 }
             }
@@ -204,6 +213,7 @@ public class AddressSelection extends AppCompatActivity {
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
                 sharedPrefHelper.setString("address_type", "1");
+                sharedPrefHelper.setString("reason_of_change", "");
                 startActivity(intentClusterDetails);
             }
         });
@@ -221,6 +231,7 @@ public class AddressSelection extends AppCompatActivity {
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
                 sharedPrefHelper.setString("address_type", "2");
+                sharedPrefHelper.setString("reason_of_change", et_reasonNextAd.getText().toString().trim());
                 startActivity(intentClusterDetails);
             }
         });
@@ -238,13 +249,14 @@ public class AddressSelection extends AppCompatActivity {
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
                 sharedPrefHelper.setString("address_type", "3");
+                sharedPrefHelper.setString("reason_of_change", et_reasonPreviousAd.getText().toString().trim());
                 startActivity(intentClusterDetails);
             }
         });
         btn_start_sub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (et_reasonPreviousAd.getText().toString().trim().equals("")){
+                if (et_reasonSubstituteAd.getText().toString().trim().equals("")){
                     til_reason_substitute_address.setError(getString(R.string.enter_reason_of_selecting_substitute_address));
                     return;
                 } else {
@@ -255,6 +267,7 @@ public class AddressSelection extends AppCompatActivity {
                 intentClusterDetails.putExtra("cluster_name", cluster_name);*/
                 intentClusterDetails.putExtra("screen_type", "survey");
                 sharedPrefHelper.setString("address_type", "4");
+                sharedPrefHelper.setString("reason_of_change", et_reasonSubstituteAd.getText().toString().trim());
                 startActivity(intentClusterDetails);
             }
         });

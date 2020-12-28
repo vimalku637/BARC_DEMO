@@ -30,6 +30,7 @@ import com.google.gson.JsonArray;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.adapters.SurveyListAdapter;
 import com.vrp.barc_demo.interfaces.ClickListener;
+import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.SurveyModel;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
@@ -161,6 +162,7 @@ public class SurveyListActivity extends AppCompatActivity {
                         sharedPrefHelper.setInt("endPosition", 0);
                         Intent intentSurveyActivity = new Intent(context, HouseholdSurveyActivity.class);
                         intentSurveyActivity.putExtra("survey_id", surveyModelAl.get(position).getSurvey_id());
+                        sharedPrefHelper.setString("survey_id", surveyModelAl.get(position).getSurvey_id());
                         getAllSurveyDataFromTable(surveyModelAl.get(position).getSurvey_id());
                         intentSurveyActivity.putExtra("answerModelList", answerModelList);
                         intentSurveyActivity.putExtra("answerModelListFamily", answerModelHouseholdMemberList);
@@ -268,6 +270,11 @@ public class SurveyListActivity extends AppCompatActivity {
             Intent intentMainMenu=new Intent(context, MainMenu.class);
             intentMainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentMainMenu);
+        }
+        if (item.getItemId()==R.id.logout){
+            Intent intentLoginActivity=new Intent(context, LoginActivity.class);
+            intentLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentLoginActivity);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_screen"
     android:orientation="vertical"
     android:padding="@dimen/margin4"
     tools:context=".Dashboard">
@@ -69,7 +67,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin10"
-                        android:layout_weight="1"
                         android:text="100"
                         android:textColor="@color/color_white"
                         android:textSize="40dp" />
@@ -128,27 +125,36 @@
                     android:textSize="@dimen/margin15" />
             </LinearLayout>
 
-
-            <LinearLayout
-                android:layout_width="@dimen/margin150"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:gravity="end"
                 android:layout_marginTop="@dimen/margin40"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_search"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin40"
-                    android:layout_marginHorizontal="@dimen/margin20"
-                    android:background="#d3d3d3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/color_green_google"
                     android:gravity="center"
-                    android:hint="Search"
-                    android:padding="@dimen/margin3"
+                    android:text="Search"
+                    android:textColor="@color/color_white"
+                    android:paddingStart="@dimen/margin20"
+                    android:paddingEnd="@dimen/margin20"
+                    android:paddingTop="@dimen/margin10"
+                    android:paddingBottom="@dimen/margin10"
                     android:textColorHint="@color/color_black" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_graph"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -188,9 +194,9 @@
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/pieChart"
                         android:layout_width="match_parent"
-
+                        android:layout_height="@dimen/margin250"
                         android:layout_marginTop="@dimen/margin25"
-                        android:layout_height="300dp">
+                        >
                     </com.github.mikephil.charting.charts.PieChart>
 
 
@@ -205,8 +211,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin30"
-                    android:layout_marginTop="@dimen/margin80"
+                    android:layout_marginLeft="@dimen/margin5"
+                    android:layout_marginTop="@dimen/margin60"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -228,7 +234,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:text="Tarminate"
+                            android:text="Tarminated"
                             android:textColor="@color/color_black" />
                     </LinearLayout>
 
@@ -236,7 +242,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin15"
-
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -304,8 +309,13 @@
                             android:textColor="@color/color_black" />
                     </LinearLayout>
                 </LinearLayout>
+
             </LinearLayout>
+
         </LinearLayout>
+
+        </LinearLayout>
+
     </ScrollView>
 
 </LinearLayout>

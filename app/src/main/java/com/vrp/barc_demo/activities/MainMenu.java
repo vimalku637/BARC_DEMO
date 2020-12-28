@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.android.material.card.MaterialCardView;
 import com.vrp.barc_demo.Dashboard;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import butterknife.BindView;
@@ -38,7 +39,7 @@ public class MainMenu extends AppCompatActivity {
 
     /*normal widgets*/
     private Context context=this;
-SharedPrefHelper sharedPrefHelper;
+    SharedPrefHelper sharedPrefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +106,11 @@ SharedPrefHelper sharedPrefHelper;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId()==R.id.logout){
+            Intent intentLoginActivity=new Intent(context, LoginActivity.class);
+            intentLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentLoginActivity);
+        }
         return super.onOptionsItemSelected(item);
     }
 

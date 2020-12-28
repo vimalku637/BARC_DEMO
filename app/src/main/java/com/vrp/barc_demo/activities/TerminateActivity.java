@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.location_gps.AppConstants;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
@@ -213,19 +214,25 @@ public class TerminateActivity extends AppCompatActivity {
                     json_object = new JSONObject();
                     json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                     json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
+                    json_object.put("app_version", AppConstants.APP_VERSION);
+                    json_object.put("survey_status", "3");//for terminate
                     json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                     json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
                     if (AudioSavePathInDevice!=null) {
                         json_object.put("audio_recording", AudioSavePathInDevice);
                     }
-                    json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
-                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));
+                    json_object.put("GPS_latitude_start", sharedPrefHelper.getString("LAT", ""));
+                    json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
                     if (!radio_button_id.equals("")) {
                         json_object.put("reason", radio_button_id);
                         json_object.put("description", "terminate");
                     }
                     json_object.put("survey_data", json_array);
+                    json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
+                    json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
                     json_object.put("date_time", sharedPrefHelper.getString("dateTime", ""));
+                    json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
+                    json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
                     Log.e(TAG, "onClick: " + json_object.toString());
 
                     //sqliteHelper.saveSurveyDataInTable(json_object, sharedPrefHelper.getString("survey_id", ""));
@@ -317,19 +324,25 @@ public class TerminateActivity extends AppCompatActivity {
                             json_object = new JSONObject();
                             json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                             json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
+                            json_object.put("app_version", AppConstants.APP_VERSION);
+                            json_object.put("survey_status", "2");// for halt
                             json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                             json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
                             if (AudioSavePathInDevice!=null) {
                                 json_object.put("audio_recording", AudioSavePathInDevice);
                             }
-                            json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
-                            json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));
+                            json_object.put("GPS_latitude_start", sharedPrefHelper.getString("LAT", ""));
+                            json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
                             json_object.put("reason", reason);
                             json_object.put("description", reason);
-                            json_object.put("date_time", et_date_time.getText().toString().trim());
                             json_object.put("household_name", et_name.getText().toString().trim());
                             json_object.put("address", et_address.getText().toString().trim());
                             json_object.put("survey_data", json_array);
+                            json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
+                            json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
+                            json_object.put("date_time", et_date_time.getText().toString().trim());
+                            json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
+                            json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
                             Log.e(TAG, "onClick: " + json_object.toString());
 
                             //sqliteHelper.saveSurveyDataInTable(json_object, sharedPrefHelper.getString("survey_id", ""));
