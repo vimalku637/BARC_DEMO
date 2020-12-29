@@ -525,21 +525,20 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return inserted_id;
     }
 
-    public ArrayList<SurveyModel> getAllSurveyDataFromTable(String survey_id) {
+    public ArrayList<SurveyModel> getAllSurveyDataFromTableToSync() {
         ArrayList<SurveyModel> arrayList = new ArrayList<>();
         SurveyModel surveyModel;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_data,family_data,tv_data from survey where survey_id= '" + survey_id + "'";
+                String query = "select survey_id, survey_data from survey where flag=0";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
                         surveyModel=new SurveyModel();
+                        surveyModel.setSurvey_id(cursor.getString(cursor.getColumnIndex("survey_id")));
                         surveyModel.setSurvey_data(cursor.getString(cursor.getColumnIndex("survey_data")));
-                        surveyModel.setFamily_data(cursor.getString(cursor.getColumnIndex("family_data")));
-                        surveyModel.setTv_data(cursor.getString(cursor.getColumnIndex("tv_data")));
 
                         cursor.moveToNext();
                         arrayList.add(surveyModel);

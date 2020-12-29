@@ -34,6 +34,9 @@ public class ClusterModel {
     public static final String COLUMN_PINCODE="Pincode";
     public static final String COLUMN_OPERATOR_AGENCY="Operator_Agency";
     public static final String COLUMN_LOCK_STATUS="lock_status";
+    public static final String COLUMN_BI_WEIGHTING_TOWN_CLASS="BI_Weighting_town_class";
+    public static final String COLUMN_USER_ID="user_id";
+    public static final String COLUMN_NCCC_CATAGORY="NCC_catagory";
     public static final String COLUMN_FLAG="flag";
     public static final String COLUMN_STATUS="status";
     public static final String COLUMN_SAMPLE_SIZE="sample_size";
@@ -64,6 +67,9 @@ public class ClusterModel {
                     + COLUMN_PINCODE + " TEXT ,"
                     + COLUMN_OPERATOR_AGENCY + " TEXT ,"
                     + COLUMN_LOCK_STATUS + " TEXT ,"
+                    + COLUMN_BI_WEIGHTING_TOWN_CLASS+ " TEXT ,"
+                    + COLUMN_USER_ID+ " TEXT ,"
+                    + COLUMN_NCCC_CATAGORY+ " TEXT ,"
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
                     + COLUMN_NCC_CATAGORY + " TEXT ,"
                     + COLUMN_SAMPLE_SIZE + " INTEGER DEFAULT 0 ,"
@@ -96,7 +102,15 @@ public class ClusterModel {
     private int city_code;
     private String clu_code;
     private String pincode;
+    private String BI_Weighting_town_class;
 
+    public String getBI_Weighting_town_class() {
+        return BI_Weighting_town_class;
+    }
+
+    public void setBI_Weighting_town_class(String BI_Weighting_town_class) {
+        this.BI_Weighting_town_class = BI_Weighting_town_class;
+    }
 
     public int getCity_code() {
         return city_code;

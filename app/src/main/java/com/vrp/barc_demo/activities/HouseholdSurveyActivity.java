@@ -444,7 +444,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     answerModelList.add(answerModel);
                                 }
                                 if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
-                                        &&questionID.equals("94")||questionID.equals("90")&&editText.getText().toString().trim().equals("")){
+                                        &&questionID.equals("94")||questionID.equals("90")||questionID.equals("86")&&editText.getText().toString().trim().equals("")){
                                     flag=true;
 
                                 } else {
@@ -469,9 +469,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else if(questionID.equals("86")){
                                         sixDigitCode=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("sixDigitCode", sixDigitCode);
-                                        if (sharedPrefHelper.getString("sixDigitCode","").length()<6){
-                                            flag=false;
-                                            break;
+                                        if (!sharedPrefHelper.setString("sixDigitCode", sixDigitCode).equals("")) {
+                                            if (sharedPrefHelper.getString("sixDigitCode", "").length() < 6) {
+                                                flag = false;
+                                                break;
+                                            }
                                         }
                                     }
                                     else if (questionID.equals("99")){
@@ -635,12 +637,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
                                         && spinner.getSelectedItemId()==0){
                                     if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("87")) {
-                                        if (!sharedPrefHelper.getString("sixDigitCode","").equals("")) {
+                                        //if (!sharedPrefHelper.getString("sixDigitCode","").equals("")) {
                                             flag = true;
-                                        }else {
+                                        /*}else {
                                             flag = false;
                                             break;
-                                        }
+                                        }*/
                                     }
                                     else {
                                         if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("50")
@@ -849,6 +851,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 sendSurveyDataOnServer(body);
                             } else {
                                 Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                                sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 0);
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 startActivity(intentSurveyActivity1);
                                 finish();
@@ -869,6 +872,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 sendSurveyDataOnServer(body);
                             } else {
                                 Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                                sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 0);
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 startActivity(intentSurveyActivity1);
                                 finish();
@@ -1156,8 +1160,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        else if (jsonObjectQuesType.getString("field_name").equals("nccs_hh")) {
                            editText.setText(sharedPrefHelper.getString("status_nccs_hh", ""));
                        }
-                       else if (jsonObjectQuesType.getString("field_name").equals("Town_Village_Class")){
-                           editText.setText(sharedPrefHelper.getString("town_village_class", ""));
+                       if (jsonObjectQuesType.getString("field_name").equals("BI_Weighting_town_class")){
+                           editText.setText(sharedPrefHelper.getString("BI_Weighting_town_class", ""));
                        }
                        else if (jsonObjectQuesType.getString("field_name").equals("interview_number")) {
                            editText.setText(survey_id);
