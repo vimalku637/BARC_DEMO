@@ -117,7 +117,6 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
     JSONArray jsonArrayScreen=null;
     JSONArray jsonArrayScreenGroup=null;
     public static ArrayList<AnswerModel> answerModelList;
-    public static ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
     public static ArrayList<ArrayList<AnswerModel>> answerTVtotal=new ArrayList<>();
     ArrayList<ScreenWiseQuestionModel> arrayScreenWiseQuestionModel= new ArrayList<>();
     String screen_id="11";
@@ -135,6 +134,9 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
     public Context context;
     private String name="";
     private int ageInYears=0;
+    int lenSingle=0;
+    int totalSingle=0;
+    private int startScreenCount=0;
 
     public GroupTVFragment() {
         // Required empty public constructor
@@ -388,115 +390,77 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         e.printStackTrace();
                     }
                 }
-                if(buttonText.equals("Submit")){
-                    //Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
-                    //save data in to local DB.
-                    /*Gson gson = new Gson();
-                    String listString = gson.toJson(
-                            answerModelList,
-                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());*/
-                    /*try {
-                        JSONArray json_array =  new JSONArray(listString);
-                        JSONObject json_object=new JSONObject();
-                        json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
-                        json_object.put("survey_id", survey_id);
-                        json_object.put("survey_data", json_array);
-                       // Log.e(TAG, "onClick: "+json_object.toString());
 
-                        if (screen_type.equals("survey_list")) {
-                            sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
-
-                            Intent intentSurveyActivity1=new Intent(getActivity(), ClusterDetails.class);
-                            startActivity(intentSurveyActivity1);
-                        } else {
-                            sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
-                            if (CommonClass.isInternetOn(getActivity())) {
-                                String data = json_object.toString();
-                                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                                RequestBody body = RequestBody.create(JSON, data);
-                                //send data on server
-                                sendSurveyDataOnServer(body);
-                            } else {
-                                Intent intentSurveyActivity1=new Intent(getActivity(), ClusterDetails.class);
-                                startActivity(intentSurveyActivity1);
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }*/
-                }
-                else {
-                    //back_status=false;
-                    if(flag==true){
-                        sharedPrefHelper.setInt("startPosition", startPosition);
-                        endPosition = endPosition + length;
-                        //Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition+"startPositionBefore >>>" + startPositionBefore);
-                        if(endPosition!=0)
-                            endPosition=endPosition-1;
-                        if(back_status==true && startScreenPosition<arrayScreenWiseQuestionModel.size()){
-                            arrayScreenWiseQuestionModel.get(startScreenPosition).setscreen_id(screen_id);
-                            arrayScreenWiseQuestionModel.get(startScreenPosition).setquestions(""+endPosition);
-                        }else{
-                            ScreenWiseQuestionModel screenWiseQuestionModel=new ScreenWiseQuestionModel();
-                            screenWiseQuestionModel.setscreen_id(screen_id);
-                            screenWiseQuestionModel.setquestions(""+endPosition);
-                            arrayScreenWiseQuestionModel.add(screenWiseQuestionModel);
-                        }
-                        if (endScreenCount<(totalScreen*editFieldValues)-1) {
-                            btn_next.setText("Next");
-                            sharedPrefHelper.setInt("endPosition", endPosition);
-                            //save tv_data in DB
-                            if (!survey_id.equals("")) {
-                                Gson gson = new Gson();
-                                String listString = gson.toJson(
-                                        answerModelList,
-                                        new TypeToken<ArrayList<AnswerModel>>() {}.getType());
-                                try {
-                                    JSONArray json_array =  new JSONArray(listString);
-                                    JSONObject json_object=new JSONObject();
-                                    /*json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
-                                    json_object.put("survey_id", survey_id);
-                                    json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
-                                    json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
-                                    json_object.put("GPS_latitude", "27.883743");
-                                    json_object.put("GPS_longitude", "79.912247");*/
-                                    /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
-                                    json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
-                                    json_object.put("tv_data", json_array);
-                                    Log.e(TAG, "onClick: "+json_object.toString());
-
-                                    if (endScreenPosition==1) {
-                                        //save data in to local DB.
-                                        sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
-                                        sqliteHelper.updateLocalFlag("partial", "survey",
-                                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                    } else {
-                                        //update data in to local DB
-                                        sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
-                                        sqliteHelper.updateLocalFlag("partial", "survey",
-                                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            startScreenPosition++;
-                            endScreenPosition++;
-                        }
-                        else {
-                            //endPosition = totalQuestions;
-                            //btn_next.setText("Submit");
-                            startScreenPosition++;
-                            endScreenPosition++;
-                            btn_stop.setVisibility(View.VISIBLE);
-                            btn_next.setVisibility(View.GONE);
-                        }
-                        endScreenCount++;
-                        questionsPopulate();
-
+                //back_status=false;
+                if(flag==true){
+                    sharedPrefHelper.setInt("startPosition", startPosition);
+                    endPosition = endPosition + length;
+                    //Log.e(TAG, "Position >>> endPosition >>>" + endPosition + "startPosition >>>" + startPosition+"startPositionBefore >>>" + startPositionBefore);
+                    if(endPosition!=0)
+                        endPosition=endPosition-1;
+                    if(back_status==true && startScreenPosition<arrayScreenWiseQuestionModel.size()){
+                        arrayScreenWiseQuestionModel.get(startScreenPosition).setscreen_id(screen_id);
+                        arrayScreenWiseQuestionModel.get(startScreenPosition).setquestions(""+endPosition);
                     }else{
-                        Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
+                        ScreenWiseQuestionModel screenWiseQuestionModel=new ScreenWiseQuestionModel();
+                        screenWiseQuestionModel.setscreen_id(screen_id);
+                        screenWiseQuestionModel.setquestions(""+endPosition);
+                        arrayScreenWiseQuestionModel.add(screenWiseQuestionModel);
                     }
+                    if (endScreenCount<(totalScreen*editFieldValues)-1) {
+                        btn_next.setText("Next");
+                        sharedPrefHelper.setInt("endPosition", endPosition);
+                        //save tv_data in DB
+                        if (!survey_id.equals("")) {
+                            Gson gson = new Gson();
+                            String listString = gson.toJson(
+                                    answerModelList,
+                                    new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                            try {
+                                JSONArray json_array =  new JSONArray(listString);
+                                JSONObject json_object=new JSONObject();
+                                /*json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
+                                json_object.put("survey_id", survey_id);
+                                json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                                json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
+                                json_object.put("GPS_latitude", "27.883743");
+                                json_object.put("GPS_longitude", "79.912247");*/
+                                /*json_object.put("GPS_latitude", sharedPrefHelper.getString("LAT", ""));
+                                json_object.put("GPS_longitude", sharedPrefHelper.getString("LONG", ""));*/
+                                json_object.put("tv_data", json_array);
+                                Log.e(TAG, "onClick: "+json_object.toString());
+
+                                if (endScreenPosition==1) {
+                                    //save data in to local DB.
+                                    sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
+                                    sqliteHelper.updateLocalFlag("partial", "survey",
+                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                } else {
+                                    //update data in to local DB
+                                    sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
+                                    sqliteHelper.updateLocalFlag("partial", "survey",
+                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        startScreenPosition++;
+                        endScreenPosition++;
+                    }
+                    else {
+                        //endPosition = totalQuestions;
+                        //btn_next.setText("Submit");
+                        startScreenPosition++;
+                        endScreenPosition++;
+                        btn_stop.setVisibility(View.VISIBLE);
+                        btn_next.setVisibility(View.GONE);
+                    }
+                    endScreenCount++;
+                    questionsPopulate();
+
+                }else{
+                    Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -509,6 +473,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                 endScreenPosition=endScreenPosition-1;*/
                 endScreenCount=endScreenCount-1;
                 if(startScreenPosition==0){
+                    startScreenCount--;
                     startScreenPosition=totalScreen-1;
                     endScreenPosition=totalScreen;
                 }else{
@@ -655,9 +620,9 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 }
                             }
                             if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("64")){
-                               /* if(selectedOptions.contains("1")||selectedOptions.contains("3")
+                                /*if(selectedOptions.contains("1")||selectedOptions.contains("3")
                                         ||selectedOptions.contains("5"))*/
-                                    sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
+                                sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
                             }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_id(selectedOptions);
@@ -687,16 +652,52 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         e.printStackTrace();
                     }
                 }
+
+                //back_status=false;
                 if(flag==true){
-                    int lenSingle = answerModelListSingle.size();
-                    int len = answerModelList.size();
+                    if(startScreenCount==0){
+                        totalSingle = startPosition;
+                    }
+                    else{
+                        lenSingle=totalSingle;
+                        totalSingle = startPosition;
+                    }
+                    ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
                     if (answerModelList != null) {
                         answerModelListSingle.clear();
-                        for (int i = lenSingle; i < len; i++) {
+                        for (int i = lenSingle; i < totalSingle; i++) {
                             answerModelListSingle.add(answerModelList.get(i));
                         }
                     }
-                    answerTVtotal.add(answerModelListSingle);
+                    if(answerTVtotal.size()>0){
+                        if(startScreenCount<answerTVtotal.size()){
+                            answerTVtotal.set(startScreenCount,answerModelListSingle);
+                        }else{
+                            answerTVtotal.add(answerModelListSingle);
+                        }
+                    }else{
+                        answerTVtotal.add(answerModelListSingle);
+                    }
+                    //save tv_data in DB
+                    if (!survey_id.equals("")) {
+                        Gson gson = new Gson();
+                        String listString = gson.toJson(
+                                answerModelList,
+                                new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                        try {
+                            JSONArray json_array =  new JSONArray(listString);
+                            JSONObject json_object=new JSONObject();
+                            json_object.put("tv_data", json_array);
+                            Log.e(TAG, "onClick: "+json_object.toString());
+
+                                //update data in to local DB
+                                sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
+                                sqliteHelper.updateLocalFlag("partial", "survey",
+                                        Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2,1);
                     doBack();
                 }else{
@@ -759,15 +760,30 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
             if(startScreenPosition>=totalScreen){
                 startScreenPosition=0;
                 endScreenPosition=1;
-                int lenSingle = answerModelListSingle.size();
-                int len = answerModelList.size();
+                if(startScreenCount==0){
+                    lenSingle=0;
+                    totalSingle = startPosition;
+                }
+                else{
+                    lenSingle=totalSingle;
+                    totalSingle = startPosition;
+                }
+                ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
                 if (answerModelList != null) {
-                    answerModelListSingle.clear();
-                    for (int i = lenSingle; i < len; i++) {
+                    for (int i = lenSingle; i < totalSingle; i++) {
                         answerModelListSingle.add(answerModelList.get(i));
                     }
                 }
-                answerTVtotal.add(answerModelListSingle);
+                if(answerTVtotal.size()>0){
+                    if(startScreenCount<answerTVtotal.size()){
+                        answerTVtotal.set(startScreenCount,answerModelListSingle);
+                    }else{
+                        answerTVtotal.add(answerModelListSingle);
+                    }
+                }else{
+                    answerTVtotal.add(answerModelListSingle);
+                }
+                startScreenCount++;
             }
             for(int l=startScreenPosition;l<endScreenPosition;l++){
                 JSONObject jsonObjectScreen=jsonArrayScreen.getJSONObject(l);

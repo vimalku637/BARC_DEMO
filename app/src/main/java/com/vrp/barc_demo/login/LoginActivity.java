@@ -489,6 +489,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onStart() {
         super.onStart();
+        if(!mGoogleApiClient.isConnected())
         mGoogleApiClient.connect();
     }
 
@@ -510,6 +511,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             case REQUEST: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d("TAG", "@@@ PERMISSIONS grant");
+                    mGoogleApiClient.connect();
                 } else {
                     Log.d("TAG", "@@@ PERMISSIONS Denied");
                     Toast.makeText(this, "PERMISSIONS Denied", Toast.LENGTH_LONG).show();

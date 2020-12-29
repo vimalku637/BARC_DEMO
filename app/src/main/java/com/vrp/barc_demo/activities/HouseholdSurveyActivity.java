@@ -1138,7 +1138,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            editText.setText(sharedPrefHelper.getString("state_name", ""));
                        } else if (jsonObjectQuesType.getString("field_name").equals("Census_District_Name")) {
                            editText.setText(sharedPrefHelper.getString("census_district_name", ""));
-                       } else if (jsonObjectQuesType.getString("field_name").equals("Town_Village_Class")) {
+                       } else if (jsonObjectQuesType.getString("field_name").equals("Town_Village_Class") || jsonObjectQuesType.getString("field_name").equals("BI_Weighting_town_class")) {
                            editText.setText(sharedPrefHelper.getString("town_village_class", ""));
                        } else if (jsonObjectQuesType.getString("field_name").equals("BARC_Town_Code")) {
                            editText.setText(sharedPrefHelper.getString("barc_town_code", ""));
