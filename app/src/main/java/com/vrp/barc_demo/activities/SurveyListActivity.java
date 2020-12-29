@@ -210,44 +210,36 @@ public class SurveyListActivity extends AppCompatActivity {
                     Log.e("family_data", "onCreate: " + jsonFamilyArrayAnswers.toString());
                     if (jsonFamilyArrayAnswers.length() > 0) {
                         for (int i = 0; i < jsonFamilyArrayAnswers.length(); i++) {
-                            JSONArray jsonElements=new JSONArray();
-                            jsonElements  =jsonFamilyArrayAnswers.getJSONArray(i);
-                            for (int j = 0; j <jsonElements.length() ; j++) {
-                                JSONObject jsonObjectAns = new JSONObject(jsonElements.get(j).toString());
-                                AnswerModel answerModel=new AnswerModel();
-                                answerModel.setOption_id(jsonObjectAns.getString("option_id"));
-                                answerModel.setOption_value(jsonObjectAns.getString("option_value"));
-                                answerModel.setQuestionID(jsonObjectAns.getString("question_id"));
-                                answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
-                                answerModel.setField_name(jsonObjectAns.getString("field_name"));
-                                answerModelHouseholdMemberList.add(answerModel);
-                            }
+                            JSONObject jsonObjectF = jsonFamilyArrayAnswers.getJSONObject(i);
+                            AnswerModel answerModel = new AnswerModel();
+                            answerModel.setOption_id(jsonObjectF.getString("option_id"));
+                            answerModel.setOption_value(jsonObjectF.getString("option_value"));
+                            answerModel.setQuestionID(jsonObjectF.getString("question_id"));
+                            answerModel.setPre_field(jsonObjectF.getString("pre_field"));
+                            answerModel.setField_name(jsonObjectF.getString("field_name"));
+                            answerModelHouseholdMemberList.add(answerModel);
                         }
                     }
                 }
             }
-            if (surveyTVObjectJSON!=null&&!surveyTVObjectJSON.isEmpty()){
-            jsonAnswersTV= new JSONObject(surveyTVObjectJSON);
-            if (jsonAnswersTV.has("tv_data")) {
-                jsonTVArrayAnswers=jsonAnswersTV.getJSONArray("tv_data");
-                Log.e("tv_data", "onCreate: " + jsonTVArrayAnswers.toString());
-                if(jsonTVArrayAnswers.length()>0){
-                    for (int i = 0; i < jsonTVArrayAnswers.length(); i++) {
-                        JSONArray jsonElements=new JSONArray();
-                        jsonElements  =jsonTVArrayAnswers.getJSONArray(i);
-                        for (int j = 0; j <jsonElements.length() ; j++) {
-                            JSONObject jsonObjectAns = new JSONObject(jsonElements.get(j).toString());
-                            AnswerModel answerModel=new AnswerModel();
-                            answerModel.setOption_id(jsonObjectAns.getString("option_id"));
-                            answerModel.setOption_value(jsonObjectAns.getString("option_value"));
-                            answerModel.setQuestionID(jsonObjectAns.getString("question_id"));
-                            answerModel.setPre_field(jsonObjectAns.getString("pre_field"));
-                            answerModel.setField_name(jsonObjectAns.getString("field_name"));
+            if (surveyTVObjectJSON!=null&&!surveyTVObjectJSON.isEmpty()) {
+                jsonAnswersTV = new JSONObject(surveyTVObjectJSON);
+                if (jsonAnswersTV.has("tv_data")) {
+                    jsonTVArrayAnswers=jsonAnswersTV.getJSONArray("tv_data");
+                    Log.e("tv_data", "onCreate: " + jsonTVArrayAnswers.toString());
+                    if(jsonTVArrayAnswers.length()>0){
+                        for (int i = 0; i < jsonTVArrayAnswers.length(); i++) {
+                            JSONObject jsonObjectT = jsonTVArrayAnswers.getJSONObject(i);
+                            AnswerModel answerModel = new AnswerModel();
+                            answerModel.setOption_id(jsonObjectT.getString("option_id"));
+                            answerModel.setOption_value(jsonObjectT.getString("option_value"));
+                            answerModel.setQuestionID(jsonObjectT.getString("question_id"));
+                            answerModel.setPre_field(jsonObjectT.getString("pre_field"));
+                            answerModel.setField_name(jsonObjectT.getString("field_name"));
                             answerModelTVList.add(answerModel);
                         }
                     }
                 }
-            }
             }
         } catch (JSONException e) {
             e.printStackTrace();

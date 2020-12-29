@@ -1005,14 +1005,14 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     radioButton.setEnabled(true);
                                     sharedPrefHelper.setString("CWE_Yes","1");
                                 }
-                                /*else if(jsonObjectQuesType.getString("question_id").equals("39") && answerModelList.get(startPosition+1).getOption_id().equals("1")){
+                                else if(jsonObjectQuesType.getString("question_id").equals("39") && answerModelList.get(startPosition+1).getOption_id().equals("1")){
                                     radioButton.setEnabled(true);
-                                }*/
-                                /*else if(jsonObjectQuesType.getString("question_id").equals("40") || jsonObjectQuesType.getString("question_id").equals("39") ) {
+                                }
+                                else if(jsonObjectQuesType.getString("question_id").equals("40") || jsonObjectQuesType.getString("question_id").equals("39") ) {
                                     if(sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
                                         radioButton.setEnabled(false);
                                     }
-                                }*/
+                                }
                                 else if(jsonObjectQuesType.getString("question_id").equals("40")) {
                                     if(sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
                                         radioButton.setEnabled(false);

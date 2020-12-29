@@ -633,8 +633,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 }
                                 if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
                                         && spinner.getSelectedItemId()==0){
-                                    if (!sharedPrefHelper.getString("sixDigitCode","").equals("")) {
-                                        if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("87")) {
+                                    if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("87")) {
+                                        if (!sharedPrefHelper.getString("sixDigitCode","").equals("")) {
                                             flag = true;
                                         }else {
                                             flag = false;
@@ -1342,6 +1342,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        }
                        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
                        if(jsonObjectQuesType.getString("pre_field").equals("1")){
+                           if(jsonObjectQuesType.getString("question_id").equals("13") && sharedPrefHelper.getString("isReplacementTown","0").equals("1")){
+                               editText.setEnabled(true);
+                           }else
                            editText.setEnabled(false);
                        }
                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
@@ -1391,6 +1394,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                                if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
                                    radioButton.setChecked(true);
+                                   if(jsonObjectQuesType.getString("question_id").equals("111")){
+                                       sharedPrefHelper.setString("isReplacementTown",jsonObjectOptionValues.getString("option_id"));
+                                   }
                                }
                                if(jsonObjectQuesType.getString("question_id").equals("23")){
                                    if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
@@ -1543,6 +1549,46 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        sharedPrefHelper.setString("2100f_radio_ids", radioID);
                                    }
                                }
+                               else if(group.getId()==111){
+                                   for (int i = 0; i < ll_parent.getChildCount(); i++) {
+                                       final View childView = ll_parent.getChildAt(i);
+                                       if (childView instanceof EditText) {
+                                           EditText editText = (EditText) childView;
+                                           if (String.valueOf(editText.getId()).equals("13")) {
+                                               if (radioID.equals("1")) {
+                                                   editText.setEnabled(true);
+                                               } else {
+                                                   editText.setEnabled(false);
+                                               }
+                                               sharedPrefHelper.setString("isReplacementTown",radioID);
+                                           }
+                                       }
+                                   }
+                               }
+                               else if(group.getId()==83){
+                                   for (int i = 0; i < ll_parent.getChildCount(); i++) {
+                                       final View childView = ll_parent.getChildAt(i);
+                                       if (childView instanceof Spinner) {
+                                           Spinner spinner = (Spinner) childView;
+                                           if(String.valueOf(spinner.getId()).equals("84")){
+                                               if (radioID.equals("1")){
+                                                   spinner.setVisibility(View.VISIBLE);
+                                               }else{
+                                                   spinner.setVisibility(View.GONE);
+                                               }
+                                           }
+                                       }else if (childView instanceof TextView) {
+                                           TextView textView = (TextView) childView;
+                                           if(String.valueOf(textView.getId()).equals("84")){
+                                               if (radioID.equals("1")){
+                                                   textView.setVisibility(View.VISIBLE);
+                                               }else{
+                                                   textView.setVisibility(View.GONE);
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
                            }
                        });
                        //onAddRadioButton(jsonObjectQuesType);
@@ -1628,6 +1674,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        ll_parent.addView(txtLabel);
                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                        Spinner spinner=new Spinner(this);
+                       spinner.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                       txtLabel.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                        ArrayList<String> spinnerAL=new ArrayList<>();
                        String selectedOptionsSpinner="";
                        String[] arrayselectedOptionsSpinner=null;
