@@ -443,7 +443,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     answerModelList.add(answerModel);
                                 }
                                 if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
-                                        &&questionID.equals("94")&&editText.getText().toString().trim().equals("")){
+                                        &&questionID.equals("94")||questionID.equals("90")&&editText.getText().toString().trim().equals("")){
                                     flag=true;
 
                                 } else {
@@ -564,8 +564,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 }
                                 if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("71")){
                                     sharedPrefHelper.setString("stayWith",""+radioID);
-                                }else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("83")){
-                                    sharedPrefHelper.setString("accessInternetOnMobile",""+radioID);
+                                }
+                                else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("89")){
+                                    sharedPrefHelper.setString("pp_number",""+radioID);
                                 }
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     //if((back_status==true || screen_type.equals("survey_list")) && answerModelList.get(startPositionBefore).getQuestionID().equals(jsonArrayQuestions.getJSONObject(count).getString("question_id"))){
@@ -591,11 +592,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         }
                                     }else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("82")){
                                         String selectedOptions=sharedPrefHelper.getString("type_of_mobile","");
-                                        if (selectedOptions.equals("1")){
+                                        if (selectedOptions.contains("1")){
                                             flag=true;
-                                        }else if(selectedOptions.equals("4")){
+                                        }else if(selectedOptions.contains("4")){
                                             flag=true;
-                                        }else if(selectedOptions.equals("1,4")){
+                                        }else if(selectedOptions.contains("1")&&selectedOptions.contains("4")){
                                             flag=true;
                                         }
                                         else{
@@ -635,6 +636,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     if (!sharedPrefHelper.getString("sixDigitCode","").equals("")) {
                                         if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("87")) {
                                             flag = true;
+                                        }else {
+                                            flag = false;
+                                            break;
                                         }
                                     }
                                     else {
@@ -677,8 +681,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             }
                                         }
                                         else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("84")) {
-                                            String accessInternetOnMobile = sharedPrefHelper.getString("accessInternetOnMobile", "");
-                                            if (!accessInternetOnMobile.equals("1")) {
+                                            String accessInternetOnMobile = sharedPrefHelper.getString("2100f_radio_ids", "");
+                                            if (accessInternetOnMobile.equals("2")||accessInternetOnMobile.equals("3")) {
                                                 flag = true;
                                             } else {
                                                 flag = false;
@@ -1329,7 +1333,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                            }));
                        }
-
+                       if (questionID.equals("90")){
+                           String pp_number=sharedPrefHelper.getString("pp_number", "");
+                           if (pp_number.equals("2")){
+                               txtLabel.setVisibility(View.GONE);
+                               editText.setVisibility(View.GONE);
+                           }
+                       }
                        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
                        if(jsonObjectQuesType.getString("pre_field").equals("1")){
                            editText.setEnabled(false);
@@ -1445,13 +1455,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if(jsonObjectQuesType.getString("question_id").equals("82")){
                                String type_of_mobile=sharedPrefHelper.getString("type_of_mobile","");
-                               if (type_of_mobile.equals("1")){
+                               if (type_of_mobile.contains("1")){
                                    txtLabel.setVisibility(View.GONE);
                                    radioButton.setVisibility(View.GONE);
-                               }if (type_of_mobile.equals("4")){
+                               }if (type_of_mobile.contains("4")){
                                    txtLabel.setVisibility(View.GONE);
                                    radioButton.setVisibility(View.GONE);
-                               }if(type_of_mobile.equals("1,4")){
+                               }if(type_of_mobile.contains("1")&&type_of_mobile.contains("4")){
                                    txtLabel.setVisibility(View.GONE);
                                    radioButton.setVisibility(View.GONE);
                                }
@@ -1526,6 +1536,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        //iv_recording.startAnimation(null);
                                        sharedPrefHelper.setBoolean("isRecording",false);
                                        stopRecording();
+                                   }
+                               }
+                               else if(group.getId()==101){
+                                   if (radioID.equals("1")){
+                                       sharedPrefHelper.setString("2100f_radio_ids", radioID);
                                    }
                                }
                            }
@@ -1671,8 +1686,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                        }
                        if(jsonObjectQuesType.getString("question_id").equals("84")){
-                           String accessInternetOnMobile=sharedPrefHelper.getString("accessInternetOnMobile","");
-                           if(!accessInternetOnMobile.equals("1")){
+                           String accessInternetOnMobile=sharedPrefHelper.getString("2100f_radio_ids","");
+                           if (accessInternetOnMobile.equals("1")){
+                               txtLabel.setVisibility(View.VISIBLE);
+                               spinner.setVisibility(View.VISIBLE);
+                           }else {
                                txtLabel.setVisibility(View.GONE);
                                spinner.setVisibility(View.GONE);
                            }

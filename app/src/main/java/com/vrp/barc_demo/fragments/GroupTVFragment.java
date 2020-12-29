@@ -961,19 +961,19 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
-                            if (jsonObjectQuesType.getString("question_id").equals("66")&& !sharedPrefHelper.getString("spinnerOptionIdTVConnection","").equals("3") && !sharedPrefHelper.getString("spinnerOptionIdTVConnection","").equals("4")){
+                            if (jsonObjectQuesType.getString("question_id").equals("66")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("4")){
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
-                            else if (jsonObjectQuesType.getString("question_id").equals("67")&& !sharedPrefHelper.getString("spinnerOptionIdTV","").equals("1") && !sharedPrefHelper.getString("spinnerOptionIdTV","").equals("3") && !sharedPrefHelper.getString("spinnerOptionIdTV","").equals("4") && !sharedPrefHelper.getString("spinnerOptionIdTV","").equals("6")){
+                            if (jsonObjectQuesType.getString("question_id").equals("67")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")){
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
-                            else if (jsonObjectQuesType.getString("question_id").equals("68")&& !sharedPrefHelper.getString("spinnerOptionIdTVConnection","").equals("6")){
+                            if (jsonObjectQuesType.getString("question_id").equals("68")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("6")){
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
-                            else if (jsonObjectQuesType.getString("question_id").equals("65")&& !sharedPrefHelper.getString("spinnerOptionIdTVConnection","").equals("1")){
+                            if (jsonObjectQuesType.getString("question_id").equals("65")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("1")){
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
