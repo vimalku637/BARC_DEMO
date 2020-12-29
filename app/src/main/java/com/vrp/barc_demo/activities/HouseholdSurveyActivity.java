@@ -1155,6 +1155,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        else if (jsonObjectQuesType.getString("field_name").equals("nccs_hh")) {
                            editText.setText(sharedPrefHelper.getString("status_nccs_hh", ""));
                        }
+                       else if (jsonObjectQuesType.getString("field_name").equals("Town_Village_Class")){
+                           editText.setText(sharedPrefHelper.getString("town_village_class", ""));
+                       }
                        else if (jsonObjectQuesType.getString("field_name").equals("interview_number")) {
                            editText.setText(survey_id);
                        }
@@ -1531,17 +1534,26 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                                else if(group.getId()==24){
                                    //start recording here
-                                   if (radioID.equals("1")) {
-                                       sharedPrefHelper.setBoolean("isRecording",true);
-                                       iv_recording.setVisibility(View.VISIBLE);
-                                       startRecordingAnimation(1);
-                                       startRecording();
-                                   }else{
-                                       iv_recording.setVisibility(View.GONE);
-                                       startRecordingAnimation(2);
-                                       //iv_recording.startAnimation(null);
-                                       sharedPrefHelper.setBoolean("isRecording",false);
-                                       stopRecording();
+                                   if (rb.isChecked()) {
+                                       if (radioID.equals("1")) {
+                                           sharedPrefHelper.setBoolean("isRecording", true);
+                                           iv_recording.setVisibility(View.VISIBLE);
+                                           startRecordingAnimation(1);
+                                           startRecording();
+                                       } else if (radioID.equals("2")) {
+                                           iv_recording.setVisibility(View.GONE);
+                                           startRecordingAnimation(2);
+                                           //iv_recording.startAnimation(null);
+                                           sharedPrefHelper.setBoolean("isRecording", false);
+                                           stopRecording();
+                                       } else {
+                                           iv_recording.setVisibility(View.GONE);
+                                           startRecordingAnimation(2);
+                                           //iv_recording.startAnimation(null);
+                                           sharedPrefHelper.setBoolean("isRecording", false);
+                                           stopRecording();
+                                           showPopupForTerminateSurveyOnRadio(iddd, jsonObjectQuesType, radioGroup);
+                                       }
                                    }
                                }
                                else if(group.getId()==101){
