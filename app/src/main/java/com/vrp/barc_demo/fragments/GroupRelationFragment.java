@@ -1021,16 +1021,16 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     radioButton.setEnabled(true);
                                     sharedPrefHelper.setString("CWE_Yes","1");
                                 }
-                                else if(jsonObjectQuesType.getString("question_id").equals("39") && answerModelList.get(startPosition+1).getOption_id().equals("1")){
+                                else if(jsonObjectQuesType.getString("question_id").equals("39") && answerModelList.get(startPosition).getOption_id().equals("1")){
                                     radioButton.setEnabled(true);
                                 }
-                                else if(jsonObjectQuesType.getString("question_id").equals("40") || jsonObjectQuesType.getString("question_id").equals("39") ) {
+                                else if(jsonObjectQuesType.getString("question_id").equals("40")) {
                                     if(sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
                                         radioButton.setEnabled(false);
                                     }
                                 }
-                                else if(jsonObjectQuesType.getString("question_id").equals("40")) {
-                                    if(sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
+                                else if(jsonObjectQuesType.getString("question_id").equals("39") ) {
+                                    if(sharedPrefHelper.getString("HH_Yes","0").equals("1")){
                                         radioButton.setEnabled(false);
                                     }
                                 }
@@ -1038,12 +1038,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             else if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
                                 radioButton.setChecked(true);
                             }
-                            /*else if(jsonObjectQuesType.getString("question_id").equals("39") && sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
+                            else if(jsonObjectQuesType.getString("question_id").equals("39") && sharedPrefHelper.getString("HH_Yes","0").equals("1")){
                                 radioButton.setEnabled(false);
-                                if(jsonObjectOptionValues.getString("option_id").equals("1")){
+                                if(jsonObjectOptionValues.getString("option_id").equals("2")){
                                     radioButton.setChecked(true);
                                 }
-                            }*/
+                            }
                             else if(jsonObjectQuesType.getString("question_id").equals("40") && sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
                                 radioButton.setEnabled(false);
                                 if(jsonObjectOptionValues.getString("option_id").equals("2")){
@@ -1071,6 +1071,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     sharedPrefHelper.setString("CWE_Yes","1");
                                 }else if(radioGroupID.equals("40") && radioID.equals("2")){
                                     sharedPrefHelper.setString("CWE_Yes","");
+                                }
+                                if(radioGroupID.equals("39") && radioID.equals("1")){
+                                    sharedPrefHelper.setString("HH_Yes","1");
+                                }else if(radioGroupID.equals("39") && radioID.equals("2")){
+                                    sharedPrefHelper.setString("HH_Yes","");
                                 }
                             }
                         });

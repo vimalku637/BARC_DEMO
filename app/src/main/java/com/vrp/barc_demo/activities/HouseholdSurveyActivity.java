@@ -245,6 +245,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     if(totalScreen>0){
                         questionsPopulate();
                         sharedPrefHelper.setString("CWE_Yes","0");
+                        sharedPrefHelper.setString("HH_Yes","0");
                     }
                 }
 
