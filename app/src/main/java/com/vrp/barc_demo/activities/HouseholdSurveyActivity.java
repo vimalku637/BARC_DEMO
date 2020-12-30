@@ -20,6 +20,7 @@ import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -72,6 +73,7 @@ import com.vrp.barc_demo.location_gps.AppConstants;
 import com.vrp.barc_demo.location_gps.GpsUtils;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.ScreenWiseQuestionModel;
+import com.vrp.barc_demo.models.SurveyModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
@@ -87,6 +89,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -103,10 +106,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Part;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -164,6 +169,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     public static AudioManager audioManager;
     public static final int RequestPermissionCode = 1;
     public static String AudioSavePathInDevice = null;
+    MultipartBody.Part part;
     //initialization MediaPlayer
     MediaPlayer mediaPlayer=new MediaPlayer();
     private String name="";
@@ -172,6 +178,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     private String sixDigitCode="",pinCode="";
     boolean isGPS=false;
     int isGPSClicked=0;
+    SurveyModel surveyModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -410,6 +417,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         answerModelTVList=new ArrayList<>();
         answerModelHouseholdMemberListTotal=new ArrayList<>();
         answerModelTVListTotal=new ArrayList<>();
+        surveyModel=new SurveyModel();
     }
 
     private void setButtonClick() {
@@ -1071,9 +1079,41 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
-                        Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
-                        startActivity(intentSurveyActivity1);
-                        finish();
+
+                        //send audio here
+                        Uri imageUri = Uri.parse(AudioSavePathInDevice);
+                        File file = new File(imageUri.getPath());
+                        RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
+                        part= MultipartBody.Part.createFormData("audio_name", file.getName(), fileReqBody);
+                        Log.e("audio_params-", "audio_params- "
+                                +"\n"+sharedPrefHelper.getString("user_id", "")
+                                +"\n"+survey_id+"\n"+survey_data_monitoring_id+"\n"+part);
+
+                        ApiClient.getClient().create(BARC_API.class).sendAudio(sharedPrefHelper.getString("user_id", ""), survey_id, survey_data_monitoring_id, part).enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response.body().toString());
+                                    Log.e("audio-upload",jsonObject.toString());
+                                    String success=jsonObject.optString("success");
+                                    String message=jsonObject.optString("message");
+                                    String name=jsonObject.optString("name");
+                                    String file_status=jsonObject.optString("file_status");
+                                    if (success.equalsIgnoreCase("1")) {
+                                        Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                                        startActivity(intentSurveyActivity1);
+                                        finish();
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable t) {
+                            }
+                        });
                     } else {
                         AlertDialogClass.dismissProgressDialog();
                         CommonClass.showPopupForNoInternet(context);
@@ -1181,7 +1221,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                editText.setText(sharedPrefHelper.getString("HH_Name",""));
                        }
                        else if (jsonObjectQuesType.getString("question_id").equals("102")) {
-                           editText.setText(sharedPrefHelper.getString("CWE_Name",""));
+                           if (!sharedPrefHelper.getString("CWE_Name", "").equals("")) {
+                               editText.setText(sharedPrefHelper.getString("CWE_Name", ""));
+                           }else{
+                               editText.setText(sharedPrefHelper.getString("name", ""));
+                           }
                        }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
@@ -1475,6 +1519,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    radioButton.setChecked(true);
                                }
                            }
+                           else if(jsonObjectQuesType.getString("question_id").equals("111")){
+                               String replacementTown=sharedPrefHelper.getString("replacementTown","");
+                               if(replacementTown.equals("2")){
+                                   radioButton.setChecked(true);
+                               }
+                           }
                            else if(jsonObjectQuesType.getString("question_id").equals("82")){
                                String type_of_mobile=sharedPrefHelper.getString("type_of_mobile","");
                                if (type_of_mobile.contains("1")){
@@ -1693,7 +1743,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                    else if (jsonObjectQuesType.getString("question_type").equals("4")) {
                        TextView txtLabel = new TextView(this);
                        String description=jsonObjectQuesType.getString("question_name");
-                       description=description.replaceAll("$name",sharedPrefHelper.getString("name",""));
+                       description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
                        txtLabel.setText(description);
                        txtLabel.setTextSize(14);
                        txtLabel.setTypeface(null, Typeface.BOLD);
@@ -1883,7 +1933,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             // Stop Speaker.
             audioManager.setSpeakerphoneOn(false);
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-            AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + timeStamp + ".mp3";
+            AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
+                        timeStamp + ".mp3";
+
             MediaRecorderReady();
             try {
 
@@ -1912,13 +1964,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         if (mediaRecorder != null) {
             try {
                 mediaRecorder.stop();
-                mediaRecorder.release();
-                mediaRecorder = null;
+                //mediaRecorder.release();
+                //mediaRecorder = null;
             } catch (Exception e) {
                 // Add your handling here.
                 e.printStackTrace();
             }
         }
+        sharedPrefHelper.setString("AudioSavePathInDevice",AudioSavePathInDevice);
+        sqliteHelper.updateAudioFileInTable("survey", Integer.parseInt(survey_id), AudioSavePathInDevice);
         //Toast.makeText(context, ""+AudioSavePathInDevice, Toast.LENGTH_SHORT).show();
     }
     public boolean checkPermission() {
@@ -2005,13 +2059,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     }
 
     public void setTerminattion(String id) {
+        stopRecording();
         Intent intentTerminate = new Intent(context, TerminateActivity.class);
         intentTerminate.putExtra("screen_type", "terminate");
         intentTerminate.putExtra("radio_button_id", id);//id=(reason)
         intentTerminate.putExtra("answerModelList", answerModelList);
-        if (AudioSavePathInDevice!=null) {
-            intentTerminate.putExtra("AudioSavePathInDevice", AudioSavePathInDevice);
-        }
+        intentTerminate.putExtra("answerFamilyMemberModelList", answerModelHouseholdMemberListTotal);
+        intentTerminate.putExtra("answerTVModelList", answerModelTVListTotal);
+        intentTerminate.putExtra("AudioSavePathInDevice", AudioSavePathInDevice);
         startActivity(intentTerminate);
         finish();
         /*//save data in to local DB.
@@ -2049,7 +2104,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     private void showPopupForTerminateSurvey() {
         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Are you sure?")
-                .setContentText("Want to terminate the interview!")
+                .setContentText("Want to Halt the interview!")
                 .setConfirmText("Yes")
                 .setCancelText("No")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {

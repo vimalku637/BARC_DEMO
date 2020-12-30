@@ -10,9 +10,14 @@ package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,10 +29,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.JsonObject;
 import com.vrp.barc_demo.R;
+import com.vrp.barc_demo.location_gps.GpsUtils;
 import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
@@ -46,7 +57,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UpdateQuestions extends AppCompatActivity {
+public class UpdateQuestions extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = "Update_Survey";
     @BindView(R.id.btn_submit)
     MaterialButton btn_submit;
@@ -59,6 +71,14 @@ public class UpdateQuestions extends AppCompatActivity {
     private Context context=this;
     private SharedPrefHelper sharedPrefHelper;
     private ArrayList<String> surveySpnAL;
+    //for location GPS
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    Location mLastLocation;
+    String altitude;
+    private String latitude;
+    private String longitude;
+    private boolean isGPS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +94,10 @@ public class UpdateQuestions extends AppCompatActivity {
         if (bundle!=null) {
         }
 
+        getGPS();
         setSurveySpinner();
         setButtonClick();
-        tv_person_name.setText( "Welcome  " +  sharedPrefHelper.getString("user_name", ""));
+        tv_person_name.setText( "Welcome "+sharedPrefHelper.getString("user_name", ""));
     }
 
     private void setSurveySpinner() {
@@ -108,6 +129,118 @@ public class UpdateQuestions extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void getGPS() {
+        new GpsUtils(this).turnGPSOn(new GpsUtils.onGpsListener() {
+            @Override
+            public void gpsStatus(boolean isGPSEnable) {
+                // turn on GPS
+                isGPS = isGPSEnable;
+            }
+        });
+        buildGoogleApiClient();
+    }
+    synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addApi(LocationServices.API)
+                .build();
+        //mGoogleApiClient.connect();
+
+    }
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(100); // Update location every second
+        if (ActivityCompat.checkSelfPermission(UpdateQuestions.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = String.valueOf(mLastLocation.getLatitude());
+            longitude = String.valueOf(mLastLocation.getLongitude());
+            altitude = String.valueOf(mLastLocation.getAltitude());
+            sharedPrefHelper.setString("LAT", latitude);
+            sharedPrefHelper.setString("LONG", longitude);
+            sharedPrefHelper.setString("ALTI", altitude);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        latitude = String.valueOf(location.getLatitude());
+        longitude = String.valueOf(location.getLongitude());
+
+        System.out.println("latitude>>>>" + latitude);
+        altitude = String.valueOf(location.getAltitude());
+        //String Address=cf.getAddress(Double.parseDouble(latitude), Double.parseDouble(longitude));
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("GCMSetting", MODE_PRIVATE); // 0 - for private mode
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putString("LATTITUDE>>>", latitude);
+        editor.putString("LONGITUDE>>>", longitude);
+        editor.putString("ALTITUDE>>>", altitude);
+        sharedPrefHelper.setString("LAT", latitude);
+        sharedPrefHelper.setString("LONG", longitude);
+        sharedPrefHelper.setString("ALTI", altitude);
+
+
+        //editor.putString("Address", Address);
+
+        editor.commit(); // commit changes
+
+        /*GlobalVars.LATTITUDE = Double.parseDouble(latitude);
+        GlobalVars.LONGITUDE = Double.parseDouble(longitude);
+        GlobalVars.ALTITUDE = Double.parseDouble(altitude);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GlobalVars.Address=cf.getAddress(GlobalVars.LATTITUDE, GlobalVars.LONGITUDE);
+            }
+        });*/
+
+       /* Float thespeed = location.getSpeed();
+        Double lat=location.getLatitude();
+        Double lng=location.getLongitude();*/
+        // tv.setText("Location -"+String.valueOf(lat)+String.valueOf(lng)+"\n Speed: "+String.valueOf(thespeed));
+
+        //Log.v("speed", String.valueOf(thespeed));
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!mGoogleApiClient.isConnected())
+            mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     private void initialization() {

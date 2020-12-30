@@ -85,6 +85,8 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
 
                 values.put("survey_id", survey_id);
+                values.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                values.put("audio_recording", sharedPrefHelper.getString("AudioSavePathInDevice", ""));
                 values.put("survey_data", String.valueOf(jsonObject));
                 values.put("state", "2");
                 values.put("district", "1");
@@ -496,6 +498,25 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return inserted_id;
     }
+    public long updateAudioFileInTable(String table, int survey_id, String audio_file) {
+        long inserted_id = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                ContentValues values = new ContentValues();
+                values.put("audio_recording", audio_file);
+
+                inserted_id = db.update(table, values, "survey_id" + " = " + survey_id + "", null);
+
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return inserted_id;
+    }
 
     public long updateLocalFlag(String screenType, String table, int survey_id, int flag) {
         long inserted_id = 0;
@@ -595,5 +616,35 @@ public class SqliteHelper extends SQLiteOpenHelper {
             db.close();
         }
         return tv_data;
+    }
+    public int getClusterSampleSizeFromTable(String cluster_no) {
+        int sampleSize = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "Select sample_size from cluster where cluster_no= '" + cluster_no + "'";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        sampleSize = cursor.getInt(cursor.getColumnIndex("sample_size"));
+                        cursor.moveToNext();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return sampleSize;
+    }
+    public int getTotalSurveyForCluster(String cluster_no) {
+        int sum = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String countQuery = "select count(cluster_no) from survey where cluster_no ='" + cluster_no + "' and status IN(1,4)";
+        Cursor cursor = db.rawQuery(countQuery, null);
+        if (cursor.moveToFirst())
+            sum = cursor.getInt(cursor.getColumnIndex("count(cluster_no)"));
+        return sum;
     }
 }

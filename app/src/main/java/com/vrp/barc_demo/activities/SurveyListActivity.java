@@ -93,6 +93,8 @@ public class SurveyListActivity extends AppCompatActivity {
     ArrayList<AnswerModel> answerModelTVList;
     private String original_address="", cluster_id="", cluster_name="",
             next_address="", previous_address="";
+    int sampleSize=0;
+    int totalSurveyForCluster=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,12 +129,19 @@ public class SurveyListActivity extends AppCompatActivity {
         countTerminate = sqliteHelper.getTotalchart4(3);
         tv_teminated.setText(""+countTerminate);
 
+        /*get survey sample from table*/
+        sampleSize=sqliteHelper.getClusterSampleSizeFromTable(sharedPrefHelper.getString("cluster_no", ""));
+        totalSurveyForCluster=sqliteHelper.getTotalSurveyForCluster(sharedPrefHelper.getString("cluster_no", ""));
     }
 
     private void setButtonClick() {
         btn_start_next_survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (totalSurveyForCluster>=sampleSize){
+                    Toast.makeText(context, "You have completed all survey for this cluster.", Toast.LENGTH_SHORT).show();
+                    return;
+                }else{
                 Intent intentAddressSelection=new Intent(context, AddressSelection.class);
                 /*intentAddressSelection.putExtra("original_address", original_address);
                 intentAddressSelection.putExtra("previous_address", previous_address);
@@ -141,6 +150,7 @@ public class SurveyListActivity extends AppCompatActivity {
                 intentAddressSelection.putExtra("cluster_name", cluster_name);*/
                 intentAddressSelection.putExtra("screen_type", "survey");
                 startActivity(intentAddressSelection);
+                }
             }
         });
     }

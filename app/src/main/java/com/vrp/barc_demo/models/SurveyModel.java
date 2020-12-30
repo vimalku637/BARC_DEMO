@@ -14,6 +14,8 @@ public class SurveyModel {
     public static final String COLUMN_LOCAL_ID="local_id";
     public static final String COLUMN_ID="id";
     public static final String COLUMN_SURVEY_ID="survey_id";
+    public static final String COLUMN_CLUSTER_NO="cluster_no";
+    public static final String COLUMN_AUDIO_RECORDING="audio_recording";
     public static final String COLUMN_SURVEY_DATA="survey_data";
     public static final String COLUMN_STATE="state";
     public static final String COLUMN_DISTRICT="district";
@@ -36,6 +38,8 @@ public class SurveyModel {
                     + COLUMN_LOCAL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_ID + " INTEGER ,"
                     + COLUMN_SURVEY_ID + " TEXT ,"
+                    + COLUMN_CLUSTER_NO + " TEXT ,"
+                    + COLUMN_AUDIO_RECORDING+ " TEXT ,"
                     + COLUMN_SURVEY_DATA + " TEXT ,"
                     + COLUMN_STATE + " INTEGER ,"
                     + COLUMN_DISTRICT + " INTEGER ,"
@@ -56,6 +60,8 @@ public class SurveyModel {
 
     private String local_id;
     private String survey_id;
+    private String cluster_no;
+    private String audio_recording;
     private String survey_data;
     private String state;
     private String district;
@@ -72,6 +78,22 @@ public class SurveyModel {
     private String family_data;
     private String address_type;
     private String reason_of_change;
+
+    public String getAudio_recording() {
+        return audio_recording;
+    }
+
+    public void setAudio_recording(String audio_recording) {
+        this.audio_recording = audio_recording;
+    }
+
+    public String getCluster_no() {
+        return cluster_no;
+    }
+
+    public void setCluster_no(String cluster_no) {
+        this.cluster_no = cluster_no;
+    }
 
     public String getReason_of_change() {
         return reason_of_change;

@@ -14,6 +14,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.midi.MidiOutputPort;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -44,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +55,7 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -108,6 +112,9 @@ public class TerminateActivity extends AppCompatActivity {
     private SqliteHelper sqliteHelper;
     private SharedPrefHelper sharedPrefHelper;
     public static ArrayList<AnswerModel> answerModelList;
+    public static ArrayList<ArrayList<AnswerModel>> answerModelHouseholdMemberListTotal;
+    public static ArrayList<ArrayList<AnswerModel>> answerModelTVListTotal;
+    MultipartBody.Part part;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +132,12 @@ public class TerminateActivity extends AppCompatActivity {
             radio_button_id=bundle.getString("radio_button_id", "");
             AudioSavePathInDevice=bundle.getString("AudioSavePathInDevice", "");
             answerModelList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
+            ArrayList<AnswerModel> arrayListFM=new ArrayList<>();
+            arrayListFM= (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerFamilyMemberModelList");
+            answerModelHouseholdMemberListTotal.add(arrayListFM);
+            ArrayList<AnswerModel> arrayListTV=new ArrayList<>();
+            arrayListFM= (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerTVModelList");
+            answerModelTVListTotal.add(arrayListTV);
         }
         survey_id=sharedPrefHelper.getString("survey_id", "");
         //date-time
@@ -204,14 +217,20 @@ public class TerminateActivity extends AppCompatActivity {
             Gson gson = new Gson();
             String listString = gson.toJson(
                     answerModelList,
-                    new TypeToken<ArrayList<AnswerModel>>() {
-                    }.getType());
+                    new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+            String listStringFamily = gson.toJson(
+                    answerModelHouseholdMemberListTotal,
+                    new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+            String listStringTV = gson.toJson(
+                    answerModelTVListTotal,
+                    new TypeToken<ArrayList<AnswerModel>>() {}.getType());
             try {
-                JSONArray json_array = null;
-                JSONObject json_object = null;
                 try {
-                    json_array = new JSONArray(listString);
-                    json_object = new JSONObject();
+                    JSONArray json_array =  new JSONArray(listString);
+                    JSONArray json_array_family =  new JSONArray(listStringFamily);
+                    JSONArray json_array_TV =  new JSONArray(listStringTV);
+                    JSONObject json_object = new JSONObject();
+
                     json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                     json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
                     json_object.put("app_version", AppConstants.APP_VERSION);
@@ -230,6 +249,8 @@ public class TerminateActivity extends AppCompatActivity {
                     json_object.put("survey_data", json_array);
                     json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
                     json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
+                    json_object.put("family_data", json_array_family);
+                    json_object.put("tv_data", json_array_TV);
                     json_object.put("date_time", sharedPrefHelper.getString("dateTime", ""));
                     json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
                     json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
@@ -249,6 +270,8 @@ public class TerminateActivity extends AppCompatActivity {
                         cl_terminate.setVisibility(View.GONE);
                         tv_survey_terminate.setVisibility(View.VISIBLE);
                         btn_start_new_survey.setVisibility(View.VISIBLE);
+                        sqliteHelper.updateLocalFlag("terminate", "survey",
+                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
                         Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                     }
 
@@ -282,6 +305,38 @@ public class TerminateActivity extends AppCompatActivity {
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("terminate", "survey",
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+
+                        //send audio here
+                        Uri imageUri = Uri.parse(AudioSavePathInDevice);
+                        File file = new File(imageUri.getPath());
+                        RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
+                        part= MultipartBody.Part.createFormData("audio_name", file.getName(), fileReqBody);
+                        Log.e("audio_params-", "audio_params- "
+                                +"\n"+sharedPrefHelper.getString("user_id", "")
+                                +"\n"+survey_id+"\n"+survey_data_monitoring_id+"\n"+part);
+
+                        ApiClient.getClient().create(BARC_API.class).sendAudio(sharedPrefHelper.getString("user_id", ""), survey_id, survey_data_monitoring_id, part).enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response.body().toString());
+                                    Log.e("audio-upload",jsonObject.toString());
+                                    String success=jsonObject.optString("success");
+                                    String message=jsonObject.optString("message");
+                                    String name=jsonObject.optString("name");
+                                    String file_status=jsonObject.optString("file_status");
+                                    if (success.equalsIgnoreCase("1")) {
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable t) {
+                            }
+                        });
                     } else {
                         AlertDialogClass.dismissProgressDialog();
                         CommonClass.showPopupForNoInternet(context);
@@ -314,14 +369,20 @@ public class TerminateActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     String listString = gson.toJson(
                             answerModelList,
-                            new TypeToken<ArrayList<AnswerModel>>() {
-                            }.getType());
+                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                    String listStringFamily = gson.toJson(
+                            answerModelHouseholdMemberListTotal,
+                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                    String listStringTV = gson.toJson(
+                            answerModelTVListTotal,
+                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
                     try {
-                        JSONArray json_array = null;
-                        JSONObject json_object = null;
                         try {
-                            json_array = new JSONArray(listString);
-                            json_object = new JSONObject();
+                            JSONArray json_array =  new JSONArray(listString);
+                            JSONArray json_array_family =  new JSONArray(listStringFamily);
+                            JSONArray json_array_TV =  new JSONArray(listStringTV);
+                            JSONObject json_object = new JSONObject();
+
                             json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                             json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
                             json_object.put("app_version", AppConstants.APP_VERSION);
@@ -340,6 +401,8 @@ public class TerminateActivity extends AppCompatActivity {
                             json_object.put("survey_data", json_array);
                             json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
+                            json_object.put("family_data", json_array_family);
+                            json_object.put("tv_data", json_array_TV);
                             json_object.put("date_time", et_date_time.getText().toString().trim());
                             json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
@@ -357,8 +420,11 @@ public class TerminateActivity extends AppCompatActivity {
                                 sendHaltSurveyDataOnServer(body);
                             } else {
                                 cl_terminate.setVisibility(View.GONE);
+                                tv_survey_terminate.setText(getString(R.string.halt_survey));
                                 tv_survey_terminate.setVisibility(View.VISIBLE);
                                 btn_start_new_survey.setVisibility(View.VISIBLE);
+                                sqliteHelper.updateLocalFlag("halt", "survey",
+                                        Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                             }
 
@@ -417,6 +483,7 @@ public class TerminateActivity extends AppCompatActivity {
                     if (success.equals("1")) {
                         AlertDialogClass.dismissProgressDialog();
                         cl_terminate.setVisibility(View.GONE);
+                        tv_survey_terminate.setText(getString(R.string.halt_survey));
                         tv_survey_terminate.setVisibility(View.VISIBLE);
                         btn_start_new_survey.setVisibility(View.VISIBLE);
                         //update id on the bases of survey id
@@ -424,6 +491,38 @@ public class TerminateActivity extends AppCompatActivity {
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("halt", "survey",
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+
+                        //send audio here
+                        Uri imageUri = Uri.parse(AudioSavePathInDevice);
+                        File file = new File(imageUri.getPath());
+                        RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
+                        part= MultipartBody.Part.createFormData("audio_name", file.getName(), fileReqBody);
+                        Log.e("audio_params-", "audio_params- "
+                                +"\n"+sharedPrefHelper.getString("user_id", "")
+                                +"\n"+survey_id+"\n"+survey_data_monitoring_id+"\n"+part);
+
+                        ApiClient.getClient().create(BARC_API.class).sendAudio(sharedPrefHelper.getString("user_id", ""), survey_id, survey_data_monitoring_id, part).enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response.body().toString());
+                                    Log.e("audio-upload",jsonObject.toString());
+                                    String success=jsonObject.optString("success");
+                                    String message=jsonObject.optString("message");
+                                    String name=jsonObject.optString("name");
+                                    String file_status=jsonObject.optString("file_status");
+                                    if (success.equalsIgnoreCase("1")) {
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable t) {
+                            }
+                        });
                     } else {
                         AlertDialogClass.dismissProgressDialog();
                         CommonClass.showPopupForNoInternet(context);
@@ -445,6 +544,8 @@ public class TerminateActivity extends AppCompatActivity {
         sqliteHelper=new SqliteHelper(this);
         sharedPrefHelper=new SharedPrefHelper(this);
         answerModelList=new ArrayList<>();
+        answerModelHouseholdMemberListTotal=new ArrayList<>();
+        answerModelTVListTotal=new ArrayList<>();
     }
 
     @Override
