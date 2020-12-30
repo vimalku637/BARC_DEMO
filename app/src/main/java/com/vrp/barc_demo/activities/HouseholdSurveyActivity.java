@@ -246,6 +246,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         questionsPopulate();
                         sharedPrefHelper.setString("CWE_Yes","0");
                         sharedPrefHelper.setString("HH_Yes","0");
+                        sharedPrefHelper.setString("CWE_Name","");
+                        sharedPrefHelper.setString("HH_Name","");
                     }
                 }
 
@@ -1175,6 +1177,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            /*else
                                setTerminattion("NCCS Calculator");*/
                       }
+                       else if (jsonObjectQuesType.getString("question_id").equals("101")) {
+                               editText.setText(sharedPrefHelper.getString("HH_Name",""));
+                       }
+                       else if (jsonObjectQuesType.getString("question_id").equals("102")) {
+                           editText.setText(sharedPrefHelper.getString("CWE_Name",""));
+                       }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
                        }else{

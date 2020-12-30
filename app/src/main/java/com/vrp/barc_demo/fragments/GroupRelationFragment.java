@@ -341,6 +341,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 flag=false;
                                 break;
                             }
+                            if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("39") && radioID==1){
+                                sharedPrefHelper.setString("HH_Name",nameVL.get(totalScreenCount-4));
+                            }
+                            else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("40") && radioID==1){
+                                sharedPrefHelper.setString("CWE_Name",nameVL.get(totalScreenCount-4));
+                            }
                             nextPosition++;
                             count++;
                         }
@@ -1021,8 +1027,9 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     radioButton.setEnabled(true);
                                     sharedPrefHelper.setString("CWE_Yes","1");
                                 }
-                                else if(jsonObjectQuesType.getString("question_id").equals("39") && answerModelList.get(startPosition).getOption_id().equals("1")){
+                                if(jsonObjectQuesType.getString("question_id").equals("39") && answerModelList.get(startPosition).getOption_id().equals("1")){
                                     radioButton.setEnabled(true);
+                                    sharedPrefHelper.setString("HH_Yes","1");
                                 }
                                 else if(jsonObjectQuesType.getString("question_id").equals("40")) {
                                     if(sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
