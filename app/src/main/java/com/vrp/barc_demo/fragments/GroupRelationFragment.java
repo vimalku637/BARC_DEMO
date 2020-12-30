@@ -355,14 +355,17 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             String selectedItem=Long.toString(spinner.getSelectedItemId());
                             if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("41")) {
                                 if (ageInYears <= 12) {
-                                    int spinnnnnc=0;
+                                    int sepPosID = spinner.getSelectedItem().toString().indexOf("-");
+                                    //String selectedItemSpinner = spinner.getSelectedItem().toString().substring(0, sepPosID);
+                                    selectedItem = spinner.getSelectedItem().toString().substring(sepPosID+1);
+                                    /*int spinnnnnc=0;
                                     Map<Integer, String> map = new TreeMap<>(nameVL);
                                     for (Map.Entry<Integer, String> entry : map.entrySet()) {
                                         if (entry.getValue().equals(spinner.getSelectedItem())) {
                                             selectedItem=String.valueOf(spinnnnnc+1);
                                         }
                                         spinnnnnc++;
-                                    }
+                                    }*/
                                 }
                             }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
@@ -635,14 +638,17 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             String selectedItem=Long.toString(spinner.getSelectedItemId());
                             if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("41")) {
                                 if (ageInYears <= 12) {
-                                    int spinnnnnc=0;
+                                    int sepPosID = spinner.getSelectedItem().toString().indexOf("-");
+                                    //String selectedItemSpinner = spinner.getSelectedItem().toString().substring(0, sepPosID);
+                                    selectedItem = spinner.getSelectedItem().toString().substring(sepPosID+1);
+                                    /*int spinnnnnc=0;
                                     Map<Integer, String> map = new TreeMap<>(nameVL);
                                     for (Map.Entry<Integer, String> entry : map.entrySet()) {
                                         if (entry.getValue().equals(spinner.getSelectedItem())) {
                                             selectedItem=String.valueOf(spinnnnnc+1);
                                         }
                                         spinnnnnc++;
-                                    }
+                                    }*/
                                 }
                             }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
@@ -1150,10 +1156,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             }else {
                                 Map<Integer, String> treeMapAge = new TreeMap<>(ageVL);
                                 Map<Integer, String> treeMapName = new TreeMap<>(nameVL);
+                                int spinnerIndex=1;
                                 for (Map.Entry<Integer, String> entry : treeMapAge.entrySet()) {
                                     if (Integer.parseInt(entry.getValue()) > 15) {
-                                        nameAL.add(treeMapName.get(entry.getKey()));
+                                        nameAL.add(treeMapName.get(entry.getKey())+"-"+spinnerIndex);
                                     }
+                                    spinnerIndex++;
                                 }
                             }
                             nameAL.add(0, getString(R.string.select_option));

@@ -1075,45 +1075,52 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     String message=jsonObject.getString("message");
                     int survey_data_monitoring_id=jsonObject.getInt("survey_data_monitoring_id");
                     if (success.equals("1")) {
-                        AlertDialogClass.dismissProgressDialog();
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
 
+
                         //send audio here
-                        Uri imageUri = Uri.parse(AudioSavePathInDevice);
-                        File file = new File(imageUri.getPath());
-                        RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
-                        part= MultipartBody.Part.createFormData("audio_name", file.getName(), fileReqBody);
-                        Log.e("audio_params-", "audio_params- "
-                                +"\n"+sharedPrefHelper.getString("user_id", "")
-                                +"\n"+survey_id+"\n"+survey_data_monitoring_id+"\n"+part);
+                        if(sharedPrefHelper.getBoolean("isRecording", false)) {
+                            Uri imageUri = Uri.parse(AudioSavePathInDevice);
+                            File file = new File(imageUri.getPath());
+                            RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
+                            part = MultipartBody.Part.createFormData("audio_name", file.getName(), fileReqBody);
+                            Log.e("audio_params-", "audio_params- "
+                                    + "\n" + sharedPrefHelper.getString("user_id", "")
+                                    + "\n" + survey_id + "\n" + survey_data_monitoring_id + "\n" + part);
 
-                        ApiClient.getClient().create(BARC_API.class).sendAudio(sharedPrefHelper.getString("user_id", ""), survey_id, survey_data_monitoring_id, part).enqueue(new Callback<JsonObject>() {
-                            @Override
-                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response.body().toString());
-                                    Log.e("audio-upload",jsonObject.toString());
-                                    String success=jsonObject.optString("success");
-                                    String message=jsonObject.optString("message");
-                                    String name=jsonObject.optString("name");
-                                    String file_status=jsonObject.optString("file_status");
-                                    if (success.equalsIgnoreCase("1")) {
-                                        Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
-                                        startActivity(intentSurveyActivity1);
-                                        finish();
+                            ApiClient.getClient().create(BARC_API.class).sendAudio(sharedPrefHelper.getString("user_id", ""), survey_id, survey_data_monitoring_id, part).enqueue(new Callback<JsonObject>() {
+                                @Override
+                                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                    try {
+                                        AlertDialogClass.dismissProgressDialog();
+                                        JSONObject jsonObject = new JSONObject(response.body().toString());
+                                        Log.e("audio-upload", jsonObject.toString());
+                                        String success = jsonObject.optString("success");
+                                        String message = jsonObject.optString("message");
+                                        String name = jsonObject.optString("name");
+                                        String file_status = jsonObject.optString("file_status");
+                                        if (success.equalsIgnoreCase("1")) {
+                                            Intent intentSurveyActivity1 = new Intent(context, ClusterDetails.class);
+                                            startActivity(intentSurveyActivity1);
+                                            finish();
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        AlertDialogClass.dismissProgressDialog();
                                     }
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<JsonObject> call, Throwable t) {
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<JsonObject> call, Throwable t) {
+                                    AlertDialogClass.dismissProgressDialog();
+                                }
+                            });
+                        }else{
+                            AlertDialogClass.dismissProgressDialog();
+                        }
                     } else {
                         AlertDialogClass.dismissProgressDialog();
                         CommonClass.showPopupForNoInternet(context);
@@ -1714,7 +1721,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            if(questionID.equals("54")){
                                checkBox.setEnabled(false);
                            }
-
                            if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                                selectedOptions=answerModelList.get(startPosition).getOption_id();
                                String[] arraySelectedOptions = selectedOptions.split(",");
