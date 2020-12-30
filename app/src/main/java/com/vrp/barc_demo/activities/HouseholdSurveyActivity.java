@@ -521,16 +521,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else if(questionID.equals("109")){
                                         landlineNo=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("landline_no", landlineNo);
-                                        Pattern ps = Pattern.compile("^[6-9][0-9]{9}+$");
+                                        /*Pattern ps = Pattern.compile("^[6-9][0-9]{9}+$");
                                         Matcher ms = ps.matcher(landlineNo);
-                                        boolean bs = ms.matches();
+                                        boolean bs = ms.matches();*/
                                         if (sharedPrefHelper.getString("landline_no", "").length()<10){
                                             flag=false;
                                             break;
-                                        }else if (!bs) {
+                                        }/*else if (!bs) {
                                             flag=false;
                                             break;
-                                        }
+                                        }*/
                                     }
                                     else if (questionID.equals("57")){
                                         String TvWorkingCondition=editText.getText().toString().trim();
@@ -685,7 +685,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         }
                                         else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("84")) {
                                             String accessInternetOnMobile = sharedPrefHelper.getString("2100f_radio_ids", "");
-                                            if (accessInternetOnMobile.equals("2")||accessInternetOnMobile.equals("3")) {
+                                            if (accessInternetOnMobile.equals("2")||accessInternetOnMobile.equals("9")) {
                                                 flag = true;
                                             } else {
                                                 flag = false;
@@ -1585,6 +1585,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                else if(group.getId()==83){
                                    for (int i = 0; i < ll_parent.getChildCount(); i++) {
                                        final View childView = ll_parent.getChildAt(i);
+                                       sharedPrefHelper.setString("2100f_radio_ids",radioID);
                                        if (childView instanceof Spinner) {
                                            Spinner spinner = (Spinner) childView;
                                            if(String.valueOf(spinner.getId()).equals("84")){
