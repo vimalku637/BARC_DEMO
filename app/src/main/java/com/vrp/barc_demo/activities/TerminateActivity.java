@@ -158,51 +158,71 @@ public class TerminateActivity extends AppCompatActivity {
                     case R.id.rb_door_lock:
                         reason=getResources().getString(R.string.door_locked);
                         halt_radio_button_id="1";
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_not_available_at_home:
                         reason=getResources().getString(R.string.hh_cwe_not_available_at_home);
                         halt_radio_button_id="2";
+                        til_name.setVisibility(View.VISIBLE);
+                        til_address.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_refused:
                         reason=getResources().getString(R.string.refused);
                         halt_radio_button_id="3";
+                        til_name.setVisibility(View.VISIBLE);
+                        til_address.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_in_eligible_nccs:
                         reason=getResources().getString(R.string.in_eligible_nccs);
                         halt_radio_button_id="4";
+                        til_name.setVisibility(View.VISIBLE);
+                        til_address.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_refused_to_continue:
                         reason=getResources().getString(R.string.refused_to_continue_interview_after_some_time);
                         halt_radio_button_id="5";
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_in_eligible_age:
                         reason=getResources().getString(R.string.in_eligible_age);
                         halt_radio_button_id="6";
+                        til_name.setVisibility(View.VISIBLE);
+                        til_address.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_intro_exit:
                         reason=getResources().getString(R.string.intro_exit);
                         halt_radio_button_id="7";
+                        til_name.setVisibility(View.VISIBLE);
+                        til_address.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_age_terminate:
                         reason=getResources().getString(R.string.age_terminate);
                         halt_radio_button_id="8";
+                        til_name.setVisibility(View.VISIBLE);
+                        til_address.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_terminate:
                         reason=getResources().getString(R.string.terminate);
                         halt_radio_button_id="9";
+                        til_name.setVisibility(View.VISIBLE);
+                        til_address.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_call_back:
                         reason=getResources().getString(R.string.call_back);
                         halt_radio_button_id="10";
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
                         rb_door_lock.setError(null);
                         break;
                 }
@@ -364,7 +384,87 @@ public class TerminateActivity extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkValidation()) {
+                if (halt_radio_button_id.equals("1")||halt_radio_button_id.equals("5")||halt_radio_button_id.equals("10")) {
+                    if (checkValidationHalt()) {
+                        //save data in to local DB.
+                        Gson gson = new Gson();
+                        String listString = gson.toJson(
+                                answerModelList,
+                                new TypeToken<ArrayList<AnswerModel>>() {
+                                }.getType());
+                        String listStringFamily = gson.toJson(
+                                answerModelHouseholdMemberListTotal,
+                                new TypeToken<ArrayList<AnswerModel>>() {
+                                }.getType());
+                        String listStringTV = gson.toJson(
+                                answerModelTVListTotal,
+                                new TypeToken<ArrayList<AnswerModel>>() {
+                                }.getType());
+                        try {
+                            try {
+                                JSONArray json_array = new JSONArray(listString);
+                                JSONArray json_array_family = new JSONArray(listStringFamily);
+                                JSONArray json_array_TV = new JSONArray(listStringTV);
+                                JSONObject json_object = new JSONObject();
+
+                                json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
+                                json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
+                                json_object.put("app_version", AppConstants.APP_VERSION);
+                                json_object.put("survey_status", "2");// for halt
+                                json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                                json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
+                                if (AudioSavePathInDevice != null) {
+                                    json_object.put("audio_recording", AudioSavePathInDevice);
+                                }
+                                json_object.put("GPS_latitude_start", sharedPrefHelper.getString("LAT", ""));
+                                json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
+                                json_object.put("reason", reason);
+                                json_object.put("description", reason);
+                                json_object.put("household_name", et_name.getText().toString().trim());
+                                json_object.put("address", et_address.getText().toString().trim());
+                                json_object.put("survey_data", json_array);
+                                json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
+                                json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
+                                json_object.put("family_data", json_array_family);
+                                json_object.put("tv_data", json_array_TV);
+                                json_object.put("date_time", et_date_time.getText().toString().trim());
+                                json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
+                                json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
+                                Log.e(TAG, "onClick: " + json_object.toString());
+
+                                //sqliteHelper.saveSurveyDataInTable(json_object, sharedPrefHelper.getString("survey_id", ""));
+                                //update data in to local DB
+                                sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
+                                //call terminate API here
+                                if (CommonClass.isInternetOn(context)) {
+                                    String data = json_object.toString();
+                                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                    RequestBody body = RequestBody.create(JSON, data);
+                                    //send data on server
+                                    sendHaltSurveyDataOnServer(body);
+                                } else {
+                                    cl_terminate.setVisibility(View.GONE);
+                                    tv_survey_terminate.setText(getString(R.string.halt_survey));
+                                    tv_survey_terminate.setVisibility(View.VISIBLE);
+                                    btn_start_new_survey.setVisibility(View.VISIBLE);
+                                    sqliteHelper.updateLocalFlag("halt", "survey",
+                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                    Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if(halt_radio_button_id.equals("2")||halt_radio_button_id.equals("3")||halt_radio_button_id.equals("4")
+                ||halt_radio_button_id.equals("6")||halt_radio_button_id.equals("7")||halt_radio_button_id.equals("8")
+                ||halt_radio_button_id.equals("9")){
+                    if (checkValidation()){
+                    cl_terminate.setVisibility(View.GONE);
                     //save data in to local DB.
                     Gson gson = new Gson();
                     String listString = gson.toJson(
@@ -386,7 +486,7 @@ public class TerminateActivity extends AppCompatActivity {
                             json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                             json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
                             json_object.put("app_version", AppConstants.APP_VERSION);
-                            json_object.put("survey_status", "2");// for halt
+                            json_object.put("survey_status", "3");//for terminate
                             json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                             json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
                             if (AudioSavePathInDevice!=null) {
@@ -394,10 +494,13 @@ public class TerminateActivity extends AppCompatActivity {
                             }
                             json_object.put("GPS_latitude_start", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
-                            json_object.put("reason", reason);
-                            json_object.put("description", reason);
-                            json_object.put("household_name", et_name.getText().toString().trim());
-                            json_object.put("address", et_address.getText().toString().trim());
+                            if (!radio_button_id.equals("")) {
+                                json_object.put("reason", radio_button_id);
+                                json_object.put("description", "terminate");
+                            }else{
+                                json_object.put("reason", reason);
+                                json_object.put("description", reason);
+                            }
                             json_object.put("survey_data", json_array);
                             json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
@@ -417,13 +520,12 @@ public class TerminateActivity extends AppCompatActivity {
                                 MediaType JSON = MediaType.parse("application/json; charset=utf-8");
                                 RequestBody body = RequestBody.create(JSON, data);
                                 //send data on server
-                                sendHaltSurveyDataOnServer(body);
+                                sendSurveyDataOnServer(body);
                             } else {
                                 cl_terminate.setVisibility(View.GONE);
-                                tv_survey_terminate.setText(getString(R.string.halt_survey));
                                 tv_survey_terminate.setVisibility(View.VISIBLE);
                                 btn_start_new_survey.setVisibility(View.VISIBLE);
-                                sqliteHelper.updateLocalFlag("halt", "survey",
+                                sqliteHelper.updateLocalFlag("terminate", "survey",
                                         Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                             }
@@ -434,6 +536,7 @@ public class TerminateActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
                 }
             }
         });
@@ -446,6 +549,28 @@ public class TerminateActivity extends AppCompatActivity {
         });
     }
 
+    private boolean checkValidationHalt() {
+        if (rg_terminate.getCheckedRadioButtonId() == -1) {
+            Toast.makeText(context, getString(R.string.reason_of_halt), Toast.LENGTH_LONG).show();
+            rb_door_lock.setError("Please choose one!");
+            rb_door_lock.requestFocus();
+            rb_door_lock.setFocusable(true);
+            return false;
+        }
+        /*if (et_name.getText().toString().trim().length()==0) {
+            til_name.setError("Please enter name!");
+            return false;
+        } else {
+            til_name.setError(null);
+        }
+        if (et_address.getText().toString().trim().length()==0) {
+            til_address.setError("Please enter address!");
+            return false;
+        } else {
+            til_address.setError(null);
+        }*/
+        return true;
+    }
     private boolean checkValidation() {
         if (rg_terminate.getCheckedRadioButtonId() == -1) {
             Toast.makeText(context, getString(R.string.reason_of_halt), Toast.LENGTH_LONG).show();

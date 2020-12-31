@@ -52,7 +52,7 @@ public class SurveyListAdapter extends RecyclerView.Adapter<SurveyListAdapter.Vi
         holder.tv_hh_name.setText("Household 1");
 
         //change status here
-        if (arrayList.get(position).getStatus().equals("0")) {
+        if (arrayList.get(position).getStatus().equals("4")) {
             holder.btn_status.setText(context.getString(R.string.rejected));
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.LTGRAY));
         } else if (arrayList.get(position).getStatus().equals("1")){
@@ -64,7 +64,7 @@ public class SurveyListAdapter extends RecyclerView.Adapter<SurveyListAdapter.Vi
         } else if (arrayList.get(position).getStatus().equals("3")) {
             holder.btn_status.setText(context.getString(R.string.terminated));
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-        } else if (arrayList.get(position).getStatus().equals("4")) {
+        } else if (arrayList.get(position).getStatus().equals("0")) {
             holder.btn_status.setText(context.getString(R.string.pending));
             holder.btn_status.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#00ACEE")));
         }

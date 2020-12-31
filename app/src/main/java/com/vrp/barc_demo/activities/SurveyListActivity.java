@@ -167,7 +167,7 @@ public class SurveyListActivity extends AppCompatActivity {
             mSurveyListAdapter.onItemClick(new ClickListener() {
                 @Override
                 public void onItemClick(int position) {
-                    if (surveyModelAl.get(position).getStatus().equals("2") || surveyModelAl.get(position).getStatus().equals("4")) {
+                    if (surveyModelAl.get(position).getStatus().equals("2")||surveyModelAl.get(position).getStatus().equals("0")) {
                         sharedPrefHelper.setInt("startPosition", 0);
                         sharedPrefHelper.setInt("endPosition", 0);
                         Intent intentSurveyActivity = new Intent(context, HouseholdSurveyActivity.class);

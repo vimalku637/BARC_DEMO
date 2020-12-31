@@ -1163,6 +1163,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
            for(int l=startScreenPosition;l<endScreenPosition;l++){
                JSONObject jsonObjectScreen=jsonArrayScreen.getJSONObject(l);
                screen_id=jsonObjectScreen.getString("screen_no");
+               sharedPrefHelper.setString("screen_id",screen_id);
+               Log.e(TAG, "questionsPopulate>>> "+screen_id);
                jsonArrayQuestions = jsonObjectScreen.getJSONArray("questions");
                for (int i = 0; i < jsonArrayQuestions.length(); i++) {
                    JSONObject jsonObjectQuesType=jsonArrayQuestions.getJSONObject(i);
@@ -2054,7 +2056,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             }
         }
         if (item.getItemId()==R.id.stop_survey) {
-            showPopupForTerminateSurvey();
+            String screen_id = sharedPrefHelper.getString("screen_id", "");
+            if (screen_id.equals("1")||screen_id.equals("2")||screen_id.equals("3")||screen_id.equals("4")) {
+                Toast.makeText(context, "You can't halt survey from this screen.", Toast.LENGTH_LONG).show();
+            } else {
+                showPopupForTerminateSurvey();
+            }
         }
         if (item.getItemId()==R.id.home_icon) {
             Intent intentMainMenu=new Intent(context, MainMenu.class);
@@ -2162,8 +2169,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         getMenuInflater().inflate(R.menu.menu, menu);
         /*hide and show toolbar items*/
         //if (screen_type.equalsIgnoreCase("survey")) {
-            MenuItem item_stop_survey=menu.findItem(R.id.stop_survey);
+        /*String screen_id=sharedPrefHelper.getString("screen_id", "");
+        if (screen_id.equals("1")||screen_id.equals("2")||screen_id.equals("3")||screen_id.equals("4")){
+            MenuItem item_stop_survey = menu.findItem(R.id.stop_survey);
+            item_stop_survey.setVisible(false);
+        }else{*/
+            MenuItem item_stop_survey = menu.findItem(R.id.stop_survey);
             item_stop_survey.setVisible(true);
+        //}
             MenuItem item_logout=menu.findItem(R.id.logout);
             item_logout.setVisible(false);
         //}

@@ -532,7 +532,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 else if (screenType.equals("halt"))
                     values.put("status", 2);
                 else if (screenType.equals("partial"))
-                    values.put("status", 4);
+                    values.put("status", 0);
 
                 inserted_id = db.update(table, values, "survey_id" + " = " + survey_id + "", null);
 
