@@ -1081,7 +1081,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
 
                         //send audio here
-                        if(sharedPrefHelper.getBoolean("isRecording", false)) {
+                        if(sharedPrefHelper.getBoolean("isRecording", false)==false) {
                             Uri imageUri = Uri.parse(AudioSavePathInDevice);
                             File file = new File(imageUri.getPath());
                             RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);

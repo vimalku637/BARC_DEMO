@@ -994,7 +994,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                         String description=jsonObjectQuesType.getString("question_name");
                         description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
-                        txtLabel.setText(description);
+                        if(jsonObjectQuesType.getString("question_id").equals("33")){
+                            int member_count=startScreenCount+1;
+                            txtLabel.setText(description+"- Member-"+member_count);
+                        }else{
+                            txtLabel.setText(description);
+                        }
                         txtLabel.setTypeface(null, Typeface.BOLD);
                         txtLabel.setTextSize(14);
                         startPosition++;
