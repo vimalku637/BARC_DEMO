@@ -306,7 +306,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public int getTotalchartInprogress() {
         int sum = 0;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT count(status) as total from survey where status IN (2,4)", null);
+        Cursor cursor = db.rawQuery("SELECT count(status) as total from survey where status IN (2,0)", null);
         if (cursor.moveToFirst())
             sum = cursor.getInt(cursor.getColumnIndex("total"));
         return sum;
@@ -406,7 +406,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         String surveyJSON="";
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_data from survey where survey_id='"+survey_id+"' and flag=1 and status IN(2,4)";
+                String query = "select survey_data from survey where survey_id='"+survey_id+"' and flag=1 and status IN(2,0)";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -429,7 +429,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         String surveyJSON="";
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select family_data from survey where survey_id='"+survey_id+"' and flag=1 and status IN(2,4)";
+                String query = "select family_data from survey where survey_id='"+survey_id+"' and flag=1 and status IN(2,0)";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -452,7 +452,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         String surveyJSON="";
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select tv_data from survey where survey_id='"+survey_id+"' and flag=1 and status IN(2,4)";
+                String query = "select tv_data from survey where survey_id='"+survey_id+"' and flag=1 and status IN(2,0)";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -641,7 +641,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public int getTotalSurveyForCluster(String cluster_no) {
         int sum = 0;
         SQLiteDatabase db = this.getReadableDatabase();
-        String countQuery = "select count(cluster_no) from survey where cluster_no ='" + cluster_no + "' and status IN(1,4)";
+        String countQuery = "select count(cluster_no) from survey where cluster_no ='" + cluster_no + "' and status IN(1,0)";
         Cursor cursor = db.rawQuery(countQuery, null);
         if (cursor.moveToFirst())
             sum = cursor.getInt(cursor.getColumnIndex("count(cluster_no)"));
