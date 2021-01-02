@@ -318,8 +318,8 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 answerModelList.add(answerModel);
                             }
                             if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
-                                    &&questionID.equals("62")||questionID.equals("65")||questionID.equals("66")
-                                    ||questionID.equals("67")||questionID.equals("68")&&spinner.getSelectedItemId()==0){
+                                    && (questionID.equals("62")||questionID.equals("65")||questionID.equals("66")
+                                    ||questionID.equals("67")) &&spinner.getSelectedItemId()==0){
                                 flag=true;
                             } else {
                                 if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
@@ -374,7 +374,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                 answerModelList.add(answerModel);
                             }
-                            if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("")){
+                            if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("") && !jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("68")){
                                 flag=false;
                                 break;
                             }
@@ -580,8 +580,8 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 answerModelList.add(answerModel);
                             }
                             if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
-                                    &&questionID.equals("62")||questionID.equals("65")||questionID.equals("66")
-                                    ||questionID.equals("67")||questionID.equals("68")&&spinner.getSelectedItemId()==0){
+                                    && (questionID.equals("62")||questionID.equals("65")||questionID.equals("66")
+                                    ||questionID.equals("67")) &&spinner.getSelectedItemId()==0){
                                 flag=true;
                             } else {
                                 if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
@@ -636,7 +636,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                 answerModelList.add(answerModel);
                             }
-                            if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("")){
+                            if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("") && !jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("68")){
                                 flag=false;
                                 break;
                             }
@@ -940,6 +940,10 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             }
                             row.addView(checkBox);
                             linearLayoutCheckbox.addView(row);
+                            if (jsonObjectQuesType.getString("question_id").equals("68")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("6")){
+                                txtLabel.setVisibility(View.GONE);
+                                linearLayoutCheckbox.setVisibility(View.GONE);
+                            }
                         }
                         startPosition++;
                         endPosition++;
@@ -982,10 +986,6 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 spinner.setVisibility(View.GONE);
                             }
                             if (jsonObjectQuesType.getString("question_id").equals("67")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")){
-                                txtLabel.setVisibility(View.GONE);
-                                spinner.setVisibility(View.GONE);
-                            }
-                            if (jsonObjectQuesType.getString("question_id").equals("68")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("6")){
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }

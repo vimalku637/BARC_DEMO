@@ -98,7 +98,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -550,6 +553,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         }else{
                                             sharedPrefHelper.setString("TvWorkingCondition", TvWorkingCondition);
                                         }
+                                    }
+                                    else if (questionID.equals("46")){
+                                        sharedPrefHelper.setString("CWE_Name",editText.getText().toString().trim());
                                     }
                                     else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("31") ){
                                         if(Integer.parseInt(editText.getText().toString().trim())>20 || Integer.parseInt(editText.getText().toString().trim())==0){
@@ -1081,7 +1087,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
 
                         //send audio here
-                        if(sharedPrefHelper.getBoolean("isRecording", false)==false) {
+                        if(sharedPrefHelper.getBoolean("isRecording", false)==true) {
                             Uri imageUri = Uri.parse(AudioSavePathInDevice);
                             File file = new File(imageUri.getPath());
                             RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
@@ -1120,6 +1126,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             });
                         }else{
                             AlertDialogClass.dismissProgressDialog();
+                            Intent intentSurveyActivity1 = new Intent(context, ClusterDetails.class);
+                            startActivity(intentSurveyActivity1);
+                            finish();
                         }
                     } else {
                         AlertDialogClass.dismissProgressDialog();
@@ -1775,63 +1784,96 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                              txtLabel.setVisibility(View.GONE);
                            }
                        }
-                       for (int j = 0; j <jsonArrayOptions.length() ; j++) {
-                           spinnerAL.clear();
-                           for (int k = 0; k < jsonArrayOptions.length(); k++) {
-                               JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
-                               String spinnerOption=jsonObjectOptionValues.getString("option_value");
-                               if((questionID.equals("79"))){
-                                   boolean contains = Arrays.asList(arrayselectedOptionsSpinner).contains(jsonObjectOptionValues.getString("option_id"));
-                                   if(contains){
+                       if (jsonObjectQuesType.getString("question_id").equals("100")) {
+                           ArrayList<String> nameAL = new ArrayList<>();
+                           Gson gson = new Gson();
+                           java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+                           HashMap<Integer, String> testHashMap2 = gson.fromJson(sharedPrefHelper.getString("householdMember","objMember.toString()"), type);
+                           ///JSONObject obj=new JSONObject(sharedPrefHelper.setString("householdMember","objMember.toString()"););
+                           Map<Integer, String> treeMapName = new TreeMap<>(testHashMap2);
+                           int spinnerIndex=1;
+                           for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
+                               nameAL.add(entry.getValue()+"-"+spinnerIndex);
+                               spinnerIndex++;
+                           }
+                           nameAL.add(0, getString(R.string.select_option));
+                           ArrayAdapter arrayAdapter = new ArrayAdapter(context, R.layout.custom_spinner_dropdown, nameAL);
+                           spinner.setAdapter(arrayAdapter);
+                           if ( (back_status == true || screen_type.equals("survey_list")) && answerModelList.size() > startPosition) {
+                               if(!answerModelList.get(startPosition).getOption_id().equals("0")) {
+                                   int position = 0;
+                                   int spnposI = 0;
+                                   int spnposP = 0;
+                                   Map<Integer, String> treeMapAge = new TreeMap<>(testHashMap2);
+                                   for (Map.Entry<Integer, String> entry : treeMapAge.entrySet()) {
+                                       if (Integer.parseInt(answerModelList.get(startPosition).getOption_id()) - 1 == spnposP) {
+                                           position = spnposP;
+                                           break;
+                                       }
+                                       spnposP++;
+                                   }
+                                   spinner.setSelection(position + 1);
+                               }
+                            }
+                       }else {
+                           for (int j = 0; j < jsonArrayOptions.length(); j++) {
+                               spinnerAL.clear();
+                               for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                   JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                   String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                   if ((questionID.equals("79"))) {
+                                       boolean contains = Arrays.asList(arrayselectedOptionsSpinner).contains(jsonObjectOptionValues.getString("option_id"));
+                                       if (contains) {
+                                           spinnerAL.add(spinnerOption);
+                                       }
+                                   } else {
                                        spinnerAL.add(spinnerOption);
                                    }
-                               }else{
-                                   spinnerAL.add(spinnerOption);
+                               }
+                               spinnerAL.add(0, getString(R.string.select_option));
+                               ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.custom_spinner_dropdown, spinnerAL);
+                               spinner.setAdapter(arrayAdapter);
+                               if ((back_status == true || screen_type.equals("survey_list")) && answerModelList.size() > startPosition) {
+                                   spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
                                }
                            }
-                           spinnerAL.add(0, getString(R.string.select_option));
-                           ArrayAdapter arrayAdapter=new ArrayAdapter(this, R.layout.custom_spinner_dropdown, spinnerAL);
-                           spinner.setAdapter(arrayAdapter);
-                           if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
-                               spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
+                           if ((questionID.equals("72"))) {
+                               String stayWith = sharedPrefHelper.getString("stayWith", "");
+                               if (!stayWith.equals("1")) {
+                                   txtLabel.setVisibility(View.GONE);
+                                   spinner.setVisibility(View.GONE);
+                               }
                            }
-                       }
-                       if((questionID.equals("72"))) {
-                           String stayWith = sharedPrefHelper.getString("stayWith", "");
-                           if(!stayWith.equals("1")){
-                               txtLabel.setVisibility(View.GONE);
-                               spinner.setVisibility(View.GONE);
+                           if ((questionID.equals("73"))) {
+                               String stayWith = sharedPrefHelper.getString("stayWith", "");
+                               if (!stayWith.equals("2")) {
+                                   txtLabel.setVisibility(View.GONE);
+                                   spinner.setVisibility(View.GONE);
+                               }
                            }
-                       }
-                       if((questionID.equals("73"))) {
-                           String stayWith = sharedPrefHelper.getString("stayWith", "");
-                           if(!stayWith.equals("2")){
-                               txtLabel.setVisibility(View.GONE);
-                               spinner.setVisibility(View.GONE);
+                           if ((questionID.equals("75"))) {
+                               String town_village_class = sharedPrefHelper.getString("town_village_class", "");
+                               if (!town_village_class.equals("Urban")) {
+                                   txtLabel.setVisibility(View.GONE);
+                                   spinner.setVisibility(View.GONE);
+                               }
                            }
-                       }
-                       if((questionID.equals("75"))) {
-                           String town_village_class=sharedPrefHelper.getString("town_village_class","");
-                           if(!town_village_class.equals("Urban")){
-                               txtLabel.setVisibility(View.GONE);
-                               spinner.setVisibility(View.GONE);
+                           if (jsonObjectQuesType.getString("question_id").equals("84")) {
+                               String accessInternetOnMobile = sharedPrefHelper.getString("2100f_radio_ids", "");
+                               if (accessInternetOnMobile.equals("1")) {
+                                   txtLabel.setVisibility(View.VISIBLE);
+                                   spinner.setVisibility(View.VISIBLE);
+                               } else {
+                                   txtLabel.setVisibility(View.GONE);
+                                   spinner.setVisibility(View.GONE);
+                               }
                            }
-                       }
-                       if(jsonObjectQuesType.getString("question_id").equals("84")){
-                           String accessInternetOnMobile=sharedPrefHelper.getString("2100f_radio_ids","");
-                           if (accessInternetOnMobile.equals("1")){
-                               txtLabel.setVisibility(View.VISIBLE);
-                               spinner.setVisibility(View.VISIBLE);
-                           }else {
-                               txtLabel.setVisibility(View.GONE);
-                               spinner.setVisibility(View.GONE);
-                           }
-                       }
-                       if (questionID.equals("85")){
-                           String lastTimeAccessInternet=sharedPrefHelper.getString("last_time_access_internet","");
-                           if (lastTimeAccessInternet.equals("9")){
-                               txtLabel.setVisibility(View.GONE);
-                               spinner.setVisibility(View.GONE);
+                           if (questionID.equals("85")) {
+                               String lastTimeAccessInternet = sharedPrefHelper.getString("last_time_access_internet", "");
+                               if (lastTimeAccessInternet.equals("9")) {
+                                   txtLabel.setVisibility(View.GONE);
+                                   spinner.setVisibility(View.GONE);
+                               }
                            }
                        }
                        startPosition++;

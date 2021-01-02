@@ -295,6 +295,10 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     break;
                                 }
                                 nameVL.put(totalScreenCount,""+name);
+                                Gson gson = new Gson();
+                                String hashMapString = gson.toJson(nameVL);
+                                //JSONObject objMember=new JSONObject(nameVL);
+                                sharedPrefHelper.setString("householdMember",hashMapString);
                             }else if (questionID.equals("35")) {
                                 ageInYears=Integer.parseInt(editText.getText().toString().trim());
                                 sharedPrefHelper.setInt("ageInYears", ageInYears);
