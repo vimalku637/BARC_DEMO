@@ -234,7 +234,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:text="Tarminated"
+                            android:text="Terminated"
                             android:textColor="@color/color_black" />
                     </LinearLayout>
 

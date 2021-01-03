@@ -151,6 +151,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     int totalScreen;
     JSONObject jsonQuestions = null;
     JSONArray jsonArrayQuestions=null;
+    HashMap<Integer,String> languageHashMap=new HashMap<>();
     JSONArray jsonArrayScreen=null;
     JSONArray jsonArrayScreenbackup=null;
     public static ArrayList<AnswerModel> answerModelList;
@@ -633,16 +634,36 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             }
                             else if (childView instanceof Spinner) {
                                 Spinner spinner = (Spinner) childView;
+
+                                /*JSONArray jsonArrayOptions=jsonArrayQuestions.getJSONObject(count).getJSONArray("question_options");
+                                for (int j = 0; j <jsonArrayOptions.length(); j++) {
+
+                                }*/
+                                long spinnerID=spinner.getSelectedItemId();
+                                if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("79")){
+                                    Map<Integer, String> treeMapLang = new TreeMap<>(languageHashMap);
+                                    int spnposP=1;
+                                    int position=1;
+                                    if(spinnerID!=0){
+                                        for (Map.Entry<Integer, String> entry : treeMapLang.entrySet()) {
+                                            if (spnposP==spinnerID) {
+                                                spinnerID=entry.getKey();
+                                                break;
+                                            }
+                                            spnposP++;
+                                        }
+                                    }
+                                }
                                 if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("75")){
-                                    sharedPrefHelper.setString("tenement_type",""+spinner.getSelectedItemId());
+                                    sharedPrefHelper.setString("tenement_type",""+spinnerID);
                                 }else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("84")){
-                                    sharedPrefHelper.setString("last_time_access_internet",""+spinner.getSelectedItemId());
+                                    sharedPrefHelper.setString("last_time_access_internet",""+spinnerID);
                                 }
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                                    answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                    answerModelList.get(nextPosition).setOption_id(Long.toString(spinnerID));
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
-                                    answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                    answerModel.setOption_id(Long.toString(spinnerID));
                                     answerModel.setOption_value("");
                                     //answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
@@ -743,22 +764,38 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     //final View childViewTable = tableLayout.getChildAt(k);
                                     final TableRow row = (TableRow) tableLayout.getChildAt(k);
                                     CheckBox checkBox = (CheckBox) row.getChildAt(0);
-                                    if (checkBox.isChecked()) {
-                                        jsonArray.put(checkBox.getText().toString().trim());
-                                        jsonObject.put("check_box", jsonArray);
-                                        if(selectedOptions.equals("")){
-                                            selectedOptions=Integer.toString(checkBox.getId());
-                                        }else{
-                                            selectedOptions=selectedOptions+","+Integer.toString(checkBox.getId());
+                                    if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("78")){
+                                        if (checkBox.isChecked()) {
+                                            jsonArray.put(checkBox.getText().toString().trim());
+                                            jsonObject.put("check_box", jsonArray);
+                                            if(selectedOptions.equals("")){
+                                                languageHashMap.clear();
+                                                selectedOptions=Integer.toString(checkBox.getId());
+                                            }else{
+                                                selectedOptions=selectedOptions+","+Integer.toString(checkBox.getId());
+                                            }
+                                            languageHashMap.put(checkBox.getId(),checkBox.getText().toString().trim());
+                                        }
+                                    }else{
+                                        if (checkBox.isChecked()) {
+                                            jsonArray.put(checkBox.getText().toString().trim());
+                                            jsonObject.put("check_box", jsonArray);
+                                            if(selectedOptions.equals("")){
+                                                selectedOptions=Integer.toString(checkBox.getId());
+                                            }else{
+                                                selectedOptions=selectedOptions+","+Integer.toString(checkBox.getId());
+                                            }
                                         }
                                     }
                                 }
                                 if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("29")){
                                     if(selectedOptions.contains("4"))
                                     sharedPrefHelper.setString("selectedDurables",selectedOptions);
-                                    else
-                                        setTerminattion("Durables");
-
+                                    else {
+                                        showPopupForTerminateForTV("Durables");
+                                        flag = false;
+                                    }
+                                        //setTerminattion("Durables");
                                 }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("78")){
                                     sharedPrefHelper.setString("family_language",""+selectedOptions);
@@ -814,6 +851,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         }
                     }
                 if(buttonText.equals("Submit")){
+                    btn_next.setEnabled(false);
                     //Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
                     stopRecording();
                     //save data in to local DB.
@@ -866,7 +904,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 //send data on server
                                 sendSurveyDataOnServer(body);
                             } else {
-                                Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                                Intent intentSurveyActivity1=new Intent(context, NextSurvey.class);
                                 sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 0);
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 startActivity(intentSurveyActivity1);
@@ -887,7 +925,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 //send data on server
                                 sendSurveyDataOnServer(body);
                             } else {
-                                Intent intentSurveyActivity1=new Intent(context, ClusterDetails.class);
+                                Intent intentSurveyActivity1=new Intent(context, NextSurvey.class);
                                 sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 0);
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 startActivity(intentSurveyActivity1);
@@ -896,6 +934,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        btn_next.setEnabled(true);
                     }
                 }
                 else {
@@ -1084,7 +1123,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
-
+                        sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
 
                         //send audio here
                         if(sharedPrefHelper.getBoolean("isRecording", false)==true) {
@@ -1108,7 +1147,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         String name = jsonObject.optString("name");
                                         String file_status = jsonObject.optString("file_status");
                                         if (success.equalsIgnoreCase("1")) {
-                                            Intent intentSurveyActivity1 = new Intent(context, ClusterDetails.class);
+                                            Intent intentSurveyActivity1 = new Intent(context, NextSurvey.class);
                                             startActivity(intentSurveyActivity1);
                                             finish();
                                         }
@@ -1116,23 +1155,26 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                         AlertDialogClass.dismissProgressDialog();
+                                        btn_next.setEnabled(true);
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<JsonObject> call, Throwable t) {
                                     AlertDialogClass.dismissProgressDialog();
+                                    btn_next.setEnabled(true);
                                 }
                             });
                         }else{
                             AlertDialogClass.dismissProgressDialog();
-                            Intent intentSurveyActivity1 = new Intent(context, ClusterDetails.class);
+                            Intent intentSurveyActivity1 = new Intent(context, NextSurvey.class);
                             startActivity(intentSurveyActivity1);
                             finish();
                         }
                     } else {
                         AlertDialogClass.dismissProgressDialog();
                         CommonClass.showPopupForNoInternet(context);
+                        btn_next.setEnabled(true);
                     }
 
                 } catch (Exception e) {
@@ -1143,6 +1185,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
                 AlertDialogClass.dismissProgressDialog();
+                btn_next.setEnabled(true);
             }
         });
     }
@@ -1815,7 +1858,36 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    spinner.setSelection(position + 1);
                                }
                             }
-                       }else {
+                       }
+                       else if (jsonObjectQuesType.getString("question_id").equals("79")) {
+                           ArrayList<String> nameAL = new ArrayList<>();
+                           Map<Integer, String> treeMapName = new TreeMap<>(languageHashMap);
+                           int spinnerIndex=1;
+                           for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
+                               nameAL.add(entry.getValue());
+                               spinnerIndex++;
+                           }
+                           nameAL.add(0, getString(R.string.select_option));
+                           ArrayAdapter arrayAdapter = new ArrayAdapter(context, R.layout.custom_spinner_dropdown, nameAL);
+                           spinner.setAdapter(arrayAdapter);
+                           if ( (back_status == true || screen_type.equals("survey_list")) && answerModelList.size() > startPosition) {
+                               if(!answerModelList.get(startPosition).getOption_id().equals("0")) {
+                                   int position = 0;
+                                   int spnposI = 0;
+                                   int spnposP = 0;
+                                   Map<Integer, String> treeMapLang = new TreeMap<>(languageHashMap);
+                                   for (Map.Entry<Integer, String> entry : treeMapLang.entrySet()) {
+                                       if (Integer.parseInt(answerModelList.get(startPosition).getOption_id()) == entry.getKey()) {
+                                           position = spnposP;
+                                           break;
+                                       }
+                                       spnposP++;
+                                   }
+                                   spinner.setSelection(position + 1);
+                               }
+                           }
+                       }
+                       else {
                            for (int j = 0; j < jsonArrayOptions.length(); j++) {
                                spinnerAL.clear();
                                for (int k = 0; k < jsonArrayOptions.length(); k++) {
@@ -1879,7 +1951,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        startPosition++;
                        endPosition++;
                        ll_parent.addView(spinner);
-
                        // onAddSpinner(jsonObjectQuesType);
                    }
                    else if (jsonObjectQuesType.getString("question_type").equals("5")) {
@@ -2204,6 +2275,27 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 })
                 .show();
     }
+    private void showPopupForTerminateForTV(String id) {
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("TV required in durables for continue the survey")
+                .setContentText("Want to terminate the interview!")
+                .setConfirmText("Yes")
+                .setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        setTerminattion(id);
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                    }
+                })
+                .show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -2217,6 +2309,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             item_stop_survey.setVisible(false);
         }else{*/
             MenuItem item_stop_survey = menu.findItem(R.id.stop_survey);
+            item_stop_survey.setVisible(true);
             item_stop_survey.setVisible(true);
         //}
             MenuItem item_logout=menu.findItem(R.id.logout);
@@ -2300,6 +2393,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     @Override
     public void passDataToActivity(ArrayList<ArrayList<AnswerModel>> answerModelListTotal,ArrayList<AnswerModel> answerModelList,int type,int mode){
        // Log.e("Fragment Dismissed",someValue);
+        onBackPressedListener = null;
         if(type==1){
             //answerModelHouseholdMemberList.clear();
             ArrayList<ArrayList<AnswerModel>> answerModelListNTotal=answerModelListTotal;

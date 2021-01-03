@@ -161,7 +161,6 @@ public class ClusterListActivity extends AppCompatActivity {
                             clusterModel.setNCCCatagory(jsonObject.getString("nccs_category"));
                             clusterModel.setUser_id(jsonObject.getString("user_id"));
                             clusterModel.setBI_Weighting_town_class(jsonObject.getString("BI_Weighting_town_class"));
-
                             clusterModelAL.add(clusterModel);
                         }
                         if (clusterModelAL.size()>0) {
@@ -211,40 +210,62 @@ public class ClusterListActivity extends AppCompatActivity {
                                                 .show();
                                     }
                                     else {
-                                        Intent intentSurveyList = new Intent(context, SurveyListActivity.class);
-                                        /*intentSurveyList.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
-                                        intentSurveyList.putExtra("next_address", clusterModelAL.get(position).getNext_address());
-                                        intentSurveyList.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
-                                        intentSurveyList.putExtra("cluster_id", clusterModelAL.get(position).getCluster_no());
-                                        intentSurveyList.putExtra("cluster_name", clusterModelAL.get(position).getOriginal_Town_Village());*/
-                                        intentSurveyList.putExtra("screen_type", "survey");
+                                        if(clusterModelAL.get(position).getUser_id().equals(sharedPrefHelper.getString("user_id", ""))){
+                                            Intent intentSurveyList = new Intent(context, SurveyListActivity.class);
+                                            /*intentSurveyList.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
+                                            intentSurveyList.putExtra("next_address", clusterModelAL.get(position).getNext_address());
+                                            intentSurveyList.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
+                                            intentSurveyList.putExtra("cluster_id", clusterModelAL.get(position).getCluster_no());
+                                            intentSurveyList.putExtra("cluster_name", clusterModelAL.get(position).getOriginal_Town_Village());*/
+                                            intentSurveyList.putExtra("screen_type", "survey");
 
-                                        /*set preference data*/
-                                        String cluster_no = clusterModelAL.get(position).getCluster_no();
-                                        String State_Name = clusterModelAL.get(position).getState_Name();
-                                        String Town_Village_Class = clusterModelAL.get(position).getTown_Village_Class();
-                                        String Census_District_Code = clusterModelAL.get(position).getCensus_District_Code();
-                                        String Census_District_Name = clusterModelAL.get(position).getCensus_District_Name();
-                                        String Census_Village_Town_Code = clusterModelAL.get(position).getCensus_Village_Town_Code();
-                                        String Census_Village_Town_Name = clusterModelAL.get(position).getCensus_Village_Town_Name();
-                                        String UA_Component = clusterModelAL.get(position).getUA_Component();
-                                        String UA_Component_code = clusterModelAL.get(position).getUA_Component_code();
-                                        String BARC_Town_Code = clusterModelAL.get(position).getBARC_Town_Code();
-                                        String original_address=clusterModelAL.get(position).getOriginal_address();
-                                        String next_address=clusterModelAL.get(position).getAfter_10_Voter_Address();
-                                        String previous_address=clusterModelAL.get(position).getPrevious_10_Voter_Address();
-                                        String cluster_name=clusterModelAL.get(position).getOriginal_Town_Village();
-                                        String NCC_catagory=clusterModelAL.get(position).getNCCCatagory();
-                                        String sample_size=clusterModelAL.get(position).getsample_size();
-                                        String user_id=clusterModelAL.get(position).getUser_id();
-                                        String BI_Weighting_town_class=clusterModelAL.get(position).getBI_Weighting_town_class();
+                                            /*set preference data*/
+                                            String cluster_no = clusterModelAL.get(position).getCluster_no();
+                                            String State_Name = clusterModelAL.get(position).getState_Name();
+                                            String Town_Village_Class = clusterModelAL.get(position).getTown_Village_Class();
+                                            String Census_District_Code = clusterModelAL.get(position).getCensus_District_Code();
+                                            String Census_District_Name = clusterModelAL.get(position).getCensus_District_Name();
+                                            String Census_Village_Town_Code = clusterModelAL.get(position).getCensus_Village_Town_Code();
+                                            String Census_Village_Town_Name = clusterModelAL.get(position).getCensus_Village_Town_Name();
+                                            String UA_Component = clusterModelAL.get(position).getUA_Component();
+                                            String UA_Component_code = clusterModelAL.get(position).getUA_Component_code();
+                                            String BARC_Town_Code = clusterModelAL.get(position).getBARC_Town_Code();
+                                            String original_address=clusterModelAL.get(position).getOriginal_address();
+                                            String next_address=clusterModelAL.get(position).getAfter_10_Voter_Address();
+                                            String previous_address=clusterModelAL.get(position).getPrevious_10_Voter_Address();
+                                            String cluster_name=clusterModelAL.get(position).getOriginal_Town_Village();
+                                            String NCC_catagory=clusterModelAL.get(position).getNCCCatagory();
+                                            String sample_size=clusterModelAL.get(position).getsample_size();
+                                            String user_id=clusterModelAL.get(position).getUser_id();
+                                            String BI_Weighting_town_class=clusterModelAL.get(position).getBI_Weighting_town_class();
 
-                                        setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Code,
-                                                Census_District_Name, Census_Village_Town_Code,Census_Village_Town_Name,
-                                                UA_Component,UA_Component_code, BARC_Town_Code,original_address,next_address,
-                                                previous_address,cluster_name,NCC_catagory,sample_size,user_id,
-                                                BI_Weighting_town_class);
-                                        startActivity(intentSurveyList);
+                                            setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Code,
+                                                    Census_District_Name, Census_Village_Town_Code,Census_Village_Town_Name,
+                                                    UA_Component,UA_Component_code, BARC_Town_Code,original_address,next_address,
+                                                    previous_address,cluster_name,NCC_catagory,sample_size,user_id,
+                                                    BI_Weighting_town_class);
+                                            startActivity(intentSurveyList);
+
+                                        }else{
+                                            new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                                                    .setTitleText("Cluster already locker by different user")
+                                                    .setContentText("Cluster No." + "\n" + clusterModelAL.get(position).getCluster_no())
+                                                    .setConfirmText("OK")
+                                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sDialog) {
+                                                            sDialog.dismiss();
+
+                                                        }
+                                                    })
+                                                    /*.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sDialog) {
+                                                            sDialog.dismiss();
+                                                        }
+                                                    })*/
+                                                    .show();
+                                        }
                                     }
                                 }
                             });
@@ -389,6 +410,8 @@ public class ClusterListActivity extends AppCompatActivity {
             startActivity(intentMainMenu);
         }
         if (item.getItemId()==R.id.logout){
+            sharedPrefHelper.setString("user_name_password", "");
+            sharedPrefHelper.setString("user_name", "");
             Intent intentLoginActivity=new Intent(context, LoginActivity.class);
             intentLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLoginActivity);

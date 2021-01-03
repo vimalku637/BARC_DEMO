@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "barc.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TAG = "SqLiteHelper";
     String DB_PATH_SUFFIX = "/databases/";
     int version;
@@ -58,6 +58,9 @@ public class SqliteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, "onUpgrade() from " + oldVersion + " to " + newVersion);
+        if(oldVersion<2){
+            db.execSQL("ALTER TABLE cluster ADD completed_record INTEGER DEFAULT '0'");
+        }
     }
 
     public SQLiteDatabase openDataBase() throws SQLException {
@@ -226,9 +229,10 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public ArrayList<SurveyModel> getSurveyList() {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<SurveyModel> arrayList = new ArrayList<>();
+        String cluster_no= sharedPrefHelper.getString("cluster_no", "");
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_id,household_name,status from survey";
+                String query = "select survey_id,household_name,status from survey where cluster_no='"+cluster_no+"'";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -270,10 +274,15 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 sum = cursor.getInt(cursor.getColumnIndex("count(id)"));
             return sum;
         }
- public int getTotalsurveyhousehold() {
+ public int getTotalsurveyhousehold(int type) {
             int sum = 0;
+     String search="";
+     if(type!=0){
+         String cluster_no= sharedPrefHelper.getString("cluster_no", "");
+         search=" where cluster_no='"+cluster_no+"'";
+     }
             SQLiteDatabase db = this.getReadableDatabase();
-            String countQuery = "select count(household_name) from survey";
+            String countQuery = "select count(household_name) from survey"+search+"";
             Cursor cursor = db.rawQuery(countQuery, null);
             if (cursor.moveToFirst())
 
@@ -283,30 +292,45 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
 
 
- public int getChartValue(int status) {
+ public int getChartValue(int status,int type) {
         int sum = 0;
+        String search="";
+     if(type!=0){
+         String cluster_no= sharedPrefHelper.getString("cluster_no", "");
+         search=" AND cluster_no='"+cluster_no+"'";
+     }
         SQLiteDatabase db = this.getReadableDatabase();
-        String countQuery = "select count(status) from survey where status ='" + status + "'";
+        String countQuery = "select count(status) from survey where status ='" + status + "'"+search+"";
         Cursor cursor = db.rawQuery(countQuery, null);
         if (cursor.moveToFirst())
 
             sum = cursor.getInt(cursor.getColumnIndex("count(status)"));
         return sum;
     }
-    public int getTotalchart4(int status) {
+    public int getTotalchart4(int status,int type) {
         int sum = 0;
+        String search="";
+        if(type!=0){
+            String cluster_no= sharedPrefHelper.getString("cluster_no", "");
+            search=" AND cluster_no='"+cluster_no+"'";
+        }
         SQLiteDatabase db = this.getReadableDatabase();
-        String countQuery = "select count(status) from survey where status ='" + status + "'";
+        String countQuery = "select count(status) from survey where status ='" + status + "'"+search+"";
         Cursor cursor = db.rawQuery(countQuery, null);
         if (cursor.moveToFirst())
             sum = cursor.getInt(cursor.getColumnIndex("count(status)"));
         return sum;
     }
 
-    public int getTotalchartInprogress() {
+    public int getTotalchartInprogress(int type) {
+        String search="";
+        if(type!=0){
+            String cluster_no= sharedPrefHelper.getString("cluster_no", "");
+            search=" AND cluster_no='"+cluster_no+"'";
+        }
         int sum = 0;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT count(status) as total from survey where status IN (2,0)", null);
+        Cursor cursor = db.rawQuery("SELECT count(status) as total from survey where status IN (2,0) "+search, null);
         if (cursor.moveToFirst())
             sum = cursor.getInt(cursor.getColumnIndex("total"));
         return sum;
@@ -637,6 +661,48 @@ public class SqliteHelper extends SQLiteOpenHelper {
             db.close();
         }
         return sampleSize;
+    }
+    public int getClusterCompletedFromTable(String cluster_no) {
+        int sampleSize = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "Select completed_record from cluster where cluster_no= '" + cluster_no + "'";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        sampleSize = cursor.getInt(cursor.getColumnIndex("completed_record"));
+                        cursor.moveToNext();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return sampleSize;
+    }
+    public long updateClusterTable(String cluster_no) {
+        int totalSurveyForCluster=sharedPrefHelper.getInt("totalSurvey",0);
+        totalSurveyForCluster=totalSurveyForCluster+1;
+
+        long inserted_id = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                ContentValues values = new ContentValues();
+                values.put("completed_record", totalSurveyForCluster);
+                inserted_id = db.update("cluster", values, "cluster_no = '" + cluster_no + "'", null);
+                sharedPrefHelper.setInt("totalSurvey",totalSurveyForCluster);
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return inserted_id;
     }
     public int getTotalSurveyForCluster(String cluster_no) {
         int sum = 0;

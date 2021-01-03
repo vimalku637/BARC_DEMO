@@ -224,81 +224,88 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                     // Snackbar.make(view, "Please enter user name & password", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 } else {
+                    if(sharedPrefHelper.getString("user_name", "").equals(et_user_name.getText().toString()) && sharedPrefHelper.getString("user_name_password", "").equals(et_password.getText().toString())){
+                        Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
+                        startActivity(intentMainActivity);
+                        finish();
+                    }
+                    else{
+                        if (!isInternetOn()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                            builder.setMessage("Network Error, check your network connection.")
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setCancelable(false)
+                                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            AlertDialog alert = builder.create();
+                            alert.setTitle(getString(R.string.Alert));
+                            alert.show();
 
-                    if (!isInternetOn()) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                        builder.setMessage("Network Error, check your network connection.")
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setCancelable(false)
-                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
+                        }
+                        else if (isInternetOn()) {
+
+                            loginModel.setUser_name(et_user_name.getText().toString());
+                            loginModel.setUser_password(et_password.getText().toString());
+                            //    loginModel.setFirebase_token(sharedPrefHelper.getString("Token",""));
+                            Gson gson = new Gson();
+                            String data = gson.toJson(loginModel);
+                            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                            RequestBody body = RequestBody.create(JSON, data);
+
+
+                            mprogressDialog = ProgressDialog.show(context, "", getString(R.string.Please_wait), true);
+                            ApiClient.getClient().create(BARC_API.class).callLogin(body).enqueue(new Callback<JsonObject>() {
+                                @Override
+                                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response.body().toString().trim());
+                                        Log.e(TAG, "onResponse: " + jsonObject.toString());
+                                        String success = jsonObject.optString("success");
+                                        String message = jsonObject.optString("message");
+                                        if (Integer.valueOf(success) == 1) {
+                                            String user_id = jsonObject.optString("user_id");
+                                            String interviewer_id = jsonObject.optString("interviewer_id");
+                                            String interviewer_name = jsonObject.optString("interviewer_name");
+                                            String user_name = jsonObject.optString("user_name");
+                                            String user_type_id = jsonObject.optString("user_type_id");
+                                            String mdl_id = jsonObject.optString("mdl_id");
+                                            String supervisor_id = jsonObject.optString("supervisor_id");
+                                            String supervisor_name = jsonObject.optString("supervisor_name");
+                                            String agency_name = jsonObject.optString("agency_name");
+
+                                            download_city("sub_districts",user_id);
+                                            download_city("nccs_matrix",user_id);
+                                            mprogressDialog.dismiss();
+                                            ///set preference data/
+                                            setAllDataInPreferences(user_id, interviewer_id, interviewer_name, user_name,
+                                                    user_type_id, mdl_id, supervisor_id, supervisor_name, agency_name);
+
+                                            Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
+                                            startActivity(intentMainActivity);
+                                            finish();
+
+                                        } else {
+                                            Snackbar.make(findViewById(android.R.id.content), "Please Enter Valid User & Password ", Snackbar.LENGTH_LONG).show();
+
+                                            mprogressDialog.dismiss();
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                });
-                        AlertDialog alert = builder.create();
-                        alert.setTitle(getString(R.string.Alert));
-                        alert.show();
+                                }
 
-                    } else if (isInternetOn()) {
-
-                        loginModel.setUser_name(et_user_name.getText().toString());
-                        loginModel.setUser_password(et_password.getText().toString());
-                    //    loginModel.setFirebase_token(sharedPrefHelper.getString("Token",""));
-                        Gson gson = new Gson();
-                        String data = gson.toJson(loginModel);
-                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                        RequestBody body = RequestBody.create(JSON, data);
-
-
-                        mprogressDialog = ProgressDialog.show(context, "", getString(R.string.Please_wait), true);
-                        ApiClient.getClient().create(BARC_API.class).callLogin(body).enqueue(new Callback<JsonObject>() {
-                            @Override
-                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response.body().toString().trim());
-                                    Log.e(TAG, "onResponse: " + jsonObject.toString());
-                                    String success = jsonObject.optString("success");
-                                    String message = jsonObject.optString("message");
-                                    if (Integer.valueOf(success) == 1) {
-                                        String user_id = jsonObject.optString("user_id");
-                                        String interviewer_id = jsonObject.optString("interviewer_id");
-                                        String interviewer_name = jsonObject.optString("interviewer_name");
-                                        String user_name = jsonObject.optString("user_name");
-                                        String user_type_id = jsonObject.optString("user_type_id");
-                                        String mdl_id = jsonObject.optString("mdl_id");
-                                        String supervisor_id = jsonObject.optString("supervisor_id");
-                                        String supervisor_name = jsonObject.optString("supervisor_name");
-                                        String agency_name = jsonObject.optString("agency_name");
-
-                                        download_city("sub_districts",user_id);
-                                        download_city("nccs_matrix",user_id);
-                                        mprogressDialog.dismiss();
-                                        ///set preference data/
-                                        setAllDataInPreferences(user_id, interviewer_id, interviewer_name, user_name,
-                                                user_type_id, mdl_id, supervisor_id, supervisor_name, agency_name);
-
-                                        Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
-                                        startActivity(intentMainActivity);
-                                        finish();
-
-                                    } else {
-                                        Snackbar.make(findViewById(android.R.id.content), "Please Enter Valid User & Password ", Snackbar.LENGTH_LONG).show();
-
+                                @Override
+                                public void onFailure(Call<JsonObject> call, Throwable t) {
+                                    if (mprogressDialog.isShowing()) {
                                         mprogressDialog.dismiss();
                                     }
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
-                            }
-
-                            @Override
-                            public void onFailure(Call<JsonObject> call, Throwable t) {
-                                if (mprogressDialog.isShowing()) {
-                                    mprogressDialog.dismiss();
-                                }
-                            }
-                        });
+                            });
+                        }
                     }
 
                 }
@@ -331,6 +338,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         sharedPrefHelper.setString("supervisor_id", supervisor_id);
         sharedPrefHelper.setString("supervisor_name", supervisor_name);
         sharedPrefHelper.setString("agency_name", agency_name);
+        sharedPrefHelper.setString("user_name_password", et_password.getText().toString());
     }
 
     public void download_city(String table,String user_id){

@@ -955,6 +955,14 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
                         description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        if(jsonObjectQuesType.getString("question_id").equals("58")){
+                            int member_count=startScreenCount+1;
+                            description=description.replaceAll("each "," "+member_count+" ");
+                        }
+                        if(jsonObjectQuesType.getString("question_id").equals("59")){
+                            int member_count=startScreenCount+1;
+                            description=description+"-"+member_count;
+                        }
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);

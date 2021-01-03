@@ -148,6 +148,9 @@ public class ClusterDetails extends AppCompatActivity {
                 sharedPrefHelper.setInt("startPosition",0);
                 sharedPrefHelper.setInt("endPosition",1);
                 sharedPrefHelper.setString("replacementTown", "2");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Calendar cal = Calendar.getInstance();
+                sharedPrefHelper.setString("current_date", dateFormat.format(cal.getTime()));
                 startActivity(intentSurveyActivity);
             }
         });

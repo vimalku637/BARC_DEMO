@@ -29,6 +29,7 @@ import com.vrp.barc_demo.activities.ClusterListActivity;
 import com.vrp.barc_demo.activities.MainMenu;
 import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
+import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,6 +69,7 @@ public class Dashboard extends AppCompatActivity {
     int countTerminate;
     int TotalclusterLock;
     ArrayList<String> clu_id = new ArrayList<String>();
+    SharedPrefHelper sharedPrefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class Dashboard extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         ButterKnife.bind(this);
         sqliteHelper = new SqliteHelper(this);
+        sharedPrefHelper = new SharedPrefHelper(this);
         setTitle(R.string.dashboard);
         initialization();
 
@@ -112,10 +115,10 @@ public class Dashboard extends AppCompatActivity {
 
     private void setPieChart() {
 
-        countComplete = sqliteHelper.getChartValue(1);
-        countReject = sqliteHelper.getChartValue(5);
-        countProgress = sqliteHelper.getTotalchartInprogress();
-        countTerminate = sqliteHelper.getTotalchart4(3);
+        countComplete = sqliteHelper.getChartValue(1,0);
+        countReject = sqliteHelper.getChartValue(4,0);
+        countProgress = sqliteHelper.getTotalchartInprogress(0);
+        countTerminate = sqliteHelper.getTotalchart4(3,0);
 
         ArrayList Entryes = new ArrayList();
         Entryes.add(new PieEntry(countComplete, ""));
@@ -238,6 +241,8 @@ public class Dashboard extends AppCompatActivity {
             startActivity(intentMainMenu);
         }
         if (item.getItemId() == R.id.logout) {
+            sharedPrefHelper.setString("user_name_password", "");
+            sharedPrefHelper.setString("user_name", "");
             Intent i = new Intent(Dashboard.this, LoginActivity.class);
 // set the new task and clear flags
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

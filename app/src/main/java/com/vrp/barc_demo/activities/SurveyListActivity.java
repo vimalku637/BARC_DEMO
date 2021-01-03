@@ -118,20 +118,23 @@ public class SurveyListActivity extends AppCompatActivity {
         setSurveyAdapter();
         setButtonClick();
 
-        countProgress = sqliteHelper.getTotalchartInprogress();
+        countProgress = sqliteHelper.getTotalchartInprogress(1);
         tv_SurveysHaltCount.setText(""+countProgress);
-        countReject = sqliteHelper.getChartValue(5);
+        countReject = sqliteHelper.getChartValue(4,1);
         tv_SurveysRejectedCount.setText(""+countReject);
-        countComplete = sqliteHelper.getChartValue(1);
+        countComplete = sqliteHelper.getChartValue(1,1);
         tv_SurveysCompletedcount.setText(""+countComplete);
-        countHouseHold = sqliteHelper.getTotalsurveyhousehold();
+        countHouseHold = sqliteHelper.getTotalsurveyhousehold(1);
         tv_HouseHoldcount.setText(""+countHouseHold);
-        countTerminate = sqliteHelper.getTotalchart4(3);
+        countTerminate = sqliteHelper.getTotalchart4(3,1);
         tv_teminated.setText(""+countTerminate);
 
         /*get survey sample from table*/
         sampleSize=sqliteHelper.getClusterSampleSizeFromTable(sharedPrefHelper.getString("cluster_no", ""));
-        totalSurveyForCluster=sqliteHelper.getTotalSurveyForCluster(sharedPrefHelper.getString("cluster_no", ""));
+        //totalSurveyForCluster=sqliteHelper.getTotalSurveyForCluster(sharedPrefHelper.getString("cluster_no", ""));
+        totalSurveyForCluster=sqliteHelper.getClusterCompletedFromTable(sharedPrefHelper.getString("cluster_no", ""));
+        sharedPrefHelper.setInt("sampleSize",sampleSize);
+        sharedPrefHelper.setInt("totalSurvey",totalSurveyForCluster);
     }
 
     private void setButtonClick() {
@@ -274,6 +277,8 @@ public class SurveyListActivity extends AppCompatActivity {
             startActivity(intentMainMenu);
         }
         if (item.getItemId()==R.id.logout){
+            sharedPrefHelper.setString("user_name_password", "");
+            sharedPrefHelper.setString("user_name", "");
             Intent intentLoginActivity=new Intent(context, LoginActivity.class);
             intentLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLoginActivity);

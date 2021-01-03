@@ -26,6 +26,7 @@
     <string name="start">Start</string>
     <string name="view_starting_points">View Starting Points</string>
     <string name="dashboard">Dashboard</string>
+    <string name="nextSurvey">Next Survey</string>
     <string name="starting_points_details">Starting Points Details</string>
     <string name="synchronise">Synchronise</string>
     <string name="bi_survey_app">BI Survey App</string>
