@@ -253,6 +253,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 loginModel.setUser_name(et_user_name.getText().toString());
                 loginModel.setUser_password(et_password.getText().toString());
+                loginModel.setFirebase_token(sharedPrefHelper.getString("Token",""));
                 user_name = et_user_name.getText().toString().trim();
                 password = et_password.getText().toString().trim();
                 if (user_name.equalsIgnoreCase("") || (password.equalsIgnoreCase(""))) {
