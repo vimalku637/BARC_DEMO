@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -32,6 +33,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -49,6 +55,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.vrp.barc_demo.activities.UpdateAppActivity;
 import com.vrp.barc_demo.forgot_password.ForgotPassword;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.activities.UpdateQuestions;
@@ -58,9 +65,11 @@ import com.vrp.barc_demo.models.LoginModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
 import com.vrp.barc_demo.service.Config;
+import com.vrp.barc_demo.splash.SplashActivity;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
@@ -107,7 +116,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private boolean isGPS;
     private static final int REQUEST = 112;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-
+    String version = "";
+    boolean is_downloaded;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,10 +173,40 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         };
         displayFirebaseRegId();
+        downlaodVersionCode();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+      /*  PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version1 = pInfo.versionName;
+            if (!version.equalsIgnoreCase(version1)) {
+                Intent intent = new Intent(LoginActivity.this, UpdateAppActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }*/
+
     }
 
     private void setValues() {
-        tv_app_version.setText(getString(R.string.app_version)+AppConstants.APP_VERSION);
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version1 = pInfo.versionName;
+            tv_app_version.setText(getString(R.string.app_version)+version1);
+
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void displayFirebaseRegId() {
@@ -539,6 +579,42 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
         return true;
     }
+    public String downlaodVersionCode() {
+
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        //StringRequest stringRequest = new StringRequest(Request.Method.GET, "http://bamboo4sd.org/api3/check_version.php",
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, "http://bamboo4sd.org/replica/api3/check_version.php",
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            //getting the whole json object from the response
+                            JSONObject obj = new JSONObject(response);
+                            version = obj.getString("version");
+                            Log.e("version",version);
+                            sharedPrefHelper.setString("version", version);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                }
+                ,
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+
+
+    });
+        requestQueue.add(stringRequest);
+        return version;
+    }
+
 
 //    @Override
 //    public void onBackPressed() {

@@ -283,7 +283,7 @@ public class SurveyListActivity extends AppCompatActivity {
             intentLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLoginActivity);
         }
-        return super.onOptionsItemSelected(item);
+    return super.onOptionsItemSelected(item);
     }
 
     @Override

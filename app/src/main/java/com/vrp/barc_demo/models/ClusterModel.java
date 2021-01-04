@@ -41,6 +41,7 @@ public class ClusterModel {
     public static final String COLUMN_STATUS="status";
     public static final String COLUMN_SAMPLE_SIZE="sample_size";
     public static final String COLUMN_NCC_CATAGORY="nccs_category";
+    public static final String COLUMN_completed_record="completed_record";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
@@ -72,6 +73,7 @@ public class ClusterModel {
                     + COLUMN_NCCC_CATAGORY+ " TEXT ,"
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
                     + COLUMN_NCC_CATAGORY + " TEXT ,"
+                    + COLUMN_completed_record + " TEXT ,"
                     + COLUMN_SAMPLE_SIZE + " INTEGER DEFAULT 0 ,"
                     + COLUMN_STATUS + " INTEGER DEFAULT 0 "
                     + ")";
