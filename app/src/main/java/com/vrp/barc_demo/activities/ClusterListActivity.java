@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -92,25 +93,39 @@ public class ClusterListActivity extends AppCompatActivity {
 
         }
 
-        callClusterApi();
-        setClusterAdapter();
-        setButtonClick();
-    }
 
-    private void callClusterApi() {
-        /*ClusterModel clusterModel=new ClusterModel();
-        clusterModel.setPincode("422004");
-
-        */
 
         clusterModel.setClu_code(CluCode);
         clusterModel.setCity_code(cityCLU);
         clusterModel.setCity_id(cityCLU);
         clusterModel.setUser_id(sharedPrefHelper.getString("user_id","" ));
-        Gson gson = new Gson();
-        String data = gson.toJson(clusterModel);
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, data);
+
+
+        if (isInternetOn()) {
+            Gson gson = new Gson();
+            String data = gson.toJson(clusterModel);
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            RequestBody body = RequestBody.create(JSON, data);
+            callClusterApi(body);
+
+        }else {
+            clusterModelAL = sqliteHelper.getClusterList();
+
+            if (clusterModelAL.size()>0) {
+                tv_oops_no_data.setVisibility(View.GONE);
+                LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
+                mClusterAdapter = new ClusterAdapter(context, clusterModelAL);
+                rv_cluster_list.setLayoutManager(mLayoutManager);
+                rv_cluster_list.setAdapter(mClusterAdapter);
+            }
+        }
+        setClusterAdapter();
+        setButtonClick();
+
+
+    }
+
+    private void callClusterApi(RequestBody body) {
         AlertDialogClass.showProgressDialog(context);
         ApiClient.getClient().create(BARC_API.class).getClusterList(body).enqueue(new Callback<JsonArray>() {
             @Override
@@ -424,5 +439,25 @@ public class ClusterListActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
+    }
+
+
+
+    private boolean isInternetOn() {
+
+        ConnectivityManager connec = (ConnectivityManager) getSystemService(getBaseContext().CONNECTIVITY_SERVICE);
+
+        assert connec != null;
+        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED
+                || connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING
+                || connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING
+                || connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
+            return true;
+
+        } else if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED
+                || connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
+            return false;
+        }
+        return false;
     }
 }

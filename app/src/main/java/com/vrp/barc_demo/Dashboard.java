@@ -124,7 +124,7 @@ public class Dashboard extends AppCompatActivity {
         countTerminate = sqliteHelper.getTotalchart4(3,0);
 
         ArrayList Entryes = new ArrayList();
-        Entryes.add(new PieEntry(countComplete, ""));
+        Entryes.add(new PieEntry(countComplete,  ""));
         Entryes.add(new PieEntry(countReject, ""));
         Entryes.add(new PieEntry(countProgress, ""));
         Entryes.add(new PieEntry(countTerminate, ""));
@@ -137,11 +137,13 @@ public class Dashboard extends AppCompatActivity {
         });
 
 
+
         PieData data = new PieData(set);
         data.setValueTextSize(10);
         pieChart.setData(data);
         set.setColors(new int[]{R.color.color_green_google, R.color.color_red_google, R.color.color_yellow_google ,R.color.color_white}, Dashboard.this);
         pieChart.getDescription().setEnabled(false);
+
         pieChart.animateXY(800, 800);
 
 

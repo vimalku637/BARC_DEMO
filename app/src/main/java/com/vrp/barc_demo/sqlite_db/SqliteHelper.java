@@ -255,6 +255,35 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return arrayList;
     }
 
+    public ArrayList<ClusterModel> getClusterList() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<ClusterModel> arrayList = new ArrayList<>();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "select cluster_no,Original_Town_Village ,lock_status from cluster ";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        ClusterModel clusterModel = new ClusterModel();
+                        clusterModel.setCluster_no(cursor.getString(cursor.getColumnIndex("cluster_no")));
+
+                        clusterModel.setOriginal_Town_Village(cursor.getString(cursor.getColumnIndex("Original_Town_Village")));
+                        clusterModel.setLock_status(cursor.getString(cursor.getColumnIndex("lock_status")));
+
+                        cursor.moveToNext();
+                        arrayList.add(clusterModel);
+                    }
+                    db.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return arrayList;
+    }
+
     public int getTotallockrd() {
         int sum = 0;
         SQLiteDatabase db = this.getReadableDatabase();
