@@ -21,10 +21,13 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.vrp.barc_demo.activities.ClusterListActivity;
 import com.vrp.barc_demo.activities.MainMenu;
 import com.vrp.barc_demo.login.LoginActivity;
@@ -126,6 +129,13 @@ public class Dashboard extends AppCompatActivity {
         Entryes.add(new PieEntry(countProgress, ""));
         Entryes.add(new PieEntry(countTerminate, ""));
         PieDataSet set = new PieDataSet(Entryes, "");
+        set.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return String.valueOf((int) value);
+            }
+        });
+
 
         PieData data = new PieData(set);
         data.setValueTextSize(10);
