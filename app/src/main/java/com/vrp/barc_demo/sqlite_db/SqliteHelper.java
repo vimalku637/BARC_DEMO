@@ -267,6 +267,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                     while (!cursor.isAfterLast()) {
                         ClusterModel clusterModel = new ClusterModel();
                         clusterModel.setCluster_no(cursor.getString(cursor.getColumnIndex("cluster_no")));
+
                         clusterModel.setOriginal_Town_Village(cursor.getString(cursor.getColumnIndex("Original_Town_Village")));
                         clusterModel.setLock_status(cursor.getString(cursor.getColumnIndex("lock_status")));
 
