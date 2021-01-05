@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -23,6 +24,9 @@ import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SplashActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     /*normal widgets*/
@@ -31,7 +35,7 @@ public class SplashActivity extends AppCompatActivity {
     private boolean isProgressBar=false;
     private SqliteHelper sqliteHelper;
     private SharedPrefHelper sharedPrefHelper;
-
+    private static final Pattern p = Pattern.compile("[^\\d]*[\\d]+[^\\d]+([\\d]+)");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,12 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (isProgressBar) {
+
+                    String s= "Survey 1609852528Rejected";
+                    Matcher m = p.matcher(s);
+                    if (m.find()) {
+                        Log.e("ss",m.group(1)); // second matched digits
+                    }
                     Intent intentMainActivity=new Intent(context, LoginActivity.class);
                     startActivity(intentMainActivity);
                     finish();

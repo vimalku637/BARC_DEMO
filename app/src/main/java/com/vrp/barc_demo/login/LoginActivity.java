@@ -73,6 +73,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -118,6 +120,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     String version = "";
     boolean is_downloaded;
+    private static final Pattern p = Pattern.compile("[^\\d]*[\\d]+[^\\d]+([\\d]+)");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,6 +153,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         getGPS();
         submitButtonClick();
+
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -174,8 +179,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         };
         displayFirebaseRegId();
         downlaodVersionCode();
-    }
 
+    }
 
     @Override
     protected void onResume() {

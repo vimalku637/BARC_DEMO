@@ -54,6 +54,16 @@ import org.json.JSONObject;
             }
         }
     }
+    public String extractDigits(String src) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < src.length(); i++) {
+            char c = src.charAt(i);
+            if (Character.isDigit(c)) {
+                builder.append(c);
+            }
+        }
+        return builder.toString();
+    }
 
     private void handleNotification(String message) {
         if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
@@ -88,7 +98,10 @@ import org.json.JSONObject;
             Log.e(TAG, "payload: " + payload.toString());
             Log.e(TAG, "imageUrl: " + imageUrl);
             Log.e(TAG, "timestamp: " + timestamp);
-
+            if(title.contains("Rejected") || message.contains("rejected")){
+                String ss= extractDigits(title);
+                sqliteHelper.updateStatus("survey",ss,4);
+            }
 
             if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
                 // app is in foreground, broadcast the push message

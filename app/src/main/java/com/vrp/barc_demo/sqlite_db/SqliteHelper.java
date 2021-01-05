@@ -551,6 +551,26 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return inserted_id;
     }
+    public long updateStatus(String table, String survey_id, int surveyID) {
+        long inserted_id = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                ContentValues values = new ContentValues();
+                values.put("status", surveyID);
+
+                inserted_id = db.update(table, values, "survey_id" + " = '" + survey_id + "'", null);
+
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return inserted_id;
+    }
+
     public long updateAudioFileInTable(String table, int survey_id, String audio_file) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
