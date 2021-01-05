@@ -13,8 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.adapters.ClusterAdapter;
+import com.vrp.barc_demo.forgot_password.ForgotPassword;
 import com.vrp.barc_demo.interfaces.ClickListener;
 import com.vrp.barc_demo.login.LoginActivity;
 import com.vrp.barc_demo.models.ClusterModel;
@@ -90,39 +93,139 @@ public class ClusterListActivity extends AppCompatActivity {
         if (bundle!=null) {
             cityCLU = bundle.getInt("City",0 );
             CluCode = bundle.getString("clucode","" );
-
         }
 
+        setClusterAdapter();
+    }
 
-
+    private void setClusterAdapter() {
         clusterModel.setClu_code(CluCode);
         clusterModel.setCity_code(cityCLU);
         clusterModel.setCity_id(cityCLU);
         clusterModel.setUser_id(sharedPrefHelper.getString("user_id","" ));
 
-
-        if (isInternetOn()) {
+        if (CommonClass.isInternetOn(context)) {
             Gson gson = new Gson();
             String data = gson.toJson(clusterModel);
             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
             RequestBody body = RequestBody.create(JSON, data);
             callClusterApi(body);
-
-        }else {
+        }
+        else {
             clusterModelAL = sqliteHelper.getClusterList();
-
             if (clusterModelAL.size()>0) {
                 tv_oops_no_data.setVisibility(View.GONE);
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
                 mClusterAdapter = new ClusterAdapter(context, clusterModelAL);
                 rv_cluster_list.setLayoutManager(mLayoutManager);
                 rv_cluster_list.setAdapter(mClusterAdapter);
+
+                mClusterAdapter.onItemClick(new ClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        if (clusterModelAL.get(position).getLock_status().equals("0")) {
+                            new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Are you sure?")
+                                    .setContentText("Want to assign" + "\n" + clusterModelAL.get(position).getCluster_no())
+                                    .setConfirmText("Submit")
+                                    .setCancelText("Cancel")
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            sDialog.dismiss();
+
+                                            //call api to lock cluster
+                                            if (CommonClass.isInternetOn(context)) {
+                                                ClusterModel clusterModel = new ClusterModel();
+                                                clusterModel.setCluster_no(clusterModelAL.get(position).getCluster_no());
+                                                clusterModel.setUser_id(sharedPrefHelper.getString("user_id", ""));
+                                                Gson gson = new Gson();
+                                                String data = gson.toJson(clusterModel);
+                                                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                                RequestBody body = RequestBody.create(JSON, data);
+
+                                                callLockLusterApi(body, position);
+
+                                            } else {
+                                                CommonClass.showPopupForNoInternet(context);
+                                            }
+
+                                        }
+                                    })
+                                    .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            sDialog.dismiss();
+                                        }
+                                    })
+                                    .show();
+                        }
+                        else {
+                            if (clusterModelAL.get(position).getUser_id().equals(sharedPrefHelper.getString("user_id", ""))) {
+                                Intent intentSurveyList = new Intent(context, SurveyListActivity.class);
+                                            /*intentSurveyList.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
+                                            intentSurveyList.putExtra("next_address", clusterModelAL.get(position).getNext_address());
+                                            intentSurveyList.putExtra("previous_address", clusterModelAL.get(position).getPrevious_address());
+                                            intentSurveyList.putExtra("cluster_id", clusterModelAL.get(position).getCluster_no());
+                                            intentSurveyList.putExtra("cluster_name", clusterModelAL.get(position).getOriginal_Town_Village());*/
+                                intentSurveyList.putExtra("screen_type", "survey");
+
+                                /*set preference data*/
+                                String cluster_no = clusterModelAL.get(position).getCluster_no();
+                                String State_Name = clusterModelAL.get(position).getState_Name();
+                                String Town_Village_Class = clusterModelAL.get(position).getTown_Village_Class();
+                                String Census_District_Code = clusterModelAL.get(position).getCensus_District_Code();
+                                String Census_District_Name = clusterModelAL.get(position).getCensus_District_Name();
+                                String Census_Village_Town_Code = clusterModelAL.get(position).getCensus_Village_Town_Code();
+                                String Census_Village_Town_Name = clusterModelAL.get(position).getCensus_Village_Town_Name();
+                                String UA_Component = clusterModelAL.get(position).getUA_Component();
+                                String UA_Component_code = clusterModelAL.get(position).getUA_Component_code();
+                                String BARC_Town_Code = clusterModelAL.get(position).getBARC_Town_Code();
+                                String original_address = clusterModelAL.get(position).getOriginal_address();
+                                String next_address = clusterModelAL.get(position).getAfter_10_Voter_Address();
+                                String previous_address = clusterModelAL.get(position).getPrevious_10_Voter_Address();
+                                String cluster_name = clusterModelAL.get(position).getOriginal_Town_Village();
+                                String NCC_catagory = clusterModelAL.get(position).getNCCCatagory();
+                                String sample_size = clusterModelAL.get(position).getsample_size();
+                                String user_id = clusterModelAL.get(position).getUser_id();
+                                String BI_Weighting_town_class = clusterModelAL.get(position).getBI_Weighting_town_class();
+
+                                setAllDataInPreferences(cluster_no, State_Name, Town_Village_Class, Census_District_Code,
+                                        Census_District_Name, Census_Village_Town_Code, Census_Village_Town_Name,
+                                        UA_Component, UA_Component_code, BARC_Town_Code, original_address, next_address,
+                                        previous_address, cluster_name, NCC_catagory, sample_size, user_id,
+                                        BI_Weighting_town_class);
+                                startActivity(intentSurveyList);
+
+                            } else {
+                                new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                                        .setTitleText("Cluster already locker by different user")
+                                        .setContentText("Cluster No." + "\n" + clusterModelAL.get(position).getCluster_no())
+                                        .setConfirmText("OK")
+                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(SweetAlertDialog sDialog) {
+                                                sDialog.dismiss();
+
+                                            }
+                                        })
+                                        /*.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(SweetAlertDialog sDialog) {
+                                                sDialog.dismiss();
+                                            }
+                                        })*/
+                                        .show();
+                            }
+                        }
+
+                    }
+                });
+            }
+            else {
+                tv_oops_no_data.setVisibility(View.VISIBLE);
             }
         }
-        setClusterAdapter();
-        setButtonClick();
-
-
     }
 
     private void callClusterApi(RequestBody body) {
@@ -146,7 +249,7 @@ public class ClusterListActivity extends AppCompatActivity {
                             while (keys.hasNext()) {
                                 String currentDynamicKey = (String) keys.next();
                                 if(!currentDynamicKey.equalsIgnoreCase("NCC_catagory"))
-                                contentValues.put(currentDynamicKey, jsonObject.get(currentDynamicKey).toString());
+                                    contentValues.put(currentDynamicKey, jsonObject.get(currentDynamicKey).toString());
                             }
                             sqliteHelper.saveMasterTable(contentValues, "cluster");
 
@@ -178,6 +281,7 @@ public class ClusterListActivity extends AppCompatActivity {
                             clusterModel.setBI_Weighting_town_class(jsonObject.getString("BI_Weighting_town_class"));
                             clusterModelAL.add(clusterModel);
                         }
+
                         if (clusterModelAL.size()>0) {
                             tv_oops_no_data.setVisibility(View.GONE);
                             LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
@@ -198,22 +302,24 @@ public class ClusterListActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onClick(SweetAlertDialog sDialog) {
                                                         sDialog.dismiss();
+
                                                         //call api to lock cluster
                                                         if (CommonClass.isInternetOn(context)) {
-                                                            ClusterModel clusterModel=new ClusterModel();
+                                                            ClusterModel clusterModel = new ClusterModel();
                                                             clusterModel.setCluster_no(clusterModelAL.get(position).getCluster_no());
                                                             clusterModel.setUser_id(sharedPrefHelper.getString("user_id", ""));
-
                                                             Gson gson = new Gson();
                                                             String data = gson.toJson(clusterModel);
                                                             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
                                                             RequestBody body = RequestBody.create(JSON, data);
 
                                                             callLockLusterApi(body, position);
-                                                        }
-                                                        else {
+
+
+                                                        } else {
                                                             CommonClass.showPopupForNoInternet(context);
                                                         }
+
                                                     }
                                                 })
                                                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -223,9 +329,8 @@ public class ClusterListActivity extends AppCompatActivity {
                                                     }
                                                 })
                                                 .show();
-                                    }
-                                    else {
-                                        if(clusterModelAL.get(position).getUser_id().equals(sharedPrefHelper.getString("user_id", ""))){
+                                    } else {
+                                        if (clusterModelAL.get(position).getUser_id().equals(sharedPrefHelper.getString("user_id", ""))) {
                                             Intent intentSurveyList = new Intent(context, SurveyListActivity.class);
                                             /*intentSurveyList.putExtra("original_address", clusterModelAL.get(position).getOriginal_address());
                                             intentSurveyList.putExtra("next_address", clusterModelAL.get(position).getNext_address());
@@ -245,23 +350,23 @@ public class ClusterListActivity extends AppCompatActivity {
                                             String UA_Component = clusterModelAL.get(position).getUA_Component();
                                             String UA_Component_code = clusterModelAL.get(position).getUA_Component_code();
                                             String BARC_Town_Code = clusterModelAL.get(position).getBARC_Town_Code();
-                                            String original_address=clusterModelAL.get(position).getOriginal_address();
-                                            String next_address=clusterModelAL.get(position).getAfter_10_Voter_Address();
-                                            String previous_address=clusterModelAL.get(position).getPrevious_10_Voter_Address();
-                                            String cluster_name=clusterModelAL.get(position).getOriginal_Town_Village();
-                                            String NCC_catagory=clusterModelAL.get(position).getNCCCatagory();
-                                            String sample_size=clusterModelAL.get(position).getsample_size();
-                                            String user_id=clusterModelAL.get(position).getUser_id();
-                                            String BI_Weighting_town_class=clusterModelAL.get(position).getBI_Weighting_town_class();
+                                            String original_address = clusterModelAL.get(position).getOriginal_address();
+                                            String next_address = clusterModelAL.get(position).getAfter_10_Voter_Address();
+                                            String previous_address = clusterModelAL.get(position).getPrevious_10_Voter_Address();
+                                            String cluster_name = clusterModelAL.get(position).getOriginal_Town_Village();
+                                            String NCC_catagory = clusterModelAL.get(position).getNCCCatagory();
+                                            String sample_size = clusterModelAL.get(position).getsample_size();
+                                            String user_id = clusterModelAL.get(position).getUser_id();
+                                            String BI_Weighting_town_class = clusterModelAL.get(position).getBI_Weighting_town_class();
 
-                                            setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Code,
-                                                    Census_District_Name, Census_Village_Town_Code,Census_Village_Town_Name,
-                                                    UA_Component,UA_Component_code, BARC_Town_Code,original_address,next_address,
-                                                    previous_address,cluster_name,NCC_catagory,sample_size,user_id,
+                                            setAllDataInPreferences(cluster_no, State_Name, Town_Village_Class, Census_District_Code,
+                                                    Census_District_Name, Census_Village_Town_Code, Census_Village_Town_Name,
+                                                    UA_Component, UA_Component_code, BARC_Town_Code, original_address, next_address,
+                                                    previous_address, cluster_name, NCC_catagory, sample_size, user_id,
                                                     BI_Weighting_town_class);
                                             startActivity(intentSurveyList);
 
-                                        }else{
+                                        } else {
                                             new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                                                     .setTitleText("Cluster already locker by different user")
                                                     .setContentText("Cluster No." + "\n" + clusterModelAL.get(position).getCluster_no())
@@ -282,14 +387,14 @@ public class ClusterListActivity extends AppCompatActivity {
                                                     .show();
                                         }
                                     }
+
                                 }
                             });
-
-                        } else {
+                        }
+                        else {
                             tv_oops_no_data.setVisibility(View.VISIBLE);
                         }
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -403,13 +508,6 @@ public class ClusterListActivity extends AppCompatActivity {
         sharedPrefHelper.setString("BI_Weighting_town_class", BI_Weighting_town_class);
     }
 
-    private void setClusterAdapter() {
-
-    }
-
-    private void setButtonClick() {
-    }
-
     private void initialization() {
         sqliteHelper=new SqliteHelper(this);
         sharedPrefHelper=new SharedPrefHelper(this);
@@ -439,25 +537,5 @@ public class ClusterListActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
-    }
-
-
-
-    private boolean isInternetOn() {
-
-        ConnectivityManager connec = (ConnectivityManager) getSystemService(getBaseContext().CONNECTIVITY_SERVICE);
-
-        assert connec != null;
-        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED
-                || connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING
-                || connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING
-                || connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
-            return true;
-
-        } else if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED
-                || connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
-            return false;
-        }
-        return false;
     }
 }

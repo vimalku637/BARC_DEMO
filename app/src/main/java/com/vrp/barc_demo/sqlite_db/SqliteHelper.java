@@ -260,16 +260,37 @@ public class SqliteHelper extends SQLiteOpenHelper {
         ArrayList<ClusterModel> arrayList = new ArrayList<>();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select cluster_no,Original_Town_Village ,lock_status from cluster ";
+                String query = "select * from cluster";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
                         ClusterModel clusterModel = new ClusterModel();
                         clusterModel.setCluster_no(cursor.getString(cursor.getColumnIndex("cluster_no")));
-
+                        clusterModel.setCensus_State_Code(cursor.getString(cursor.getColumnIndex("Census_State_Code")));
+                        clusterModel.setState_Name(cursor.getString(cursor.getColumnIndex("State_Name")));
+                        clusterModel.setTown_Village_Class(cursor.getString(cursor.getColumnIndex("Town_Village_Class")));
+                        clusterModel.setCensus_District_Code(cursor.getString(cursor.getColumnIndex("Census_District_Code")));
+                        clusterModel.setCensus_District_Name(cursor.getString(cursor.getColumnIndex("Census_District_Name")));
+                        clusterModel.setCensus_Village_Town_Code(cursor.getString(cursor.getColumnIndex("Census_Village_Town_Code")));
+                        clusterModel.setCensus_Village_Town_Name(cursor.getString(cursor.getColumnIndex("Census_Village_Town_Name")));
+                        clusterModel.setUA_Component(cursor.getString(cursor.getColumnIndex("UA_Component")));
+                        clusterModel.setUA_Component_code(cursor.getString(cursor.getColumnIndex("UA_Component_code")));
+                        clusterModel.setBARC_Town_Code(cursor.getString(cursor.getColumnIndex("BARC_Town_Code")));
                         clusterModel.setOriginal_Town_Village(cursor.getString(cursor.getColumnIndex("Original_Town_Village")));
+                        clusterModel.setOriginal_Town_Village_Code(cursor.getString(cursor.getColumnIndex("Original_Town_Village_Code")));
+                        clusterModel.setSampling_town_class(cursor.getString(cursor.getColumnIndex("Sampling_town_class")));
+                        clusterModel.setSP_No(cursor.getString(cursor.getColumnIndex("SP_No")));
+                        clusterModel.setAfter_10_Voter_Address(cursor.getString(cursor.getColumnIndex("After_10_Voter_Address")));
+                        clusterModel.setOriginal_address(cursor.getString(cursor.getColumnIndex("Original_address")));
+                        clusterModel.setPrevious_10_Voter_Address(cursor.getString(cursor.getColumnIndex("Previous_10_Voter_Address")));
+                        clusterModel.setPincode(cursor.getString(cursor.getColumnIndex("Pincode")));
+                        clusterModel.setOperator_Agency(cursor.getString(cursor.getColumnIndex("Operator_Agency")));
                         clusterModel.setLock_status(cursor.getString(cursor.getColumnIndex("lock_status")));
+                        clusterModel.setBI_Weighting_town_class(cursor.getString(cursor.getColumnIndex("BI_Weighting_town_class")));
+                        clusterModel.setUser_id(cursor.getString(cursor.getColumnIndex("user_id")));
+                        clusterModel.setNCCCatagory(cursor.getString(cursor.getColumnIndex("nccs_category")));
+                        clusterModel.setsample_size(cursor.getString(cursor.getColumnIndex("sample_size")));
 
                         cursor.moveToNext();
                         arrayList.add(clusterModel);
