@@ -1523,6 +1523,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
                                        if(jsonObjectOptionValues.getString("option_id").equals("1")){
                                            try{
+                                               jsonArrayScreen=jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
                                                JSONArray list = new JSONArray();
                                                int len = jsonArrayScreen.length();
                                                if (jsonArrayScreen != null) {
