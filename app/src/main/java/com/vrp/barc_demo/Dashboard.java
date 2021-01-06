@@ -113,7 +113,6 @@ public class Dashboard extends AppCompatActivity {
         if (strTotalSurvey>0){
             ll_graph.setVisibility(View.VISIBLE);
         }
-
     }
 
     private void setPieChart() {
