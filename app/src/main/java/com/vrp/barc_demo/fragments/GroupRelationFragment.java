@@ -1178,6 +1178,8 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
 
                         JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                         Spinner spinner=new Spinner(getActivity());
+                        spinner.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                        txtLabel.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                         ArrayList<String> spinnerAL=new ArrayList<>();
                         if (jsonObjectQuesType.getString("question_id").equals("41")) {
                             ArrayList<String> nameAL = new ArrayList<>();
