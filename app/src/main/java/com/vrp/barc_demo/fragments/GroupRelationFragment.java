@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -661,6 +662,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     }*/
                                 }
                             }
+                            if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("37")){
+                                String currentWorkingStatus=Long.toString(spinner.getSelectedItemId());
+                                //if currentWorkingStatus=1 or 2 or 5 then hide the occupation spinner
+                                sharedPrefHelper.setString("currentWorkingStatus", currentWorkingStatus);
+                            }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_id(selectedItem);
                             }else{
@@ -678,6 +684,16 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     if(ageInYears<=12){
                                         flag=false;
                                         break;
+                                    }
+                                }else{
+                                    flag=false;
+                                    break;
+                                }
+                                if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("38")){
+                                    if (sharedPrefHelper.getString("currentWorkingStatus","").equals("1")
+                                    ||sharedPrefHelper.getString("currentWorkingStatus","").equals("2")
+                                    ||sharedPrefHelper.getString("currentWorkingStatus","").equals("5")){
+                                        flag=true;
                                     }
                                 }else{
                                     flag=false;
@@ -1281,6 +1297,50 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                             }
                         }
+
+                        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                long spinnerID=spinner.getSelectedItemId();
+                                try {
+                                    if (jsonObjectQuesType.getString("question_id").equals("37")) {
+                                        for (int v = 0; v < ll_parent.getChildCount(); v++) {
+                                            final View childView = ll_parent.getChildAt(v);
+                                            sharedPrefHelper.setString("currentWorkingStatus", Long.toString(spinnerID));
+                                            String currentWorkingStatus = sharedPrefHelper.getString("currentWorkingStatus", "");
+                                    if (childView instanceof Spinner) {
+                                        Spinner spinner = (Spinner) childView;
+                                            if(String.valueOf(spinner.getId()).equals("38")){
+                                                if (currentWorkingStatus.equals("1")||currentWorkingStatus.equals("2")||currentWorkingStatus.equals("5")){
+                                                    spinner.setVisibility(View.GONE);
+                                                }else{
+                                                    spinner.setVisibility(View.VISIBLE);
+                                                }
+                                            }
+                                            }
+                                            else if (childView instanceof TextView) {
+                                                TextView textView = (TextView) childView;
+                                                if(String.valueOf(textView.getId()).equals("38")){
+                                                    if (currentWorkingStatus.equals("1")||currentWorkingStatus.equals("2")||currentWorkingStatus.equals("5")){
+                                                        textView.setVisibility(View.GONE);
+                                                    }else{
+                                                        textView.setVisibility(View.VISIBLE);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        });
+
                         startPosition++;
                         endPosition++;
                         ll_parent.addView(spinner);

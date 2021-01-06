@@ -71,7 +71,7 @@ public class NextSurvey extends AppCompatActivity {
                     Toast.makeText(context, "You have completed all survey for this cluster.", Toast.LENGTH_SHORT).show();
                     return;
                 }else {
-                    Intent intent = new Intent(NextSurvey.this, ClusterDetails.class);
+                    Intent intent = new Intent(NextSurvey.this, ClusterListActivity.class);
                     startActivity(intent);
                 }
             }

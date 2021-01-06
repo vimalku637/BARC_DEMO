@@ -538,13 +538,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         /*Pattern ps = Pattern.compile("^[6-9][0-9]{9}+$");
                                         Matcher ms = ps.matcher(landlineNo);
                                         boolean bs = ms.matches();*/
-                                        if (sharedPrefHelper.getString("landline_no", "").length()<10){
-                                            flag=false;
-                                            break;
-                                        }/*else if (!bs) {
+                                        if (!sharedPrefHelper.getString("landline_no", "").equals("")) {
+                                            if (sharedPrefHelper.getString("landline_no", "").length() < 10) {
+                                                flag = false;
+                                                break;
+                                            }/*else if (!bs) {
                                             flag=false;
                                             break;
                                         }*/
+                                        }
                                     }
                                     else if (questionID.equals("57")){
                                         String TvWorkingCondition=editText.getText().toString().trim();
