@@ -191,7 +191,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_spinner"
                     android:layout_marginStart="@dimen/margin30"
-                    android:layout_marginEnd="@dimen/margin120"
                     android:orientation="vertical">
                     <Spinner
                         android:id="@+id/spn_railway_station"
@@ -199,6 +198,17 @@
                         android:layout_height="wrap_content"
                         />
                 </LinearLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_substitute_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_below="@+id/ll_spinner"
+                    android:layout_marginTop="@dimen/margin5"
+                    android:layout_marginStart="@dimen/margin30"
+                    android:visibility="gone"
+                    />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_reason_substitute_address"
@@ -208,7 +218,7 @@
                     android:layout_marginTop="@dimen/margin10"
                     android:layout_marginStart="@dimen/margin30"
                     app:errorEnabled="true"
-                    android:layout_below="@+id/ll_spinner" >
+                    android:layout_below="@+id/tv_substitute_address" >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_reasonSubstituteAd"

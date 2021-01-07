@@ -24,6 +24,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -86,14 +87,18 @@ public class AddressSelection extends AppCompatActivity {
     TextInputLayout til_reason_previous_address;
     @BindView(R.id.til_reason_substitute_address)
     TextInputLayout til_reason_substitute_address;
+    @BindView(R.id.tv_substitute_address)
+    MaterialTextView tv_substitute_address;
 
     /*normal widgets*/
     private Context context = this;
     private String original_address = "", cluster_id = "", cluster_name = "", screen_type = "",
-            previous_address = "", next_address = "", address_type="";
-    private ArrayList<String> railwayStationSpnAL;
+            previous_address = "", next_address = "", address_type="",spinnerValues="";
+    //private ArrayList<String> railwayStationSpnAL;
     private SharedPrefHelper sharedPrefHelper;
     SurveyModel surveyModel;
+    boolean isEditable=false;
+    String [] railwayStationSpnAL={"Select Railway Station","Railway Station","Post Office","Bus Stand","EP Address"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +178,8 @@ public class AddressSelection extends AppCompatActivity {
                         rl_layout_previous.setVisibility(View.GONE);
                         et_reasonNextAd.setText(null);
                         et_reasonPreviousAd.setText(null);
+                        isEditable=true;
+                        setRailwayStationSpinner();
                         break;
                 }
             }
@@ -180,14 +187,34 @@ public class AddressSelection extends AppCompatActivity {
     }
 
     private void setRailwayStationSpinner() {
-        railwayStationSpnAL.add(0, getString(R.string.select_railway_station));
-        railwayStationSpnAL.add(1, "Railway station 1");
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, railwayStationSpnAL);
         spn_railway_station.setAdapter(arrayAdapter);
+
+        /*if (isEditable){
+            String addressType = "EP Address";
+            int spinnerPosition = 0;
+            String strpos1 = addressType;
+            if (strpos1 != null || !strpos1.equals(null) || !strpos1.equals("")) {
+                strpos1 = addressType;
+                spinnerPosition = arrayAdapter.getPosition(strpos1);
+                spn_railway_station.setSelection(spinnerPosition);
+                spinnerPosition = 0;
+            }
+        }*/
         spn_railway_station.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+                if (!spn_railway_station.getSelectedItem().toString().trim().equals("Select Railway Station")){
+                    spinnerValues=spn_railway_station.getSelectedItem().toString().trim();
+                    //Toast.makeText(context, ""+spinnerValues, Toast.LENGTH_SHORT).show();
+                    if (spinnerValues.equals("EP Address")){
+                        tv_substitute_address.setVisibility(View.VISIBLE);
+                        tv_substitute_address.setText(spinnerValues);
+                    }else{
+                        tv_substitute_address.setVisibility(View.GONE);
+                        tv_substitute_address.setText(null);
+                    }
+                }
             }
 
             @Override
@@ -256,6 +283,10 @@ public class AddressSelection extends AppCompatActivity {
         btn_start_sub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (spn_railway_station.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.select_railway_station))){
+                    Toast.makeText(context, "Please select railway station", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (et_reasonSubstituteAd.getText().toString().trim().equals("")){
                     til_reason_substitute_address.setError(getString(R.string.enter_reason_of_selecting_substitute_address));
                     return;
@@ -275,7 +306,7 @@ public class AddressSelection extends AppCompatActivity {
 
     private void initialization() {
         sharedPrefHelper = new SharedPrefHelper(this);
-        railwayStationSpnAL = new ArrayList<>();
+        //railwayStationSpnAL = new ArrayList<>();
     }
 
     @Override

@@ -270,7 +270,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                     // Snackbar.make(view, "Please enter user name & password", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 } else {
-                    if(sharedPrefHelper.getString("user_name", "").equals(et_user_name.getText().toString()) && sharedPrefHelper.getString("user_name_password", "").equals(et_password.getText().toString())){
+                    String userName=sharedPrefHelper.getString("user_name", "");
+                    String password=sharedPrefHelper.getString("user_name_password", "");
+
+                    if(et_user_name.getText().toString().trim().equalsIgnoreCase(userName) && et_password.getText().toString().trim().equalsIgnoreCase(password)){
                         Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
                         startActivity(intentMainActivity);
                         finish();
@@ -384,7 +387,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         sharedPrefHelper.setString("supervisor_id", supervisor_id);
         sharedPrefHelper.setString("supervisor_name", supervisor_name);
         sharedPrefHelper.setString("agency_name", agency_name);
-        sharedPrefHelper.setString("user_name_password", et_password.getText().toString());
+        sharedPrefHelper.setString("user_name_password", et_password.getText().toString().trim());
     }
 
     public void download_city(String table,String user_id){

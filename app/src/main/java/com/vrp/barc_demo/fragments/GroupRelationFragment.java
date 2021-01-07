@@ -313,6 +313,10 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     flag=false;
                                     break;
                                 }
+                                else if(sharedPrefHelper.getInt("editFieldValues", 0)==1&&ageInYears<15){
+                                    flag=false;
+                                    break;
+                                }
                                 ageVL.put(totalScreenCount-1,""+ageInYears);
                             }
                             nextPosition++;
@@ -354,6 +358,9 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("40") && radioID==1){
                                 sharedPrefHelper.setString("CWE_Name",nameVL.get(totalScreenCount-4));
                             }
+                            if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("40")){
+                                sharedPrefHelper.setString("Q1h_Member_CWE", String.valueOf(radioID));
+                            }
                             nextPosition++;
                             count++;
                         }
@@ -374,6 +381,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                         spinnnnnc++;
                                     }*/
                                 }
+                            }
+                            if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("37")){
+                                String currentWorkingStatus=Long.toString(spinner.getSelectedItemId());
+                                //if currentWorkingStatus=3 or 4 or 6 or 7 then auto populate the occupation spinner option 'Not Applicable'
+                                sharedPrefHelper.setString("currentWorkingStatus", currentWorkingStatus);
                             }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_id(selectedItem);
@@ -602,10 +614,6 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     flag=false;
                                     break;
                                 }
-                                else if(sharedPrefHelper.getInt("editFieldValues", 0)==1&&ageInYears<15){
-                                    flag=false;
-                                    break;
-                                }
                                 ageVL.put(totalScreenCount-1,""+ageInYears);
                             }
                             nextPosition++;
@@ -667,11 +675,6 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                         spinnnnnc++;
                                     }*/
                                 }
-                            }
-                            if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("37")){
-                                String currentWorkingStatus=Long.toString(spinner.getSelectedItemId());
-                                //if currentWorkingStatus=1 or 2 or 5 then hide the occupation spinner
-                                sharedPrefHelper.setString("currentWorkingStatus", currentWorkingStatus);
                             }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_id(selectedItem);
@@ -1137,20 +1140,19 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     sharedPrefHelper.setString("HH_Yes","");
                                 }
                                 if(group.getId()==40){
-                                    for (int i = 0; i < ll_parent.getChildCount(); i++) {
+                                    /*for (int i = 0; i < ll_parent.getChildCount(); i++) {
                                         final View childView = ll_parent.getChildAt(i);
                                         sharedPrefHelper.setString("Q1h_Member_CWE",radioID);
                                         if (childView instanceof Spinner) {
                                             Spinner spinner = (Spinner) childView;
                                             if (String.valueOf(spinner.getId()).equals("42")) {
                                                 if (radioID.equals("1")) {
-                                                    //changeSpinnerOptionValues(spinnerAL2, radioID);
                                                 }
                                                 else if (radioID.equals("2")) {
                                                 }
                                             }
                                         }
-                                    }
+                                    }*/
                                 }
                             }
                         });
@@ -1293,19 +1295,20 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if(jsonObjectQuesType.getString("question_id").equals("42")){
                                     String CWE_Status = sharedPrefHelper.getString("CWE_Status", "");
-                                    if (CWE_Status.equals("2")){
-                                        for (int k = 0; k < 16; k++) {
-                                            JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                            spinnerAL.add(spinnerOption);
+                                    String Q1h_Member_CWE = sharedPrefHelper.getString("Q1h_Member_CWE", "");
+                                        if (CWE_Status.equals("2")) {
+                                            for (int k = 0; k < 16; k++) {
+                                                JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                                String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                                spinnerAL.add(spinnerOption);
+                                            }
+                                        } else if (CWE_Status.equals("1")) {
+                                            for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                                JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                                String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                                spinnerAL.add(spinnerOption);
+                                            }
                                         }
-                                    } else if (CWE_Status.equals("1")){
-                                        for (int k = 0; k < jsonArrayOptions.length(); k++) {
-                                            JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                            spinnerAL.add(spinnerOption);
-                                        }
-                                    }
                                 }
                                 else {
                                     for (int k = 0; k < jsonArrayOptions.length(); k++) {
@@ -1351,6 +1354,21 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                             spinnerPosition = 0;
                                         }
                                     }
+                                    if (jsonObjectQuesType.getString("question_id").equals("38")){
+                                        String currentWorkingStatus=sharedPrefHelper.getString("currentWorkingStatus","");
+                                        if (currentWorkingStatus.equals("3")||currentWorkingStatus.equals("4")
+                                                ||currentWorkingStatus.equals("6")||currentWorkingStatus.equals("7")){
+                                            String currentOccupation="Not Applicable";
+                                            int spinnerPosition = 0;
+                                            String strpos1 = currentOccupation;
+                                            if (strpos1 != null || !strpos1.equals(null) || !strpos1.equals("")) {
+                                                strpos1 = currentOccupation;
+                                                spinnerPosition = arrayAdapter.getPosition(strpos1);
+                                                spinner.setSelection(spinnerPosition);
+                                                spinnerPosition = 0;
+                                            }
+                                        }
+                                    }
                                 //}
 
                                 if ((back_status == true || screen_type.equals("survey_list")) && answerModelList.size() > startPosition) {
@@ -1362,7 +1380,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                long spinnerID=spinner.getSelectedItemId();
+                                /*long spinnerID=spinner.getSelectedItemId();
                                 try {
                                     if (jsonObjectQuesType.getString("question_id").equals("37")) {
                                         for (int v = 0; v < ll_parent.getChildCount(); v++) {
@@ -1393,7 +1411,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                }
+                                }*/
                             }
 
                             @Override
@@ -1474,13 +1492,6 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
-        }
-    }
-
-    private void changeSpinnerOptionValues(ArrayList<String> spinnerAL, String radioID) {
-        if (radioID.equals("1")) {
-            String position=spinnerAL.get(spinnerAL.size()-1);
-            spinnerAL2.add(position);
         }
     }
 
