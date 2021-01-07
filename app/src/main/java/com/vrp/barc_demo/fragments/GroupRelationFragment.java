@@ -691,17 +691,15 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                         flag=false;
                                         break;
                                     }
-                                }else{
-                                    flag=false;
-                                    break;
                                 }
-                                if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("38")){
+                                /*else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("38")){
                                     if (sharedPrefHelper.getString("currentWorkingStatus","").equals("1")
-                                    ||sharedPrefHelper.getString("currentWorkingStatus","").equals("2")
-                                    ||sharedPrefHelper.getString("currentWorkingStatus","").equals("5")){
+                                            ||sharedPrefHelper.getString("currentWorkingStatus","").equals("2")
+                                            ||sharedPrefHelper.getString("currentWorkingStatus","").equals("5")){
                                         flag=true;
                                     }
-                                }else{
+                                }*/
+                                else{
                                     flag=false;
                                     break;
                                 }
@@ -1301,13 +1299,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                             String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                             spinnerAL.add(spinnerOption);
                                         }
-                                    }else{
+                                    } else if (CWE_Status.equals("1")){
                                         for (int k = 0; k < jsonArrayOptions.length(); k++) {
                                             JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                             String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                             spinnerAL.add(spinnerOption);
-                                            /*spinnerAL2=spinnerAL;
-                                            Toast.makeText(context, ""+spinnerAL2.size(), Toast.LENGTH_SHORT).show();*/
                                         }
                                     }
                                 }
