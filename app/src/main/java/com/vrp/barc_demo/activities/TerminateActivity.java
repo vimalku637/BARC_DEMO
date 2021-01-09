@@ -398,7 +398,7 @@ public class TerminateActivity extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (halt_radio_button_id.equals("1")||halt_radio_button_id.equals("5")||halt_radio_button_id.equals("10")) {
+                if (halt_radio_button_id.equals("10")) {
                     if (checkValidationHalt()) {
                         //save data in to local DB.
                         Gson gson = new Gson();
@@ -434,12 +434,6 @@ public class TerminateActivity extends AppCompatActivity {
                                 json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
                                 json_object.put("reason", reason);
                                 json_object.put("description", reason);
-                                if (halt_radio_button_id.equals("4")) {
-                                    json_object.put("termination_reason", "Quota Termination");
-                                }else if(halt_radio_button_id.equals("1")||halt_radio_button_id.equals("2")
-                                ||halt_radio_button_id.equals("3")||halt_radio_button_id.equals("7")||halt_radio_button_id.equals("8")){
-                                    json_object.put("termination_reason", "Contact Termination");
-                                }
                                 json_object.put("household_name", et_name.getText().toString().trim());
                                 json_object.put("address", et_address.getText().toString().trim());
                                 json_object.put("survey_data", json_array);
@@ -480,9 +474,9 @@ public class TerminateActivity extends AppCompatActivity {
                         }
                     }
                 }
-                if(halt_radio_button_id.equals("2")||halt_radio_button_id.equals("3")||halt_radio_button_id.equals("4")
-                ||halt_radio_button_id.equals("6")||halt_radio_button_id.equals("7")||halt_radio_button_id.equals("8")
-                ||halt_radio_button_id.equals("9")){
+                if(halt_radio_button_id.equals("1")||halt_radio_button_id.equals("2")||halt_radio_button_id.equals("3")
+                   ||halt_radio_button_id.equals("4")||halt_radio_button_id.equals("5")||halt_radio_button_id.equals("6")
+                   ||halt_radio_button_id.equals("7")||halt_radio_button_id.equals("8")||halt_radio_button_id.equals("9")){
                     if (checkValidation()){
                     cl_terminate.setVisibility(View.GONE);
                     //save data in to local DB.
@@ -524,7 +518,9 @@ public class TerminateActivity extends AppCompatActivity {
                             if (halt_radio_button_id.equals("4")) {
                                 json_object.put("termination_reason", "Quota Termination");
                             }else if(halt_radio_button_id.equals("1")||halt_radio_button_id.equals("2")
-                                    ||halt_radio_button_id.equals("3")||halt_radio_button_id.equals("7")||halt_radio_button_id.equals("8")){
+                                    ||halt_radio_button_id.equals("3")||halt_radio_button_id.equals("5")
+                                    ||halt_radio_button_id.equals("6")||halt_radio_button_id.equals("7")
+                                    ||halt_radio_button_id.equals("8")){
                                 json_object.put("termination_reason", "Contact Termination");
                             }
                             json_object.put("survey_data", json_array);
