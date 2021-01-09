@@ -1817,12 +1817,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
                            HashMap<Integer, String> testHashMap2 = gson.fromJson(sharedPrefHelper.getString("internetUse",""), type);
                            ///JSONObject obj=new JSONObject(sharedPrefHelper.setString("householdMember","objMember.toString()"););
-                           Map<Integer, String> treeMapName = new TreeMap<>(testHashMap2);
+                           if (testHashMap2!=null) {
+                               Map<Integer, String> treeMapName = new TreeMap<>(testHashMap2);
 
-                           for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
-                               if(entry.getValue().equals("1")) {
-                                   internetUse=1;
-                                   break;
+                               for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
+                                   if (entry.getValue().equals("1")) {
+                                       internetUse = 1;
+                                       break;
+                                   }
                                }
                            }
                        }

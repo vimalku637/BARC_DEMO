@@ -165,15 +165,15 @@ public class TerminateActivity extends AppCompatActivity {
                     case R.id.rb_not_available_at_home:
                         reason=getResources().getString(R.string.hh_cwe_not_available_at_home);
                         halt_radio_button_id="2";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_refused:
                         reason=getResources().getString(R.string.refused);
                         halt_radio_button_id="3";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_in_eligible_nccs:
@@ -193,29 +193,29 @@ public class TerminateActivity extends AppCompatActivity {
                     case R.id.rb_in_eligible_age:
                         reason=getResources().getString(R.string.in_eligible_age);
                         halt_radio_button_id="6";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_intro_exit:
                         reason=getResources().getString(R.string.intro_exit);
                         halt_radio_button_id="7";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_age_terminate:
                         reason=getResources().getString(R.string.age_terminate);
                         halt_radio_button_id="8";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_terminate:
                         reason=getResources().getString(R.string.terminate);
                         halt_radio_button_id="9";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_call_back:

@@ -151,6 +151,7 @@ public class AddressSelection extends AppCompatActivity {
                         et_reasonNextAd.setText(null);
                         et_reasonPreviousAd.setText(null);
                         et_reasonSubstituteAd.setText(null);
+                        tv_substitute_address.setText(null);
                         break;
                     case R.id.rb_next_address:
                         address_type="Next";
@@ -160,6 +161,7 @@ public class AddressSelection extends AppCompatActivity {
                         rl_layout_previous.setVisibility(View.GONE);
                         et_reasonPreviousAd.setText(null);
                         et_reasonSubstituteAd.setText(null);
+                        tv_substitute_address.setText(null);
                         break;
                     case R.id.rb_previous_address:
                         address_type="Previous";
@@ -169,6 +171,7 @@ public class AddressSelection extends AppCompatActivity {
                         rl_layout_previous.setVisibility(View.VISIBLE);
                         et_reasonNextAd.setText(null);
                         et_reasonSubstituteAd.setText(null);
+                        tv_substitute_address.setText(null);
                         break;
                     case R.id.rb_substituted_address:
                         address_type="Substituted";
@@ -209,7 +212,7 @@ public class AddressSelection extends AppCompatActivity {
                     //Toast.makeText(context, ""+spinnerValues, Toast.LENGTH_SHORT).show();
                     if (spinnerValues.equals("EP Address")){
                         tv_substitute_address.setVisibility(View.VISIBLE);
-                        tv_substitute_address.setText(spinnerValues);
+                        tv_substitute_address.setText(sharedPrefHelper.getString("original_address", ""));
                     }else{
                         tv_substitute_address.setVisibility(View.GONE);
                         tv_substitute_address.setText(null);
