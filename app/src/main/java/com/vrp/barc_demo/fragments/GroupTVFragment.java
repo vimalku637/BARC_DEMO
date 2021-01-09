@@ -305,11 +305,21 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         else if (childView instanceof Spinner) {
                             Spinner spinner = (Spinner) childView;
                             String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
+                            JSONArray jsonArrayOptions = jsonArrayQuestions.getJSONObject(count).getJSONArray("question_options");
+                            String selectedItem=Long.toString(spinner.getSelectedItemId());
+                            for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                String spinnerOptionOptionValue = jsonObjectOptionValues.getString("option_value");
+                                if(spinnerOptionOptionValue.equals(spinner.getSelectedItem())){
+                                    selectedItem=jsonObjectOptionValues.getString("option_id");
+                                    break;
+                                }
+                            }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                                answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                answerModelList.get(nextPosition).setOption_id(selectedItem);
                             }else{
                                 AnswerModel answerModel= new AnswerModel();
-                                answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
+                                answerModel.setOption_id(selectedItem);
                                 answerModel.setOption_value("");
                                 //answerModel.setSurveyID(survey_id);
                                 answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
@@ -328,11 +338,11 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 }
                             }
                             if (questionID.equals("59")){
-                                String spinnerOptionId=Long.toString(spinner.getSelectedItemId());
-                                sharedPrefHelper.setString("spinnerOptionId", spinnerOptionId);
+                                //String spinnerOptionId=Long.toString(spinner.getSelectedItemId());
+                                sharedPrefHelper.setString("spinnerOptionId", selectedItem);
                             }else if (questionID.equals("60")){
-                                String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
-                                sharedPrefHelper.setString("spinnerOptionIdTV", spinnerOptionIdTV);
+                                //String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
+                                sharedPrefHelper.setString("spinnerOptionIdTV", selectedItem);
                             }/*else if (questionID.equals("64")){
                                 String spinnerOptionIdTVConnection=Long.toString(spinner.getSelectedItemId());
                                 sharedPrefHelper.setString("spinnerOptionIdTVConnection", spinnerOptionIdTVConnection);
@@ -970,8 +980,8 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                         Spinner spinner=new Spinner(getActivity());
                         ArrayList<String> spinnerAL=new ArrayList<>();
-                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
-                            spinnerAL.clear();
+                       /* for (int j = 0; j <jsonArrayOptions.length() ; j++) {
+                            spinnerAL.clear();*/
                             if (jsonObjectQuesType.getString("question_id").equals("60")&&sharedPrefHelper.getString("spinnerOptionId", "").equals("1")){
                                 for (int k = 0; k < 1; k++) {
                                     JSONObject jsonObjectOptionValues=jsonArrayOptions.getJSONObject(k);
@@ -993,7 +1003,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
-                            if (jsonObjectQuesType.getString("question_id").equals("67")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")){
+                            if (jsonObjectQuesType.getString("question_id").equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1") || (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2")) && !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5"))){
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
@@ -1006,9 +1016,30 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             ArrayAdapter arrayAdapter=new ArrayAdapter(getActivity(), R.layout.custom_spinner_dropdown, spinnerAL);
                             spinner.setAdapter(arrayAdapter);
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
-                                spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
+                                int spinnerpos=0;
+                                boolean isBreak=false;
+
+                                for(int j = 0; j < spinnerAL.size(); j++){
+                                    for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                        String spinnerOptionOptionID = jsonObjectOptionValues.getString("option_id");
+                                        if(spinnerOptionOptionID.equals(answerModelList.get(startPosition).getOption_id()) && spinnerAL.get(j).equals(jsonObjectOptionValues.getString("option_value"))){
+                                            //spinnerpos++;
+                                            isBreak=true;
+                                            break;
+                                        }
+                                    }
+                                    if(isBreak){ break; }else{
+                                        if(spinnerpos<spinnerAL.size()-1){
+                                            spinnerpos++;
+                                        }
+                                    }
+                                }
+                                //spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
+                                spinner.setSelection(spinnerpos);
+                                //spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
                             }
-                        }
+                        //}
                         startPosition++;
                         endPosition++;
                         ll_parent.addView(spinner);
