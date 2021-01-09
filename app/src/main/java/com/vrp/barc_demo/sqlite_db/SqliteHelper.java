@@ -291,6 +291,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                         clusterModel.setUser_id(cursor.getString(cursor.getColumnIndex("user_id")));
                         clusterModel.setNCCCatagory(cursor.getString(cursor.getColumnIndex("nccs_category")));
                         clusterModel.setsample_size(cursor.getString(cursor.getColumnIndex("sample_size")));
+                        clusterModel.setEP_address(cursor.getString(cursor.getColumnIndex("EP_address")));
 
                         cursor.moveToNext();
                         arrayList.add(clusterModel);

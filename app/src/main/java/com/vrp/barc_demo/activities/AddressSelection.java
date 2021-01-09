@@ -212,7 +212,7 @@ public class AddressSelection extends AppCompatActivity {
                     //Toast.makeText(context, ""+spinnerValues, Toast.LENGTH_SHORT).show();
                     if (spinnerValues.equals("EP Address")){
                         tv_substitute_address.setVisibility(View.VISIBLE);
-                        tv_substitute_address.setText(sharedPrefHelper.getString("original_address", ""));
+                        tv_substitute_address.setText(sharedPrefHelper.getString("EP_address", ""));
                     }else{
                         tv_substitute_address.setVisibility(View.GONE);
                         tv_substitute_address.setText(null);

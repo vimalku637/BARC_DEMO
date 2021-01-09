@@ -189,12 +189,13 @@ public class ClusterListActivity extends AppCompatActivity {
                                 String sample_size = clusterModelAL.get(position).getsample_size();
                                 String user_id = clusterModelAL.get(position).getUser_id();
                                 String BI_Weighting_town_class = clusterModelAL.get(position).getBI_Weighting_town_class();
+                                String EP_address = clusterModelAL.get(position).getEP_address();
 
                                 setAllDataInPreferences(cluster_no, State_Name, Town_Village_Class, Census_District_Code,
                                         Census_District_Name, Census_Village_Town_Code, Census_Village_Town_Name,
                                         UA_Component, UA_Component_code, BARC_Town_Code, original_address, next_address,
                                         previous_address, cluster_name, NCC_catagory, sample_size, user_id,
-                                        BI_Weighting_town_class);
+                                        BI_Weighting_town_class, EP_address);
                                 startActivity(intentSurveyList);
 
                             } else {
@@ -279,6 +280,7 @@ public class ClusterListActivity extends AppCompatActivity {
                             clusterModel.setNCCCatagory(jsonObject.getString("nccs_category"));
                             clusterModel.setUser_id(jsonObject.getString("user_id"));
                             clusterModel.setBI_Weighting_town_class(jsonObject.getString("BI_Weighting_town_class"));
+                            clusterModel.setEP_address(jsonObject.getString("EP_address"));
                             clusterModelAL.add(clusterModel);
                         }
 
@@ -358,12 +360,13 @@ public class ClusterListActivity extends AppCompatActivity {
                                             String sample_size = clusterModelAL.get(position).getsample_size();
                                             String user_id = clusterModelAL.get(position).getUser_id();
                                             String BI_Weighting_town_class = clusterModelAL.get(position).getBI_Weighting_town_class();
+                                            String EP_address = clusterModelAL.get(position).getEP_address();
 
                                             setAllDataInPreferences(cluster_no, State_Name, Town_Village_Class, Census_District_Code,
                                                     Census_District_Name, Census_Village_Town_Code, Census_Village_Town_Name,
                                                     UA_Component, UA_Component_code, BARC_Town_Code, original_address, next_address,
                                                     previous_address, cluster_name, NCC_catagory, sample_size, user_id,
-                                                    BI_Weighting_town_class);
+                                                    BI_Weighting_town_class, EP_address);
                                             startActivity(intentSurveyList);
 
                                         } else {
@@ -451,12 +454,13 @@ public class ClusterListActivity extends AppCompatActivity {
                         String sample_size=clusterModelAL.get(position).getsample_size();
                         String user_id=clusterModelAL.get(position).getUser_id();
                         String BI_Weighting_town_class=clusterModelAL.get(position).getBI_Weighting_town_class();
+                        String EP_address=clusterModelAL.get(position).getEP_address();
 
                         setAllDataInPreferences(cluster_no,State_Name,Town_Village_Class,Census_District_Code,
                                 Census_District_Name, Census_Village_Town_Code,Census_Village_Town_Name,
                                 UA_Component,UA_Component_code, BARC_Town_Code,original_address,next_address,
                                 previous_address,cluster_name,NCC_catagory,sample_size,user_id,
-                                BI_Weighting_town_class);
+                                BI_Weighting_town_class,EP_address);
 
 
                         startActivity(intentAddressSelection);
@@ -484,7 +488,7 @@ public class ClusterListActivity extends AppCompatActivity {
                                          String ua_component, String ua_component_code, String barc_town_code,
                                          String original_address, String next_address, String previous_address,
                                          String cluster_name, String nccs_matrix, String sample_size,
-                                         String user_id, String BI_Weighting_town_class) {
+                                         String user_id, String BI_Weighting_town_class, String EP_address) {
         sharedPrefHelper.setString("cluster_no", cluster_no);
         sharedPrefHelper.setString("state_name", state_name);
         sharedPrefHelper.setString("town_village_class", town_village_class);
@@ -506,6 +510,7 @@ public class ClusterListActivity extends AppCompatActivity {
         sharedPrefHelper.setString("nccs_matrix", nccs_matrix);
         sharedPrefHelper.setString("sample_size", sample_size);
         sharedPrefHelper.setString("BI_Weighting_town_class", BI_Weighting_town_class);
+        sharedPrefHelper.setString("EP_address", EP_address);
     }
 
     private void initialization() {

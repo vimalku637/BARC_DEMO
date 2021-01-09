@@ -115,6 +115,7 @@ public class TerminateActivity extends AppCompatActivity {
     public static ArrayList<ArrayList<AnswerModel>> answerModelHouseholdMemberListTotal;
     public static ArrayList<ArrayList<AnswerModel>> answerModelTVListTotal;
     MultipartBody.Part part;
+    private int groupID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +132,7 @@ public class TerminateActivity extends AppCompatActivity {
             screen_type=bundle.getString("screen_type", "");
             radio_button_id=bundle.getString("radio_button_id", "");
             AudioSavePathInDevice=bundle.getString("AudioSavePathInDevice", "");
+            groupID=bundle.getInt("groupID", 0);
             answerModelList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
             ArrayList<AnswerModel> arrayListFM=new ArrayList<>();
             arrayListFM= (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerFamilyMemberModelList");
@@ -266,6 +268,18 @@ public class TerminateActivity extends AppCompatActivity {
                         json_object.put("reason", radio_button_id);
                         json_object.put("description", "terminate");
                     }
+                    if (groupID==25){
+                        if (radio_button_id.equals("1")||radio_button_id.equals("2")||radio_button_id.equals("3")
+                                ||radio_button_id.equals("4")||radio_button_id.equals("5")||radio_button_id.equals("6")
+                                ||radio_button_id.equals("7")) {
+                            json_object.put("termination_reason", "Industry Termination");
+                        }
+                    }else if(groupID==26||groupID==27){
+                        if (radio_button_id.equals("2")) {
+                            json_object.put("termination_reason", "Quota Termination");
+                        }
+                    }
+
                     json_object.put("survey_data", json_array);
                     json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
                     json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
@@ -420,6 +434,12 @@ public class TerminateActivity extends AppCompatActivity {
                                 json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
                                 json_object.put("reason", reason);
                                 json_object.put("description", reason);
+                                if (halt_radio_button_id.equals("4")) {
+                                    json_object.put("termination_reason", "Quota Termination");
+                                }else if(halt_radio_button_id.equals("1")||halt_radio_button_id.equals("2")
+                                ||halt_radio_button_id.equals("3")||halt_radio_button_id.equals("7")||halt_radio_button_id.equals("8")){
+                                    json_object.put("termination_reason", "Contact Termination");
+                                }
                                 json_object.put("household_name", et_name.getText().toString().trim());
                                 json_object.put("address", et_address.getText().toString().trim());
                                 json_object.put("survey_data", json_array);
@@ -500,6 +520,12 @@ public class TerminateActivity extends AppCompatActivity {
                             }else{
                                 json_object.put("reason", reason);
                                 json_object.put("description", reason);
+                            }
+                            if (halt_radio_button_id.equals("4")) {
+                                json_object.put("termination_reason", "Quota Termination");
+                            }else if(halt_radio_button_id.equals("1")||halt_radio_button_id.equals("2")
+                                    ||halt_radio_button_id.equals("3")||halt_radio_button_id.equals("7")||halt_radio_button_id.equals("8")){
+                                json_object.put("termination_reason", "Contact Termination");
                             }
                             json_object.put("survey_data", json_array);
                             json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));

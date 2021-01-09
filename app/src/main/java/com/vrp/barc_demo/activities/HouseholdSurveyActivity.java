@@ -1659,18 +1659,30 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            @Override
                            public void onCheckedChanged(RadioGroup group, int checkedId) {
                                RadioButton rb=(RadioButton)findViewById(checkedId);
+                               String radioButtonText=rb.getText().toString().trim();
                                String rbTag=rb.getTag().toString();
                                int sepPos = rbTag.indexOf("^");
                                String id=rbTag.substring(sepPos+1);
                                int sepPosID = rbTag.indexOf("^");
                                String radioID = rbTag.substring(0, sepPosID);
                                String iddd=String.valueOf(rb.getId());
-                               if (rb.isChecked()){
-                                   if(id.equals("1")){
-                                       //setTerminattion(id);
-                                       showPopupForTerminateSurveyOnRadio(iddd,jsonObjectQuesType,radioGroup);
-                                       //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
+                               int groupID=group.getId();
+                               if (group.getId()==25){
+                                   if (rb.isChecked()){
+                                       //if(id.equals("1")){
+                                           //setTerminattion(id);
+                                       if (radioID.equals("1")||radioID.equals("2")||radioID.equals("3")
+                                           ||radioID.equals("4")||radioID.equals("5")||radioID.equals("6")
+                                           ||radioID.equals("7")) {
+                                           showPopupForTerminateSurveyOnRadio(radioID,radioButtonText,radioGroup,groupID);
+                                       }
+                                           //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
+                                       //}
                                    }
+                               }if (group.getId()==26){
+
+                               }if (group.getId()==27){
+
                                }
                                if(group.getId()==23){
                                     sharedPrefHelper.setString("CWE_Status",radioID);
@@ -1724,7 +1736,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                            //iv_recording.startAnimation(null);
                                            sharedPrefHelper.setBoolean("isRecording", false);
                                            stopRecording();
-                                           showPopupForTerminateSurveyOnRadio(iddd, jsonObjectQuesType, radioGroup);
+                                           showPopupForTerminateSurveyOnRadio(radioID,radioButtonText,radioGroup,groupID);
                                        }
                                    }
                                }
@@ -2276,7 +2288,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         return super.onOptionsItemSelected(item);
     }
 
-    public void setTerminattion(String id) {
+    public void setTerminattion(String id, int groupID) {
         stopRecording();
         Intent intentTerminate = new Intent(context, TerminateActivity.class);
         intentTerminate.putExtra("screen_type", "terminate");
@@ -2285,6 +2297,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         intentTerminate.putExtra("answerFamilyMemberModelList", answerModelHouseholdMemberListTotal);
         intentTerminate.putExtra("answerTVModelList", answerModelTVListTotal);
         intentTerminate.putExtra("AudioSavePathInDevice", AudioSavePathInDevice);
+        intentTerminate.putExtra("groupID", groupID);
         startActivity(intentTerminate);
         finish();
         /*//save data in to local DB.
@@ -2329,7 +2342,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismiss();
-                        setTerminattion("");
+                        setTerminattion("",0);
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -2340,8 +2353,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 })
                 .show();
     }
-    private void showPopupForTerminateSurveyOnRadio(String id, JSONObject jsonObjectQuesType,
-                                                    RadioGroup radiogroup) {
+    private void showPopupForTerminateSurveyOnRadio(String id,String radioButtonText,
+                                                    RadioGroup radiogroup,int groupID) {
         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Are you sure?")
                 .setContentText("Want to terminate the interview!")
@@ -2351,7 +2364,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismiss();
-                        setTerminattion(id);
+                        setTerminattion(id,groupID);
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -2377,7 +2390,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismiss();
-                        setTerminattion(id);
+                        setTerminattion(id,0);
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {

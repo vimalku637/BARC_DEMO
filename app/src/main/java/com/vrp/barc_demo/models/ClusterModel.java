@@ -42,6 +42,8 @@ public class ClusterModel {
     public static final String COLUMN_SAMPLE_SIZE="sample_size";
     public static final String COLUMN_NCC_CATAGORY="nccs_category";
     public static final String COLUMN_completed_record="completed_record";
+    public static final String COLUMN_SELECTED_VOTER_NO="Selected_Voter_No";
+    public static final String COLUMN_EP_ADDRESS="EP_address";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
@@ -74,6 +76,8 @@ public class ClusterModel {
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
                     + COLUMN_NCC_CATAGORY + " TEXT ,"
                     + COLUMN_completed_record + " TEXT ,"
+                    + COLUMN_SELECTED_VOTER_NO + " TEXT ,"
+                    + COLUMN_EP_ADDRESS + " TEXT ,"
                     + COLUMN_SAMPLE_SIZE + " INTEGER DEFAULT 0 ,"
                     + COLUMN_STATUS + " INTEGER DEFAULT 0 "
                     + ")";
@@ -105,6 +109,15 @@ public class ClusterModel {
     private String clu_code;
     private String pincode;
     private String BI_Weighting_town_class;
+    private String EP_address;
+
+    public String getEP_address() {
+        return EP_address;
+    }
+
+    public void setEP_address(String EP_address) {
+        this.EP_address = EP_address;
+    }
 
     public String getBI_Weighting_town_class() {
         return BI_Weighting_town_class;
