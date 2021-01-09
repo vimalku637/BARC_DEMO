@@ -416,7 +416,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     break;
                                 }
                             }
-                            else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("53")){
+                            else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("43")){
                                 internetUse.put(totalScreenCount,""+radioID);
                                 Gson gson = new Gson();
                                 String hashMapString = gson.toJson(internetUse);
