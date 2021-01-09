@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -39,14 +40,17 @@ import com.vrp.barc_demo.utils.AlertDialogClass;
 import com.vrp.barc_demo.utils.CommonClass;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,6 +71,8 @@ public class MainMenu extends AppCompatActivity {
     SharedPrefHelper sharedPrefHelper;
     SqliteHelper sqliteHelper;
     private ArrayList<SurveyModel> modelArrayList;
+    public static String AudioSavePathInDevice="";
+    MultipartBody.Part part;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +150,7 @@ public class MainMenu extends AppCompatActivity {
                 for (int i = 0; i < modelArrayList.size(); i++) {
                     String surveyID=modelArrayList.get(i).getSurvey_id();
                     String surveyData=modelArrayList.get(i).getSurvey_data();
+                    AudioSavePathInDevice=modelArrayList.get(i).getAudio_recording();
 
                     //Gson gson = new Gson();
                     String data = surveyData.toString();
@@ -151,6 +158,17 @@ public class MainMenu extends AppCompatActivity {
                     RequestBody body = RequestBody.create(JSON, data);
                     //send data on server
                     sendSurveyDataOnServer(body, surveyID, sDialog);
+
+                    //change text color & count
+                    cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
+                    tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+0+")");
+                    //open success message
+                    sDialog
+                            .setTitleText("Success!")
+                            .setContentText("Data has been successfully Synchronized!")
+                            .setConfirmText("OK")
+                            .setConfirmClickListener(null)
+                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
                 }
             }
         }else{
@@ -170,21 +188,47 @@ public class MainMenu extends AppCompatActivity {
                     String message=jsonObject.getString("message");
                     int survey_data_monitoring_id=jsonObject.getInt("survey_data_monitoring_id");
                     if (success.equals("1")) {
-                        AlertDialogClass.dismissProgressDialog();
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
 
-                        //change text color & count
-                        cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
-                        tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+0+")");
-                        //open success message
-                        sDialog
-                                .setTitleText("Success!")
-                                .setContentText("Data has been successfully Synchronized!")
-                                .setConfirmText("OK")
-                                .setConfirmClickListener(null)
-                                .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                        //send audio here
+                        if(!AudioSavePathInDevice.equals("")) {
+                            Uri imageUri = Uri.parse(AudioSavePathInDevice);
+                            File file = new File(imageUri.getPath());
+                            RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
+                            part = MultipartBody.Part.createFormData("audio_name", file.getName(), fileReqBody);
+                            Log.e("audio_params-", "audio_params- "
+                                    + "\n" + sharedPrefHelper.getString("user_id", "")
+                                    + "\n" + survey_id + "\n" + survey_data_monitoring_id + "\n" + part);
+
+                            ApiClient.getClient().create(BARC_API.class).sendAudio(sharedPrefHelper.getString("user_id", ""), survey_id, survey_data_monitoring_id, part).enqueue(new Callback<JsonObject>() {
+                                @Override
+                                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                    try {
+                                        AlertDialogClass.dismissProgressDialog();
+                                        JSONObject jsonObject = new JSONObject(response.body().toString());
+                                        Log.e("audio-upload", jsonObject.toString());
+                                        String success = jsonObject.optString("success");
+                                        String message = jsonObject.optString("message");
+                                        String name = jsonObject.optString("name");
+                                        String file_status = jsonObject.optString("file_status");
+                                        if (success.equalsIgnoreCase("1")) {
+
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        AlertDialogClass.dismissProgressDialog();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<JsonObject> call, Throwable t) {
+                                    AlertDialogClass.dismissProgressDialog();
+                                }
+                            });
+                        }
                     } else {
                         AlertDialogClass.dismissProgressDialog();
                         CommonClass.showPopupForNoInternet(context);
