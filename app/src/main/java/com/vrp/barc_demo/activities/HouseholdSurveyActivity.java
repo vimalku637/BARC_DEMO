@@ -1680,9 +1680,25 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        //}
                                    }
                                }if (group.getId()==26){
-
+                                   if (rb.isChecked()){
+                                       //if(id.equals("1")){
+                                       //setTerminattion(id);
+                                       if (radioID.equals("2")) {
+                                           showPopupForTerminateSurveyOnRadio(radioID,radioButtonText,radioGroup,groupID);
+                                       }
+                                       //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
+                                       //}
+                                   }
                                }if (group.getId()==27){
-
+                                   if (rb.isChecked()){
+                                       //if(id.equals("1")){
+                                       //setTerminattion(id);
+                                       if (radioID.equals("2")) {
+                                           showPopupForTerminateSurveyOnRadio(radioID,radioButtonText,radioGroup,groupID);
+                                       }
+                                       //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
+                                       //}
+                                   }
                                }
                                if(group.getId()==23){
                                     sharedPrefHelper.setString("CWE_Status",radioID);
