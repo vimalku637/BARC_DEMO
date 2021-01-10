@@ -11,6 +11,7 @@ package com.vrp.barc_demo.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -97,6 +98,7 @@ public class MainMenu extends AppCompatActivity {
             cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
             tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+modelArrayList.size()+")");
         }else{
+            //AlertDialogClass.dismissProgressDialog();
             cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
             tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+0+")");
         }
@@ -126,6 +128,7 @@ public class MainMenu extends AppCompatActivity {
                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismiss();
                                     //sync data here
                                     sendDataOnServer(sDialog);
                                 }
@@ -158,18 +161,14 @@ public class MainMenu extends AppCompatActivity {
                     RequestBody body = RequestBody.create(JSON, data);
                     //send data on server
                     sendSurveyDataOnServer(body, surveyID, sDialog);
-
-                    //change text color & count
-                    cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
-                    tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+0+")");
-                    //open success message
-                    sDialog
-                            .setTitleText("Success!")
-                            .setContentText("Data has been successfully Synchronized!")
-                            .setConfirmText("OK")
-                            .setConfirmClickListener(null)
-                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
                 }
+                //open success message
+                /*sDialog
+                        .setTitleText("Success!")
+                        .setContentText("Data has been successfully Synchronized!")
+                        .setConfirmText("OK")
+                        .setConfirmClickListener(null)
+                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);*/
             }
         }else{
             CommonClass.showPopupForNoInternet(context);
@@ -177,13 +176,16 @@ public class MainMenu extends AppCompatActivity {
     }
 
     private void sendSurveyDataOnServer(RequestBody body, String survey_id, SweetAlertDialog sDialog) {
-        AlertDialogClass.showProgressDialog(context);
+        //AlertDialogClass.showProgressDialog(context);
+        ProgressDialog mProgressDialog=ProgressDialog.show(context, "", "Please Wait...", true);
         ApiClient.getClient().create(BARC_API.class).sendSurveyData(body).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response.body().toString());
                     Log.e("knckjjkc", "survey_data-: "+jsonObject.toString());
+                    //AlertDialogClass.dismissProgressDialog();
+                    mProgressDialog.dismiss();
                     String success=jsonObject.getString("success");
                     String message=jsonObject.getString("message");
                     int survey_data_monitoring_id=jsonObject.getInt("survey_data_monitoring_id");
@@ -206,31 +208,42 @@ public class MainMenu extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                                     try {
-                                        AlertDialogClass.dismissProgressDialog();
                                         JSONObject jsonObject = new JSONObject(response.body().toString());
                                         Log.e("audio-upload", jsonObject.toString());
+                                        //AlertDialogClass.dismissProgressDialog();
                                         String success = jsonObject.optString("success");
                                         String message = jsonObject.optString("message");
                                         String name = jsonObject.optString("name");
                                         String file_status = jsonObject.optString("file_status");
                                         if (success.equalsIgnoreCase("1")) {
-
+                                            //AlertDialogClass.dismissProgressDialog();
+                                            //change text color & count
+                                            cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
+                                            tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+0+")");
                                         }
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
-                                        AlertDialogClass.dismissProgressDialog();
+                                        //AlertDialogClass.dismissProgressDialog();
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<JsonObject> call, Throwable t) {
-                                    AlertDialogClass.dismissProgressDialog();
+                                    //AlertDialogClass.dismissProgressDialog();
                                 }
                             });
                         }
+                        else{
+                            //AlertDialogClass.dismissProgressDialog();
+                            mProgressDialog.dismiss();
+                            //change text color & count
+                            cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
+                            tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+0+")");
+                        }
                     } else {
-                        AlertDialogClass.dismissProgressDialog();
+                        //AlertDialogClass.dismissProgressDialog();
+                        mProgressDialog.dismiss();
                         CommonClass.showPopupForNoInternet(context);
                     }
 
@@ -241,7 +254,8 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                AlertDialogClass.dismissProgressDialog();
+                //AlertDialogClass.dismissProgressDialog();
+                mProgressDialog.dismiss();
             }
         });
     }
