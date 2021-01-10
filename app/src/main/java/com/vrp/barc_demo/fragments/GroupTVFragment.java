@@ -841,7 +841,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             editText.setText(sharedPrefHelper.getString("cluster_no", ""));
                         }
                         if(jsonObjectQuesType.getString("question_input_type").equals("2")){
-                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
                         }else{
                             editText.setInputType(InputType.TYPE_CLASS_TEXT);
                         }

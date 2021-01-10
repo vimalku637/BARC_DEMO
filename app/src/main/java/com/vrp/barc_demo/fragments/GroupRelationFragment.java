@@ -258,8 +258,9 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
     }
 
     private void showPopupForError(String data) {
-        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Alert!")
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        pDialog.setTitleText("Alert!")
                 .setContentText(data)
                 .setConfirmText("OK")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -276,6 +277,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     }
                 })*/
                 .show();
+        pDialog.setCancelable(false);
     }
 
     private void setButtonClick() {
@@ -891,8 +893,9 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
 
     private void openDialogForAgeConfirmation(EditText editText, int ageInYear) {
         if (ageInYear>120){
-            new AlertDialog.Builder(context).setTitle("Alert!")
-                    .setMessage("Age can't be greater then 120")
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            //new AlertDialog.Builder(context).setTitle("Alert!")
+                    builder.setMessage("Age can't be greater then 120")
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -910,10 +913,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                     })*/
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
+                    builder.setCancelable(false);
         }
         else {
-            new AlertDialog.Builder(context).setTitle("Alert!")
-                    .setMessage("Are you sure age is greater then 99")
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            //new AlertDialog.Builder(context).setTitle("Alert!")
+            builder.setMessage("Are you sure age is greater then 99")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -930,6 +935,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
+            builder.setCancelable(false);
         }
     }
 
@@ -1049,7 +1055,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             editText.setText(sharedPrefHelper.getString("cluster_no", ""));
                         }
                         if(jsonObjectQuesType.getString("question_input_type").equals("2")){
-                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
                         }else{
                             editText.setInputType(InputType.TYPE_CLASS_TEXT);
                         }
@@ -1617,8 +1623,9 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
 
     private void openDialogForAgeConfirmationSingleHH(EditText editText, int ageInYear) {
         if(sharedPrefHelper.getInt("editFieldValues",0)==1&&ageInYear<15){
-            new AlertDialog.Builder(context).setTitle("Alert!")
-                    .setMessage("If family member is only one in HH then age can't be less then 15.")
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            //new AlertDialog.Builder(context).setTitle("Alert!")
+                    builder.setMessage("If family member is only one in HH then age can't be less then 15.")
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -1636,6 +1643,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
+                    builder.setCancelable(false);
         }
     }
 

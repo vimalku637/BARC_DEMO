@@ -1330,7 +1330,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                        }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
-                           editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                           editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
                        }else{
                            editText.setInputType(InputType.TYPE_CLASS_TEXT);
                        }
@@ -2122,8 +2122,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     }
 
     private void openDialogForAgeConfirmation(EditText editText,String value) {
-        new AlertDialog.Builder(context).setTitle("Alert!")
-                .setMessage(value)
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        //new AlertDialog.Builder(context).setTitle("Alert!")
+        builder.setMessage(value)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -2140,10 +2141,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert).show();
+        builder.setCancelable(false);
     }
     private void openDialogForAgeConfirmationSpinner(String value) {
-        new AlertDialog.Builder(context).setTitle("Alert!")
-                .setMessage(value)
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        //new AlertDialog.Builder(context).setTitle("Alert!")
+        builder.setMessage(value)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -2159,6 +2163,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert).show();
+        builder.setCancelable(false);
     }
 
     private void startRecording() {
@@ -2349,8 +2354,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     }
 
     private void showPopupForTerminateSurvey() {
-        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Are you sure?")
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        pDialog.setTitleText("Are you sure?")
                 .setContentText("Want to Halt the interview!")
                 .setConfirmText("Yes")
                 .setCancelText("No")
@@ -2368,11 +2375,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     }
                 })
                 .show();
+        pDialog.setCancelable(false);
     }
     private void showPopupForTerminateSurveyOnRadio(String id,String radioButtonText,
                                                     RadioGroup radiogroup,int groupID) {
-        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Are you sure?")
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        pDialog.setTitleText("Are you sure?")
                 .setContentText("Want to terminate the interview!")
                 .setConfirmText("Yes")
                 .setCancelText("No")
@@ -2395,10 +2405,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     }
                 })
                 .show();
+        pDialog.setCancelable(false);
     }
     private void showPopupForTerminateForTV(String id) {
-        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("TV required in durables for continue the survey")
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        pDialog.setTitleText("TV required in durables for continue the survey")
                 .setContentText("Want to terminate the interview!")
                 .setConfirmText("Yes")
                 .setCancelText("No")
@@ -2416,11 +2429,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     }
                 })
                 .show();
+        pDialog.setCancelable(false);
     }
 
     private void showPopupForError(String data) {
-        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Alert!")
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        pDialog.setTitleText("Alert!")
                 .setContentText(data)
                 .setConfirmText("OK")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -2437,6 +2453,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     }
                 })*/
                 .show();
+                pDialog.setCancelable(false);
     }
 
     @Override
