@@ -1615,6 +1615,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        }
                                    }
                                }
+                               else if(jsonObjectQuesType.getString("question_id").equals("83")){
+                                   if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))) {
+                                       sharedPrefHelper.setString("2100f_radio_ids",jsonObjectOptionValues.getString("option_id"));
+                                   }
+                               }
                            }
                            if(jsonObjectQuesType.getString("pre_field").equals("1")){
                                radioButton.setEnabled(false);
