@@ -258,6 +258,7 @@ public class TerminateActivity extends AppCompatActivity {
                     json_object.put("app_version", AppConstants.APP_VERSION);
                     json_object.put("survey_status", "3");//for terminate
                     json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                    json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
                     json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
                     if (AudioSavePathInDevice!=null) {
                         json_object.put("audio_recording", AudioSavePathInDevice);
@@ -306,6 +307,7 @@ public class TerminateActivity extends AppCompatActivity {
                         btn_start_new_survey.setVisibility(View.VISIBLE);
                         sqliteHelper.updateLocalFlag("terminate", "survey",
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                        sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                         Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                     }
 
@@ -339,6 +341,7 @@ public class TerminateActivity extends AppCompatActivity {
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("terminate", "survey",
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                        sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
 
                         //send audio here
                         Uri imageUri = Uri.parse(AudioSavePathInDevice);
@@ -426,6 +429,7 @@ public class TerminateActivity extends AppCompatActivity {
                                 json_object.put("app_version", AppConstants.APP_VERSION);
                                 json_object.put("survey_status", "2");// for halt
                                 json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                                json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
                                 json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
                                 if (AudioSavePathInDevice != null) {
                                     json_object.put("audio_recording", AudioSavePathInDevice);
@@ -463,6 +467,7 @@ public class TerminateActivity extends AppCompatActivity {
                                     btn_start_new_survey.setVisibility(View.VISIBLE);
                                     sqliteHelper.updateLocalFlag("halt", "survey",
                                             Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                    sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                     Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 }
 
@@ -502,6 +507,7 @@ public class TerminateActivity extends AppCompatActivity {
                             json_object.put("app_version", AppConstants.APP_VERSION);
                             json_object.put("survey_status", "3");//for terminate
                             json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                            json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
                             json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
                             if (AudioSavePathInDevice!=null) {
                                 json_object.put("audio_recording", AudioSavePathInDevice);
@@ -549,6 +555,7 @@ public class TerminateActivity extends AppCompatActivity {
                                 btn_start_new_survey.setVisibility(View.VISIBLE);
                                 sqliteHelper.updateLocalFlag("terminate", "survey",
                                         Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                             }
 
@@ -638,6 +645,7 @@ public class TerminateActivity extends AppCompatActivity {
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("halt", "survey",
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                        sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
 
                         //send audio here
                         Uri imageUri = Uri.parse(AudioSavePathInDevice);

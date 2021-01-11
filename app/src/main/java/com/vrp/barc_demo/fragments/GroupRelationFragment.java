@@ -343,6 +343,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if(sharedPrefHelper.getInt("editFieldValues", 0)==1&&ageInYears<15){
                                     flag=false;
+                                    //openDialogForAgeConfirmationSingleHH(ageInYears);
                                     editText.setError("Age can't be less then 15 if only one member");
                                     break;
                                 }
@@ -1099,7 +1100,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                         }
                                         else if (sharedPrefHelper.getInt("editFieldValues", 0)==1){
                                             if (ageInYear<15){
-                                                openDialogForAgeConfirmationSingleHH(editText, ageInYear);
+                                                //openDialogForAgeConfirmationSingleHH(editText, ageInYear);
                                             }
                                         }
                                     }
@@ -1621,7 +1622,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
 
     }
 
-    private void openDialogForAgeConfirmationSingleHH(EditText editText, int ageInYear) {
+    private void openDialogForAgeConfirmationSingleHH(int ageInYear) {
         if(sharedPrefHelper.getInt("editFieldValues",0)==1&&ageInYear<15){
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             //new AlertDialog.Builder(context).setTitle("Alert!")
@@ -1631,7 +1632,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             //TODO here
-                            editText.setText(null);
+                            //editText.setText(null);
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {

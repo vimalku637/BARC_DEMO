@@ -772,7 +772,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         }
                                         else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("85")) {
                                             String lastTimeAccessInternet = sharedPrefHelper.getString("last_time_access_internet", "");
-                                            if (lastTimeAccessInternet.equals("9")) {
+                                            if (lastTimeAccessInternet.equals("8")) {
                                                 flag = true;
                                             } else {
                                                 flag = false;
@@ -790,6 +790,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     String spinnerIds=Long.toString(spinner.getSelectedItemId());
                                     if (spinner.getSelectedItemId()<TvWorkingCondition && spinner.getSelectedItemId()<5){
                                         flag=false;
+                                        showPopupForError("No of rooms can't be less then no. of TV");
                                         break;
                                     }else{
                                         flag=true;
@@ -916,6 +917,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         json_object.put("app_version", AppConstants.APP_VERSION);
                         json_object.put("survey_status", "1");//for completed
                         json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                        json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
                         json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
                         if (AudioSavePathInDevice!=null) {
                             json_object.put("audio_recording", AudioSavePathInDevice);
@@ -947,6 +949,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             } else {
                                 Intent intentSurveyActivity1=new Intent(context, NextSurvey.class);
                                 sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 0);
+                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 startActivity(intentSurveyActivity1);
                                 finish();
@@ -968,6 +971,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             } else {
                                 Intent intentSurveyActivity1=new Intent(context, NextSurvey.class);
                                 sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 0);
+                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 startActivity(intentSurveyActivity1);
                                 finish();
@@ -1010,17 +1014,20 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                                         sqliteHelper.updateLocalFlag("partial", "survey",
                                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                        sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                     } else {
                                         if (endScreenPosition==1) {
                                             //save data in to local DB.
                                             sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
                                             sqliteHelper.updateLocalFlag("partial", "survey",
                                                     Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                            sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                         } else {
                                             //update data in to local DB
                                             sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                                             sqliteHelper.updateLocalFlag("partial", "survey",
                                                     Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                            sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                         }
                                     }
                                 } catch (JSONException e) {
@@ -2062,7 +2069,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            if (questionID.equals("85")) {
                                String lastTimeAccessInternet = sharedPrefHelper.getString("last_time_access_internet", "");
-                               if (lastTimeAccessInternet.equals("9")) {
+                               if (lastTimeAccessInternet.equals("8")) {
                                    txtLabel.setVisibility(View.GONE);
                                    spinner.setVisibility(View.GONE);
                                }
