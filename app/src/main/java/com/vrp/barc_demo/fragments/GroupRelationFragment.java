@@ -732,6 +732,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("40") && radioID==1){
                                 sharedPrefHelper.setString("CWE_Name",nameVL.get(totalScreenCount-3));
                             }
+                            else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("43")){
+                                internetUse.put(totalScreenCount,""+radioID);
+                                Gson gson = new Gson();
+                                String hashMapString = gson.toJson(internetUse);
+                                sharedPrefHelper.setString("internetUse",hashMapString);
+                            }
                             nextPosition++;
                             count++;
                         }

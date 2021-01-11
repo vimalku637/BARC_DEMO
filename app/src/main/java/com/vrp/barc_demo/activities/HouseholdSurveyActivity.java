@@ -839,6 +839,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     }
                                         //setTerminattion("Durables");
                                 }
+                                else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("44")) {
+                                    if ((selectedOptions.contains("1") || selectedOptions.contains("2") || selectedOptions.contains("3")) && (selectedOptions.contains("6"))){
+                                        showPopupForError("You can't choose no use internet with other options");
+                                        flag = false;
+                                    }
+                                }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("78")){
                                     sharedPrefHelper.setString("family_language",""+selectedOptions);
                                 }
