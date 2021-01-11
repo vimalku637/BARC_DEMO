@@ -2140,7 +2140,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     }
 
     private void openDialogForAgeConfirmation(EditText editText,String value) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        /*final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         //new AlertDialog.Builder(context).setTitle("Alert!")
         builder.setMessage(value)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -2159,7 +2159,29 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert).show();
-        builder.setCancelable(false);
+        builder.setCancelable(false);*/
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        pDialog.setTitleText("Alert!")
+                .setContentText(value)
+                .setConfirmText("Yes")
+                .setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        editText.setText("");
+                    }
+                })
+                .show();
+        pDialog.setCancelable(false);
     }
     private void openDialogForAgeConfirmationSpinner(String value) {
 

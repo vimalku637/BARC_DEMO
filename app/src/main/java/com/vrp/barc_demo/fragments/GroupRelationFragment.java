@@ -900,7 +900,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
 
     private void openDialogForAgeConfirmation(EditText editText, int ageInYear) {
         if (ageInYear>120){
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            /*final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             //new AlertDialog.Builder(context).setTitle("Alert!")
                     builder.setMessage("Age can't be greater then 120")
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -911,19 +911,26 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             editText.setText(null);
                         }
                     })
-                    /*.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    .setIcon(android.R.drawable.ic_dialog_alert).show();
+                    builder.setCancelable(false);*/
+            final SweetAlertDialog pDialog = new SweetAlertDialog(
+                    context, SweetAlertDialog.WARNING_TYPE);
+            //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+            pDialog.setTitleText("Alert!")
+                    .setContentText("Are you sure age is greater then 99")
+                    .setConfirmText("OK")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            //TODO here
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismiss();
                             editText.setText(null);
                         }
-                    })*/
-                    .setIcon(android.R.drawable.ic_dialog_alert).show();
-                    builder.setCancelable(false);
+                    })
+                    .show();
+            pDialog.setCancelable(false);
         }
         else {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            /*final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             //new AlertDialog.Builder(context).setTitle("Alert!")
             builder.setMessage("Are you sure age is greater then 99")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -942,7 +949,29 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
-            builder.setCancelable(false);
+            builder.setCancelable(false);*/
+            final SweetAlertDialog pDialog = new SweetAlertDialog(
+                    context, SweetAlertDialog.WARNING_TYPE);
+            //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+            pDialog.setTitleText("Alert!")
+                    .setContentText("Are you sure age is greater then 99")
+                    .setConfirmText("Yes")
+                    .setCancelText("No")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismiss();
+                        }
+                    })
+                    .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismiss();
+                            editText.setText(null);
+                        }
+                    })
+                    .show();
+            pDialog.setCancelable(false);
         }
     }
 
