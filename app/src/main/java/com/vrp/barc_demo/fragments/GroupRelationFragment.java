@@ -917,7 +917,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     context, SweetAlertDialog.WARNING_TYPE);
             //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
             pDialog.setTitleText("Alert!")
-                    .setContentText("Are you sure age is greater then 99")
+                    .setContentText("Are you sure age is greater then 120")
                     .setConfirmText("OK")
                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override

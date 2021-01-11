@@ -1023,11 +1023,19 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                     } else {
                                         if (endScreenPosition==1) {
-                                            //save data in to local DB.
-                                            sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
-                                            sqliteHelper.updateLocalFlag("partial", "survey",
-                                                    Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                            sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
+                                            if (sqliteHelper.getSurveyIDFromTable(survey_id).equals(survey_id)){
+                                                //update data in to local DB
+                                                sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
+                                                sqliteHelper.updateLocalFlag("partial", "survey",
+                                                        Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
+                                            }else{
+                                                //save data in to local DB.
+                                                sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                                                sqliteHelper.updateLocalFlag("partial", "survey",
+                                                        Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
+                                            }
                                         } else {
                                             //update data in to local DB
                                             sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
@@ -2398,7 +2406,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 context, SweetAlertDialog.WARNING_TYPE);
         //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
         pDialog.setTitleText("Are you sure?")
-                .setContentText("Want to Halt the interview!")
+                .setContentText("Want to Halt/Terminate the interview!")
                 .setConfirmText("Yes")
                 .setCancelText("No")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {

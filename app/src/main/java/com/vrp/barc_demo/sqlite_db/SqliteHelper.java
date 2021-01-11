@@ -785,4 +785,26 @@ public class SqliteHelper extends SQLiteOpenHelper {
             sum = cursor.getInt(cursor.getColumnIndex("count(cluster_no)"));
         return sum;
     }
+    public String getSurveyIDFromTable(String survey_id) {
+        String surveyID = "";
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "Select survey_id from survey where survey_id= '" + survey_id + "'";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        surveyID = cursor.getString(cursor.getColumnIndex("survey_id"));
+                        cursor.moveToNext();
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return surveyID;
+    }
 }
