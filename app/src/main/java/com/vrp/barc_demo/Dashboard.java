@@ -115,6 +115,12 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
     private void setPieChart() {
 
         countComplete = sqliteHelper.getChartValue(1,0);

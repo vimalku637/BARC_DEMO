@@ -243,7 +243,7 @@
                     android:gravity="center"
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/ic_arrow_drop_down_black"
-                    android:text="@string/hh_name"
+                    android:text="@string/cluster"
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/text_16" />
 

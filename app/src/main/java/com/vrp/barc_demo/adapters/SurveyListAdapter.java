@@ -49,7 +49,7 @@ public class SurveyListAdapter extends RecyclerView.Adapter<SurveyListAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tv_survey_id.setText(arrayList.get(position).getSurvey_id());
-        holder.tv_hh_name.setText("Household 1");
+        holder.tv_hh_name.setText(arrayList.get(position).getCluster_no());
 
         //change status here
         if (arrayList.get(position).getStatus().equals("4")) {

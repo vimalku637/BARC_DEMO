@@ -32,8 +32,9 @@
     <string name="bi_survey_app">BI Survey App</string>
     <string name="new_password_will_be_send_to_the_email_id">New Password will be send to the email ID</string>
     <string name="technology_partner_indev_consultancy_pvt_ltd">Technology Partner: Indev Consultancy Pvt. Ltd</string>
-    <string name="cluster_id">Cluste id</string>
+    <string name="cluster_id">Cluster id</string>
     <string name="cluster_name">Cluster Name</string>
+    <string name="cluster">Cluster</string>
     <string name="action">Action</string>
     <string name="Please_wait">Please Wait</string>
     <string name="sending_password">Sending Password to email</string>

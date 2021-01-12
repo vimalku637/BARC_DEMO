@@ -67,13 +67,13 @@ public class NextSurvey extends AppCompatActivity {
         cv_dashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (totalSurveyForCluster>=sampleSize){
+               /* if (totalSurveyForCluster>=sampleSize){
                     Toast.makeText(context, "You have completed all survey for this cluster.", Toast.LENGTH_SHORT).show();
                     return;
-                }else {
+                }else {*/
                     Intent intent = new Intent(NextSurvey.this, ClusterListActivity.class);
                     startActivity(intent);
-                }
+                //}
             }
         });
     }

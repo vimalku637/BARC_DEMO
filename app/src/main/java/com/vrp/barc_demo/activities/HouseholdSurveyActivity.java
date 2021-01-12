@@ -188,8 +188,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
         ButterKnife.bind(this);
         initialization();
         Log.e(TAG, "LAT_LONG>>> "+sharedPrefHelper.getString("LAT", "")+"\n"+
@@ -467,6 +467,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         break;
                                     }else if (questionID.equals("46")) {
                                         name=editText.getText().toString().trim();
+                                        sharedPrefHelper.setString("name", name);
                                         if (name.length()==1){
                                             flag=false;
                                             editText.setError("Name can't be blank or only one character");
@@ -1020,7 +1021,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                                         sqliteHelper.updateLocalFlag("partial", "survey",
                                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                        sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                     } else {
                                         if (endScreenPosition==1) {
                                             if (sqliteHelper.getSurveyIDFromTable(survey_id).equals(survey_id)){
@@ -1028,20 +1028,17 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                 sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                                                 sqliteHelper.updateLocalFlag("partial", "survey",
                                                         Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                             }else{
                                                 //save data in to local DB.
                                                 sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
                                                 sqliteHelper.updateLocalFlag("partial", "survey",
                                                         Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                             }
                                         } else {
                                             //update data in to local DB
                                             sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                                             sqliteHelper.updateLocalFlag("partial", "survey",
                                                     Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                            sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                         }
                                     }
                                 } catch (JSONException e) {
@@ -1576,6 +1573,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                                if(jsonObjectQuesType.getString("question_id").equals("23")){
                                    if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
+                                       sharedPrefHelper.setString("CWE_Status",jsonObjectOptionValues.getString("option_id"));
                                        if(jsonObjectOptionValues.getString("option_id").equals("1")){
                                            try{
                                                jsonArrayScreen=jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
@@ -1666,6 +1664,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    if(selectedOptionsSpinner.equals("2")){
                                        if(jsonObjectOptionValues.getString("option_id").equals("2")){
                                            radioGroup.addView(radioButton);
+                                           radioButton.setChecked(true);
                                        }
                                    }else if(selectedOptionsSpinner.equals("1")){
                                        if(!jsonObjectOptionValues.getString("option_id").equals("2")){
@@ -1960,7 +1959,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            int spinnerIndex=1;
                            for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
                                if(sharedPrefHelper.getString("HH_Name","").equals(entry.getValue()) || sharedPrefHelper.getString("CWE_Name","").equals(entry.getValue())) {
-                                   nameAL.add(entry.getValue() + "-" + spinnerIndex);
+                                   //nameAL.add(entry.getValue() + "-" + spinnerIndex);
+                                   nameAL.add(entry.getValue());
                                }
                                spinnerIndex++;
                            }

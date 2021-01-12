@@ -367,7 +367,21 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 //if((back_status==true || screen_type.equals("survey_list")) && answerModelList.get(startPositionBefore).getQuestionID().equals(jsonArrayQuestions.getJSONObject(count).getString("question_id"))){
-                                answerModelList.get(nextPosition).setOption_id(Integer.toString(radioID));
+                                if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("40") && jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("39")){
+                                    if(answerModelList.get(nextPosition).getOption_id().equals("1") && radioID!=1){
+                                        sharedPrefHelper.setString("CWE_Name","");
+                                    }
+                                    answerModelList.get(nextPosition).setOption_id(Integer.toString(radioID));
+                                }
+                                else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("39")){
+                                    if(answerModelList.get(nextPosition).getOption_id().equals("1") && radioID!=1){
+                                        sharedPrefHelper.setString("HH_Name","");
+                                    }
+                                    answerModelList.get(nextPosition).setOption_id(Integer.toString(radioID));
+                                }
+                                else{
+                                    answerModelList.get(nextPosition).setOption_id(Integer.toString(radioID));
+                                }
                             }else{
                                 AnswerModel answerModel= new AnswerModel();
                                 answerModel.setOption_id(Integer.toString(radioID));
@@ -710,7 +724,6 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 radioID = Integer.parseInt(strTag.substring(0, sepPos));
                             }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                                //if((back_status==true || screen_type.equals("survey_list")) && answerModelList.get(startPositionBefore).getQuestionID().equals(jsonArrayQuestions.getJSONObject(count).getString("question_id"))){
                                 answerModelList.get(nextPosition).setOption_id(Integer.toString(radioID));
                             }else{
                                 AnswerModel answerModel= new AnswerModel();
@@ -1147,7 +1160,6 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                             });
                         }
-
                         editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(Integer.parseInt(jsonObjectQuesType.getString("max_limit")))});
                         if(jsonObjectQuesType.getString("pre_field").equals("1")){
                             editText.setEnabled(false);
@@ -1206,7 +1218,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     sharedPrefHelper.setString("HH_Yes","1");
                                 }
                                 else if(jsonObjectQuesType.getString("question_id").equals("40")) {
-                                    if(sharedPrefHelper.getString("CWE_Yes","0").equals("1")){
+                                    if(sharedPrefHelper.getString("CWE_Yes","0").equals("1") || sharedPrefHelper.getString("CWE_Status","").equals("2")){
                                         radioButton.setEnabled(false);
                                     }
                                 }

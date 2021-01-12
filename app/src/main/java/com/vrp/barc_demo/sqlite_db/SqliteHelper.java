@@ -232,7 +232,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         String cluster_no= sharedPrefHelper.getString("cluster_no", "");
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_id,household_name,status from survey where cluster_no='"+cluster_no+"'";
+                String query = "select survey_id,household_name,status,cluster_no from survey where cluster_no='"+cluster_no+"'";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -241,6 +241,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                         surveyModel.setSurvey_id(cursor.getString(cursor.getColumnIndex("survey_id")));
                         surveyModel.setHousehold_name(cursor.getString(cursor.getColumnIndex("household_name")));
                         surveyModel.setStatus(cursor.getString(cursor.getColumnIndex("status")));
+                        surveyModel.setCluster_no(cursor.getString(cursor.getColumnIndex("cluster_no")));
 
                         cursor.moveToNext();
                         arrayList.add(surveyModel);
@@ -647,7 +648,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_id, survey_data, audio_recording from survey where flag=0";
+                String query = "select survey_id, survey_data, audio_recording from survey where flag=0 and status=1";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();

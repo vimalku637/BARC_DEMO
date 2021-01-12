@@ -307,7 +307,6 @@ public class TerminateActivity extends AppCompatActivity {
                         btn_start_new_survey.setVisibility(View.VISIBLE);
                         sqliteHelper.updateLocalFlag("terminate", "survey",
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                        sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                         Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                     }
 
@@ -341,7 +340,6 @@ public class TerminateActivity extends AppCompatActivity {
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("terminate", "survey",
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                        sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
 
                         //send audio here
                         Uri imageUri = Uri.parse(AudioSavePathInDevice);
@@ -467,7 +465,6 @@ public class TerminateActivity extends AppCompatActivity {
                                     btn_start_new_survey.setVisibility(View.VISIBLE);
                                     sqliteHelper.updateLocalFlag("halt", "survey",
                                             Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                    sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                     Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 }
 
@@ -555,7 +552,6 @@ public class TerminateActivity extends AppCompatActivity {
                                 btn_start_new_survey.setVisibility(View.VISIBLE);
                                 sqliteHelper.updateLocalFlag("terminate", "survey",
                                         Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                             }
 
@@ -608,17 +604,19 @@ public class TerminateActivity extends AppCompatActivity {
             rb_door_lock.setFocusable(true);
             return false;
         }
-        if (et_name.getText().toString().trim().length()==0) {
-            til_name.setError("Please enter name!");
-            return false;
-        } else {
-            til_name.setError(null);
-        }
-        if (et_address.getText().toString().trim().length()==0) {
-            til_address.setError("Please enter address!");
-            return false;
-        } else {
-            til_address.setError(null);
+        else if (halt_radio_button_id.equals("10")){
+            if (et_name.getText().toString().trim().length()==0) {
+                til_name.setError("Please enter name!");
+                return false;
+            } else {
+                til_name.setError(null);
+            }
+            if (et_address.getText().toString().trim().length()==0) {
+                til_address.setError("Please enter address!");
+                return false;
+            } else {
+                til_address.setError(null);
+            }
         }
         return true;
     }
@@ -645,7 +643,6 @@ public class TerminateActivity extends AppCompatActivity {
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("halt", "survey",
                                 Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                        sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
 
                         //send audio here
                         Uri imageUri = Uri.parse(AudioSavePathInDevice);
