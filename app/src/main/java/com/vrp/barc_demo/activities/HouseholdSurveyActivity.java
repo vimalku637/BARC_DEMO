@@ -458,7 +458,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     answerModelList.add(answerModel);
                                 }
                                 if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
-                                        &&questionID.equals("94")||questionID.equals("90")||questionID.equals("86")||questionID.equals("109")&&editText.getText().toString().trim().equals("")){
+                                        && (questionID.equals("94")||questionID.equals("90")||questionID.equals("86")||questionID.equals("109")||questionID.equals("93")||questionID.equals("95")) && editText.getText().toString().trim().equals("")){
                                     flag=true;
 
                                 } else {
@@ -1467,6 +1467,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        if (jsonObjectQuesType.getString("question_id").equals("94")){
                            String town_village_class=sharedPrefHelper.getString("town_village_class","");
                            if(!town_village_class.equals("Rural")){
+                               txtLabel.setVisibility(View.GONE);
+                               editText.setVisibility(View.GONE);
+                           }
+                       }
+                       if (jsonObjectQuesType.getString("question_id").equals("93") || jsonObjectQuesType.getString("question_id").equals("95") ){
+                           String town_village_class=sharedPrefHelper.getString("town_village_class","");
+                           if(!town_village_class.equals("Urban")){
                                txtLabel.setVisibility(View.GONE);
                                editText.setVisibility(View.GONE);
                            }
