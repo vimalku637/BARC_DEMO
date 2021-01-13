@@ -162,7 +162,7 @@ public class MainMenu extends AppCompatActivity {
 
     private void sendDataOnServer(SweetAlertDialog sDialog) {
         if (CommonClass.isInternetOn(context)){
-            if (count>0){
+            //if (count>0){
                 for (int i = 0; i < modelArrayList.size(); i++) {
                     String surveyID=modelArrayList.get(i).getSurvey_id();
                     String surveyData=modelArrayList.get(i).getSurvey_data();
@@ -175,8 +175,7 @@ public class MainMenu extends AppCompatActivity {
                     //send data on server
                     sendSurveyDataOnServer(body, surveyID, sDialog);
                 }
-                count=0;
-            }
+            //}
         }else{
             CommonClass.showPopupForNoInternet(context);
         }
@@ -201,6 +200,7 @@ public class MainMenu extends AppCompatActivity {
                         sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
                         if(count>0){
+                            count=count-1;
                             //AlertDialogClass.dismissProgressDialog();
                             mProgressDialog.dismiss();
                             cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
