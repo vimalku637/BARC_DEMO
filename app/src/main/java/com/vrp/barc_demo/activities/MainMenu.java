@@ -203,14 +203,15 @@ public class MainMenu extends AppCompatActivity {
                             count=count-1;
                             //AlertDialogClass.dismissProgressDialog();
                             mProgressDialog.dismiss();
-                            cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                            cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
                             tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+count+")");
-                        }else{
+                        }
+                        /*else{
                             //AlertDialogClass.dismissProgressDialog();
                             mProgressDialog.dismiss();
                             cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
                             tv_synchronise.setText(getResources().getString(R.string.synchronise) + " (" +count+ ")");
-                        }
+                        }*/
 
                         //send audio here
                         if(!AudioSavePathInDevice.equals("")) {
@@ -234,7 +235,7 @@ public class MainMenu extends AppCompatActivity {
                                         String name = jsonObject.optString("name");
                                         String file_status = jsonObject.optString("file_status");
                                         if (success.equalsIgnoreCase("1")) {
-                                            if(count>0){
+                                            /*if(count>0){
                                                 //AlertDialogClass.dismissProgressDialog();
                                                 mProgressDialog.dismiss();
                                                 cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
@@ -244,7 +245,7 @@ public class MainMenu extends AppCompatActivity {
                                                 mProgressDialog.dismiss();
                                                 cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
                                                 tv_synchronise.setText(getResources().getString(R.string.synchronise) + " (" +count+ ")");
-                                            }
+                                            }*/
                                         }
 
                                     } catch (JSONException e) {
@@ -259,7 +260,7 @@ public class MainMenu extends AppCompatActivity {
                                 }
                             });
                         }
-                        else{
+                        /*else{
                             if(count>0){
                                 //AlertDialogClass.dismissProgressDialog();
                                 mProgressDialog.dismiss();
@@ -271,7 +272,7 @@ public class MainMenu extends AppCompatActivity {
                                 cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
                                 tv_synchronise.setText(getResources().getString(R.string.synchronise) + " (" +count+ ")");
                             }
-                        }
+                        }*/
                     } else {
                         //AlertDialogClass.dismissProgressDialog();
                         mProgressDialog.dismiss();
