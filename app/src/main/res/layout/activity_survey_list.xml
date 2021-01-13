@@ -23,7 +23,6 @@
             android:layout_marginTop="@dimen/margin7"
             android:orientation="vertical">
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,7 +127,6 @@
 
             </LinearLayout>
 
-
         </LinearLayout>
 
         <LinearLayout
@@ -202,6 +200,7 @@
         </LinearLayout>
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_survey_status_in_cluster"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/survey_status_in_your_cluster"

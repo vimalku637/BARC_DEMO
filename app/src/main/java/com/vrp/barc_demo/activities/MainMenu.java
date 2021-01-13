@@ -74,6 +74,7 @@ public class MainMenu extends AppCompatActivity {
     private ArrayList<SurveyModel> modelArrayList;
     public static String AudioSavePathInDevice="";
     MultipartBody.Part part;
+    int count=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,13 +95,14 @@ public class MainMenu extends AppCompatActivity {
 
         //get data list for sync
         modelArrayList=sqliteHelper.getAllSurveyDataFromTableToSync();
-        if(modelArrayList.size()>0){
+        count=modelArrayList.size();
+        if(count>0){
             cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-            tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+modelArrayList.size()+")");
+            tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+count+")");
         }else{
             //AlertDialogClass.dismissProgressDialog();
             cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
-            tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+0+")");
+            tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+count+")");
         }
     }
 
@@ -119,7 +121,18 @@ public class MainMenu extends AppCompatActivity {
         cv_synchronise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (modelArrayList.size()>0) {
+                //get data list for sync
+                modelArrayList=sqliteHelper.getAllSurveyDataFromTableToSync();
+                count=modelArrayList.size();
+                if(count>0){
+                    cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                    tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+count+")");
+                }else{
+                    //AlertDialogClass.dismissProgressDialog();
+                    cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
+                    tv_synchronise.setText(getResources().getString(R.string.synchronise) + " (" +count+ ")");
+                }
+                if (count>0) {
                     new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Are you sure?")
                             .setContentText("Want to synchronized survey data!")
@@ -149,7 +162,7 @@ public class MainMenu extends AppCompatActivity {
 
     private void sendDataOnServer(SweetAlertDialog sDialog) {
         if (CommonClass.isInternetOn(context)){
-            if (modelArrayList.size()>0){
+            if (count>0){
                 for (int i = 0; i < modelArrayList.size(); i++) {
                     String surveyID=modelArrayList.get(i).getSurvey_id();
                     String surveyData=modelArrayList.get(i).getSurvey_data();
@@ -162,13 +175,7 @@ public class MainMenu extends AppCompatActivity {
                     //send data on server
                     sendSurveyDataOnServer(body, surveyID, sDialog);
                 }
-                //open success message
-                /*sDialog
-                        .setTitleText("Success!")
-                        .setContentText("Data has been successfully Synchronized!")
-                        .setConfirmText("OK")
-                        .setConfirmClickListener(null)
-                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);*/
+                count=0;
             }
         }else{
             CommonClass.showPopupForNoInternet(context);
@@ -193,6 +200,17 @@ public class MainMenu extends AppCompatActivity {
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
+                        if(count>0){
+                            //AlertDialogClass.dismissProgressDialog();
+                            mProgressDialog.dismiss();
+                            cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                            tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+count+")");
+                        }else{
+                            //AlertDialogClass.dismissProgressDialog();
+                            mProgressDialog.dismiss();
+                            cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
+                            tv_synchronise.setText(getResources().getString(R.string.synchronise) + " (" +count+ ")");
+                        }
 
                         //send audio here
                         if(!AudioSavePathInDevice.equals("")) {
@@ -216,10 +234,17 @@ public class MainMenu extends AppCompatActivity {
                                         String name = jsonObject.optString("name");
                                         String file_status = jsonObject.optString("file_status");
                                         if (success.equalsIgnoreCase("1")) {
-                                            //AlertDialogClass.dismissProgressDialog();
-                                            //change text color & count
-                                            cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
-                                            tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+0+")");
+                                            if(count>0){
+                                                //AlertDialogClass.dismissProgressDialog();
+                                                mProgressDialog.dismiss();
+                                                cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                                                tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+count+")");
+                                            }else{
+                                                //AlertDialogClass.dismissProgressDialog();
+                                                mProgressDialog.dismiss();
+                                                cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
+                                                tv_synchronise.setText(getResources().getString(R.string.synchronise) + " (" +count+ ")");
+                                            }
                                         }
 
                                     } catch (JSONException e) {
@@ -235,11 +260,17 @@ public class MainMenu extends AppCompatActivity {
                             });
                         }
                         else{
-                            //AlertDialogClass.dismissProgressDialog();
-                            mProgressDialog.dismiss();
-                            //change text color & count
-                            cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
-                            tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+0+")");
+                            if(count>0){
+                                //AlertDialogClass.dismissProgressDialog();
+                                mProgressDialog.dismiss();
+                                cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                                tv_synchronise.setText(getResources().getString(R.string.synchronise)+" ("+count+")");
+                            }else{
+                                //AlertDialogClass.dismissProgressDialog();
+                                mProgressDialog.dismiss();
+                                cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
+                                tv_synchronise.setText(getResources().getString(R.string.synchronise) + " (" +count+ ")");
+                            }
                         }
                     } else {
                         //AlertDialogClass.dismissProgressDialog();

@@ -65,6 +65,9 @@ public class SurveyListActivity extends AppCompatActivity {
     TextView tv_HouseHoldcount;
     @BindView(R.id.tv_teminated)
     TextView tv_teminated;
+    @BindView(R.id.tv_survey_status_in_cluster)
+            MaterialTextView tv_survey_status_in_cluster;
+
     int strTotalSurvey;
     int countProgress;
     int countReject;
@@ -117,6 +120,7 @@ public class SurveyListActivity extends AppCompatActivity {
 
         setSurveyAdapter();
         setButtonClick();
+        setValues();
 
         countProgress = sqliteHelper.getTotalchartInprogress(1);
         tv_SurveysHaltCount.setText(""+countProgress);
@@ -135,6 +139,10 @@ public class SurveyListActivity extends AppCompatActivity {
         totalSurveyForCluster=sqliteHelper.getClusterCompletedFromTable(sharedPrefHelper.getString("cluster_no", ""));
         sharedPrefHelper.setInt("sampleSize",sampleSize);
         sharedPrefHelper.setInt("totalSurvey",totalSurveyForCluster);
+    }
+
+    private void setValues() {
+        tv_survey_status_in_cluster.setText("Survey status in your cluster"+" "+sharedPrefHelper.getString("cluster_no",""));
     }
 
     private void setButtonClick() {
