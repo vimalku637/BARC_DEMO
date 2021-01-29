@@ -403,6 +403,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     break;
                                 }else{
                                     sharedPrefHelper.setString("HH_Name",nameVL.get(totalScreenCount-3));
+                                    sharedPrefHelper.setString("HH_Yes","1");
                                 }
                             }
                             else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("39") && radioID==2){
@@ -422,6 +423,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     break;
                                 }else{
                                     sharedPrefHelper.setString("CWE_Name",nameVL.get(totalScreenCount-3));
+                                    sharedPrefHelper.setString("CWE_Yes","1");
                                 }
                             }
                             else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("40") && radioID==2){
@@ -741,9 +743,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             }
                             if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("39") && radioID==1){
                                 sharedPrefHelper.setString("HH_Name",nameVL.get(totalScreenCount-3));
+                                sharedPrefHelper.setString("HH_Yes","1");
                             }
                             else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("40") && radioID==1){
                                 sharedPrefHelper.setString("CWE_Name",nameVL.get(totalScreenCount-3));
+                                sharedPrefHelper.setString("CWE_Yes","1");
                             }
                             else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("43")){
                                 internetUse.put(totalScreenCount,""+radioID);
@@ -1277,7 +1281,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 String id=rbTag.substring(sepPos+1);
                                 String radioID = rbTag.substring(0, sepPos);
                                 String radioGroupID=String.valueOf(group.getId());
-                                if(radioGroupID.equals("40") && radioID.equals("1")){
+                               /* if(radioGroupID.equals("40") && radioID.equals("1")){
                                     sharedPrefHelper.setString("CWE_Yes","1");
                                 }else if(radioGroupID.equals("40") && radioID.equals("2")){
                                     sharedPrefHelper.setString("CWE_Yes","");
@@ -1286,22 +1290,10 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     sharedPrefHelper.setString("HH_Yes","1");
                                 }else if(radioGroupID.equals("39") && radioID.equals("2")){
                                     sharedPrefHelper.setString("HH_Yes","");
-                                }
-                                if(group.getId()==40){
-                                    /*for (int i = 0; i < ll_parent.getChildCount(); i++) {
-                                        final View childView = ll_parent.getChildAt(i);
-                                        sharedPrefHelper.setString("Q1h_Member_CWE",radioID);
-                                        if (childView instanceof Spinner) {
-                                            Spinner spinner = (Spinner) childView;
-                                            if (String.valueOf(spinner.getId()).equals("42")) {
-                                                if (radioID.equals("1")) {
-                                                }
-                                                else if (radioID.equals("2")) {
-                                                }
-                                            }
-                                        }
-                                    }*/
-                                }
+                                }*/
+                               /* if(group.getId()==40){
+
+                                }*/
                             }
                         });
                         //onAddRadioButton(jsonObjectQuesType);

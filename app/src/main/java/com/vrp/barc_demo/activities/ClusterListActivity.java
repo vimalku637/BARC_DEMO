@@ -249,10 +249,16 @@ public class ClusterListActivity extends AppCompatActivity {
                             ContentValues contentValues = new ContentValues();
                             while (keys.hasNext()) {
                                 String currentDynamicKey = (String) keys.next();
-                                if(!currentDynamicKey.equalsIgnoreCase("NCC_catagory"))
+                                if(!currentDynamicKey.equalsIgnoreCase("NCC_catagory") && !currentDynamicKey.equalsIgnoreCase("tot_submitted") && !currentDynamicKey.equalsIgnoreCase("tot_halted") && !currentDynamicKey.equalsIgnoreCase("tot_accepted") && !currentDynamicKey.equalsIgnoreCase("rejected_list"))
                                     contentValues.put(currentDynamicKey, jsonObject.get(currentDynamicKey).toString());
                             }
                             sqliteHelper.saveMasterTable(contentValues, "cluster");
+                            JSONArray jsonArray1 = new JSONArray(jsonObject.getString("rejected_list"));
+                            for(int k=0;k<jsonArray1.length();k++){
+                               String id=jsonArray1.getString(k);
+                               Log.e("id",id);
+                               sqliteHelper.updateStatus("survey",id,4);
+                            }
 
                             ClusterModel clusterModel=new ClusterModel();
                             clusterModel.setCluster_no(jsonObject.getString("cluster_no"));
@@ -297,7 +303,7 @@ public class ClusterListActivity extends AppCompatActivity {
                                     if (clusterModelAL.get(position).getLock_status().equals("0")) {
                                         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                                                 .setTitleText("Are you sure?")
-                                                .setContentText("Want to assign" + "\n" + clusterModelAL.get(position).getCluster_no())
+                                                .setContentText("Want to attempt" + "\n" + clusterModelAL.get(position).getCluster_no())
                                                 .setConfirmText("Submit")
                                                 .setCancelText("Cancel")
                                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {

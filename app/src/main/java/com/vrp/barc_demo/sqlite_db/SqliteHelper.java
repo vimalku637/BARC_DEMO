@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "barc.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String TAG = "SqLiteHelper";
     String DB_PATH_SUFFIX = "/databases/";
     int version;
@@ -60,6 +60,10 @@ public class SqliteHelper extends SQLiteOpenHelper {
         Log.d(TAG, "onUpgrade() from " + oldVersion + " to " + newVersion);
         if(oldVersion<2){
             db.execSQL("ALTER TABLE cluster ADD completed_record INTEGER DEFAULT '0'");
+        }
+        if(oldVersion<3){
+            db.execSQL("ALTER TABLE cluster ADD tot_rejected INTEGER DEFAULT 0");
+            db.execSQL("ALTER TABLE cluster ADD tot_terminated INTEGER DEFAULT 0");
         }
     }
 
@@ -735,17 +739,17 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return sampleSize;
     }
-    public int getClusterCompletedFromTable(String cluster_no) {
+    public int getClusterCompletedFromTable(String cluster_no,String coloumn_name) {
         int sampleSize = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "Select completed_record from cluster where cluster_no= '" + cluster_no + "'";
+                String query = "Select "+coloumn_name+" from cluster where cluster_no= '" + cluster_no + "'";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
-                        sampleSize = cursor.getInt(cursor.getColumnIndex("completed_record"));
+                        sampleSize = cursor.getInt(cursor.getColumnIndex(coloumn_name));
                         cursor.moveToNext();
                     }
                 }

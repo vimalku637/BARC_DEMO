@@ -44,6 +44,8 @@ public class ClusterModel {
     public static final String COLUMN_completed_record="completed_record";
     public static final String COLUMN_SELECTED_VOTER_NO="Selected_Voter_No";
     public static final String COLUMN_EP_ADDRESS="EP_address";
+    public static final String COLUMN_REJECTED="tot_rejected";
+    public static final String COLUMN_TERMINATED="tot_terminated";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
@@ -75,7 +77,9 @@ public class ClusterModel {
                     + COLUMN_NCCC_CATAGORY+ " TEXT ,"
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
                     + COLUMN_NCC_CATAGORY + " TEXT ,"
-                    + COLUMN_completed_record + " TEXT ,"
+                    + COLUMN_completed_record + " INTEGER DEFAULT 0 ,"
+                    + COLUMN_REJECTED + " INTEGER DEFAULT 0 ,"
+                    + COLUMN_TERMINATED + " INTEGER DEFAULT 0 ,"
                     + COLUMN_SELECTED_VOTER_NO + " TEXT ,"
                     + COLUMN_EP_ADDRESS + " TEXT ,"
                     + COLUMN_SAMPLE_SIZE + " INTEGER DEFAULT 0 ,"
@@ -336,5 +340,6 @@ public class ClusterModel {
     public void setsample_size(String sample_size) {
         this.sample_size = sample_size;
     }
+
 
 }

@@ -797,6 +797,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         flag=true;
                                     }
                                 }
+                                else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("45")){
+                                    sharedPrefHelper.setString("CWE_Living_status", ""+spinnerID);
+                                }
                                 nextPosition++;
                                 count++;
                             }
@@ -1242,7 +1245,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             }
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
                 AlertDialogClass.dismissProgressDialog();
                 btn_next.setEnabled(true);
             }
@@ -1319,24 +1322,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        } else if (jsonObjectQuesType.getString("field_name").equals("cluster_no")) {
                            editText.setText(sharedPrefHelper.getString("cluster_no", ""));
                        }//pre field for screen 15
-                       else if (jsonObjectQuesType.getString("field_name").equals("nccs_hh")) {
-                           editText.setText(sharedPrefHelper.getString("status_nccs_hh", ""));
-                       }
                        if (jsonObjectQuesType.getString("field_name").equals("BI_Weighting_town_class")){
                            editText.setText(sharedPrefHelper.getString("BI_Weighting_town_class", ""));
                        }
                        else if (jsonObjectQuesType.getString("field_name").equals("interview_number")) {
                            editText.setText(survey_id);
                        }
-                       else if (jsonObjectQuesType.getString("field_name").equals("nccs_matrix")) {
-                           //editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
-                           String status=sqliteHelper.getNCCMatrix2(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id(),sharedPrefHelper.getString("nccs_matrix", ""));
-                           if(!status.equals(""))
-                           editText.setText(status);
-                           sharedPrefHelper.setString("status_nccs_hh", status);
-                           /*else
-                               setTerminattion("NCCS Calculator");*/
-                      }
                        else if (jsonObjectQuesType.getString("question_id").equals("101")) {
                                editText.setText(sharedPrefHelper.getString("HH_Name",""));
                        }
@@ -1537,6 +1528,18 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                            editText.setText(answerModelList.get(startPosition).getOption_value());
                        }
+                       if (jsonObjectQuesType.getString("field_name").equals("nccs_hh")) {
+                           editText.setText(sharedPrefHelper.getString("status_nccs_hh", ""));
+                       }
+                       else if (jsonObjectQuesType.getString("field_name").equals("nccs_matrix")) {
+                           //editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
+                           String status=sqliteHelper.getNCCMatrix2(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id(),sharedPrefHelper.getString("nccs_matrix", ""));
+                           if(!status.equals(""))
+                               editText.setText(status);
+                           sharedPrefHelper.setString("status_nccs_hh", status);
+                           /*else
+                               setTerminattion("NCCS Calculator");*/
+                       }
                        String description=jsonObjectQuesType.getString("question_name");
                        //description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
@@ -1669,15 +1672,26 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                if(questionID.equals("53")){
                                    String selectedOptionsSpinner=sharedPrefHelper.getString("CWE_Status","");
                                    if(selectedOptionsSpinner.equals("2")){
-                                       if(jsonObjectOptionValues.getString("option_id").equals("2")){
+                                       String CWE_Living_status=sharedPrefHelper.getString("CWE_Living_status", "");
+                                       if(CWE_Living_status.equals("4")){
+                                           if(jsonObjectOptionValues.getString("option_id").equals("3")){
+                                               radioGroup.addView(radioButton);
+                                               radioButton.setChecked(true);
+                                           }
+                                       }else{
+                                           if(jsonObjectOptionValues.getString("option_id").equals("2")){
+                                               radioGroup.addView(radioButton);
+                                               radioButton.setChecked(true);
+                                           }
+                                       }
+                                   }else if(selectedOptionsSpinner.equals("1")){
+                                       if(jsonObjectOptionValues.getString("option_id").equals("1")){
                                            radioGroup.addView(radioButton);
                                            radioButton.setChecked(true);
                                        }
-                                   }else if(selectedOptionsSpinner.equals("1")){
-                                       if(!jsonObjectOptionValues.getString("option_id").equals("2")){
-                                           radioGroup.addView(radioButton);
-                                       }
                                    }
+                                   txtLabel.setVisibility(View.GONE);
+                                   radioButton.setVisibility(View.GONE);
                                }else{
                                    radioGroup.addView(radioButton);
                                }

@@ -34,7 +34,8 @@ public interface BARC_API {
     @GET("questions_v2.php")
     Call<JsonObject> getBarcDemoJson();
 
-    @POST("download_cluster_v2.php")
+    //@POST("download_cluster_v2.php")
+    @POST("download_cluster_v3.php")
     Call<JsonArray> getClusterList(@Body RequestBody body);
 
     @POST("lock_cluster.php")

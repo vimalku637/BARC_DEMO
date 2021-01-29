@@ -122,23 +122,26 @@ public class SurveyListActivity extends AppCompatActivity {
         setButtonClick();
         setValues();
 
-        countProgress = sqliteHelper.getTotalchartInprogress(1);
-        tv_SurveysHaltCount.setText(""+countProgress);
-        countReject = sqliteHelper.getChartValue(4,1);
-        tv_SurveysRejectedCount.setText(""+countReject);
-        countComplete = sqliteHelper.getChartValue(1,1);
-        tv_SurveysCompletedcount.setText(""+countComplete);
-        countHouseHold = sqliteHelper.getTotalsurveyhousehold(1);
-        tv_HouseHoldcount.setText(""+countHouseHold);
-        countTerminate = sqliteHelper.getTotalchart4(3,1);
-        tv_teminated.setText(""+countTerminate);
-
         /*get survey sample from table*/
         sampleSize=sqliteHelper.getClusterSampleSizeFromTable(sharedPrefHelper.getString("cluster_no", ""));
         //totalSurveyForCluster=sqliteHelper.getTotalSurveyForCluster(sharedPrefHelper.getString("cluster_no", ""));
-        totalSurveyForCluster=sqliteHelper.getClusterCompletedFromTable(sharedPrefHelper.getString("cluster_no", ""));
+        totalSurveyForCluster=sqliteHelper.getClusterCompletedFromTable(sharedPrefHelper.getString("cluster_no", ""),"completed_record");
+        countReject=sqliteHelper.getClusterCompletedFromTable(sharedPrefHelper.getString("cluster_no", ""),"tot_rejected");
         sharedPrefHelper.setInt("sampleSize",sampleSize);
         sharedPrefHelper.setInt("totalSurvey",totalSurveyForCluster);
+
+        countProgress = sqliteHelper.getTotalchartInprogress(1);
+        tv_SurveysHaltCount.setText(""+countProgress);
+        //countReject = sqliteHelper.getChartValue(4,1);
+        tv_SurveysRejectedCount.setText(""+countReject);
+        countComplete = totalSurveyForCluster;//sqliteHelper.getChartValue(1,1);
+        tv_SurveysCompletedcount.setText(""+countComplete);
+        countTerminate = sqliteHelper.getTotalchart4(3,1);
+        tv_teminated.setText(""+countTerminate);
+        countHouseHold = countProgress+countTerminate+countComplete+countReject;//sqliteHelper.getTotalsurveyhousehold(1);
+        tv_HouseHoldcount.setText(""+countHouseHold);
+
+
     }
 
     private void setValues() {
