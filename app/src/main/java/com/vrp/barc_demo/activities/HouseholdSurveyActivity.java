@@ -849,6 +849,32 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         flag = false;
                                     }
                                 }
+                                else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("69")){//30-01-2021
+                                    if (selectedOptions.contains("1") || selectedOptions.contains("2") || selectedOptions.contains("3") || selectedOptions.contains("4") || selectedOptions.contains("5") || selectedOptions.contains("6") || selectedOptions.contains("7") || selectedOptions.contains("8") || selectedOptions.contains("9") || selectedOptions.contains("10") || selectedOptions.contains("11")){
+                                        if (selectedOptions.contains("99")){
+                                            showPopupForError("if you choose None option then you are not allow to choose any other options.");
+                                            flag = false;
+                                        }
+                                    }else if(selectedOptions.contains("99")){
+                                        if(selectedOptions.contains("1") || selectedOptions.contains("2") || selectedOptions.contains("3") || selectedOptions.contains("4") || selectedOptions.contains("5") || selectedOptions.contains("6") || selectedOptions.contains("7") || selectedOptions.contains("8") || selectedOptions.contains("9") || selectedOptions.contains("10") || selectedOptions.contains("11")){
+                                            showPopupForError("if you choose None option then you are not allow to choose any other options.");
+                                            flag = false;
+                                        }
+                                    }
+                                }
+                                else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("70")){//30-01-2021
+                                    if (selectedOptions.contains("1") || selectedOptions.contains("2")){
+                                        if (selectedOptions.contains("3")){
+                                            showPopupForError("if you choose None option then you are not allow to choose any other options.");
+                                            flag = false;
+                                        }
+                                    }else if(selectedOptions.contains("3")){
+                                        if(selectedOptions.contains("1") || selectedOptions.contains("2")){
+                                            showPopupForError("if you choose None option then you are not allow to choose any other options.");
+                                            flag = false;
+                                        }
+                                    }
+                                }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("78")){
                                     sharedPrefHelper.setString("family_language",""+selectedOptions);
                                 }
@@ -882,7 +908,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        String town_village_class=sharedPrefHelper.getString("town_village_class","");
                                        if(!town_village_class.equals("Rural")){
                                            flag=true;
-                                       } else{
+                                       }else{
                                            flag=false;
                                            break;
                                        }
@@ -1898,7 +1924,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    if (entry.getValue().equals("1")) {
                                        internetUse = 1;
                                        break;
-                                   }
+                                   }else if(entry.getValue().equals("2")){//30-01-2021
+                                       internetUse = 2;
+                                       break;
+                                   }//
                                }
                            }
                        }
@@ -1917,7 +1946,22 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            else if(questionID.equals("44")){
                                 if(jsonObject1.getString("option_id").equals("6") && internetUse==1){
                                     checkBox.setVisibility(View.GONE);
-                               }
+                                    checkBox.setChecked(false);//30-01-2021
+                                }else if(jsonObject1.getString("option_id").equals("6") && internetUse==2){
+                                    checkBox.setVisibility(View.VISIBLE);
+                                    checkBox.setChecked(true);
+                                    checkBox.setEnabled(false);
+                                }else if(jsonObject1.getString("option_id").equals("1") && internetUse==2){
+                                    checkBox.setEnabled(false);
+                                }else if(jsonObject1.getString("option_id").equals("2") && internetUse==2){
+                                    checkBox.setEnabled(false);
+                                }else if(jsonObject1.getString("option_id").equals("3") && internetUse==2){
+                                    checkBox.setEnabled(false);
+                                }else if(jsonObject1.getString("option_id").equals("4") && internetUse==2){
+                                    checkBox.setEnabled(false);
+                                }else if(jsonObject1.getString("option_id").equals("5") && internetUse==2){
+                                    checkBox.setEnabled(false);
+                                }//
                            }
                            if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                                selectedOptions=answerModelList.get(startPosition).getOption_id();

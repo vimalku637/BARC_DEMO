@@ -73,6 +73,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -850,6 +851,18 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 /*if(selectedOptions.contains("1")||selectedOptions.contains("3")
                                         ||selectedOptions.contains("5"))*/
                         sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
+                        String tvConnection=sharedPrefHelper.getString("selectedTVConnection","");//30-01-2021
+                        if (tvConnection.contains("1") || tvConnection.contains("2") || tvConnection.contains("3") || tvConnection.contains("4") || tvConnection.contains("5") || tvConnection.contains("6")){
+                            if (tvConnection.contains("7") || tvConnection.contains("8")){
+                                showPopupForError("if you choose DK/CS or None option then you are not allow to choose any other options.");
+                                flag = false;
+                            }
+                        }else if(tvConnection.contains("7") || tvConnection.contains("8")){
+                            if (tvConnection.contains("1") || tvConnection.contains("2") || tvConnection.contains("3") || tvConnection.contains("4") || tvConnection.contains("5") || tvConnection.contains("6")){
+                                showPopupForError("if you choose DK/CS or None option then you are not allow to choose any other options.");
+                                flag = false;
+                            }
+                        }//
                     }
                     if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                         answerModelList.get(nextPosition).setOption_id(selectedOptions);
@@ -867,7 +880,6 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         flag=false;
                         break;
                     }
-
                     nextPosition++;
                     count++;
                 }
@@ -952,6 +964,31 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
             Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
         }
     }
+
+    private void showPopupForError(String data) {
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        pDialog.setTitleText("Alert!")
+                .setContentText(data)
+                .setConfirmText("OK")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        //setTerminattion("");
+                    }
+                })
+                /*.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                    }
+                })*/
+                .show();
+        pDialog.setCancelable(false);
+    }
+
     public void btnStop(){
             boolean flag=true;
             JSONArray jsonArray = new JSONArray();
@@ -1401,6 +1438,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         ll_parent.addView(linearLayoutCheckbox);
 
                         //   onAddCheckBox(jsonObjectQuesType);
+
                     }
                     else if (jsonObjectQuesType.getString("question_type").equals("4")) {
                         TextView txtLabel = new TextView(getActivity());
