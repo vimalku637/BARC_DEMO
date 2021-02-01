@@ -1436,7 +1436,8 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                                 spinnerAL.add(spinnerOption);
                                             }
                                         }
-                                    } else {
+                                    }
+                                    else {
                                         for (int k = 16; k < 40; k++) {
                                             if (!currentWorkingStatus.equals("3") && !currentWorkingStatus.equals("4")
                                                     && !currentWorkingStatus.equals("6") && !currentWorkingStatus.equals("7")) {

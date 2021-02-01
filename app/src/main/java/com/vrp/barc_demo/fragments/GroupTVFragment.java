@@ -854,12 +854,12 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         String tvConnection=sharedPrefHelper.getString("selectedTVConnection","");//30-01-2021
                         if (tvConnection.contains("1") || tvConnection.contains("2") || tvConnection.contains("3") || tvConnection.contains("4") || tvConnection.contains("5") || tvConnection.contains("6")){
                             if (tvConnection.contains("7") || tvConnection.contains("8")){
-                                showPopupForError("if you choose DK/CS or None option then you are not allow to choose any other options.");
+                                showPopupForError("if you choose 'DK/CS' or 'None' option then you are not allow to choose any other options.");
                                 flag = false;
                             }
                         }else if(tvConnection.contains("7") || tvConnection.contains("8")){
                             if (tvConnection.contains("1") || tvConnection.contains("2") || tvConnection.contains("3") || tvConnection.contains("4") || tvConnection.contains("5") || tvConnection.contains("6")){
-                                showPopupForError("if you choose DK/CS or None option then you are not allow to choose any other options.");
+                                showPopupForError("if you choose 'DK/CS' or 'None' option then you are not allow to choose any other options.");
                                 flag = false;
                             }
                         }//
