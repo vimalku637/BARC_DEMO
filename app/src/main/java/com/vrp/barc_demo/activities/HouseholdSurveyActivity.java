@@ -837,10 +837,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("29")){
                                     if(selectedOptions.contains("4"))
                                     sharedPrefHelper.setString("selectedDurables",selectedOptions);
-                                    else {
+                                    /*else {
                                         showPopupForTerminateForTV("Durables");
                                         flag = false;
-                                    }
+                                    }*/
                                         //setTerminattion("Durables");
                                 }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("44")) {
