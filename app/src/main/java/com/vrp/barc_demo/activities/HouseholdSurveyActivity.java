@@ -643,6 +643,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
+                                    else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("83")){
+                                        String type_of_mobile=sharedPrefHelper.getString("type_of_mobile","");
+                                        if (type_of_mobile.equals("4")) {
+                                            flag = true;
+                                        } else {
+                                            flag = false;
+                                            break;
+                                        }
+                                    }
                                     else{
                                         flag=false;
                                         break;
@@ -763,6 +772,32 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             }
                                         }
                                         else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("84")) {
+                                            int internetUse=0;
+                                            Gson gson = new Gson();
+                                            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+                                            HashMap<Integer, String> testHashMap2 = gson.fromJson(sharedPrefHelper.getString("internetUse",""), type);
+                                            ///JSONObject obj=new JSONObject(sharedPrefHelper.setString("householdMember","objMember.toString()"););
+                                            if (testHashMap2!=null) {
+                                                Map<Integer, String> treeMapName = new TreeMap<>(testHashMap2);
+
+                                                for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
+                                                    if (entry.getValue().equals("1")) {
+                                                        internetUse = 1;
+                                                        break;
+                                                    }else if(entry.getValue().equals("2")){
+                                                        internetUse = 2;
+                                                        break;
+                                                    }//
+                                                }
+                                            }
+                                            if (internetUse==2) {
+                                                flag = true;
+                                            } else {
+                                                flag = false;
+                                                break;
+                                            }
+                                        }
+                                        /*else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("84")) {
                                             String accessInternetOnMobile = sharedPrefHelper.getString("2100f_radio_ids", "");
                                             if (accessInternetOnMobile.equals("2")||accessInternetOnMobile.equals("9")) {
                                                 flag = true;
@@ -770,7 +805,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                 flag = false;
                                                 break;
                                             }
-                                        }
+                                        }*/
                                         else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("85")) {
                                             String lastTimeAccessInternet = sharedPrefHelper.getString("last_time_access_internet", "");
                                             if (lastTimeAccessInternet.equals("8")) {
@@ -835,7 +870,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     }
                                 }
                                 if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("29")){
-                                    if(selectedOptions.contains("4"))
+                                    //if(selectedOptions.contains("4"))
                                     sharedPrefHelper.setString("selectedDurables",selectedOptions);
                                     /*else {
                                         showPopupForTerminateForTV("Durables");
@@ -1671,18 +1706,29 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                else if(jsonObjectQuesType.getString("question_id").equals("83")){
                                    String type_of_mobile=sharedPrefHelper.getString("type_of_mobile","");//01-02-2021
                                    if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))) {
-                                       sharedPrefHelper.setString("2100f_radio_ids",jsonObjectOptionValues.getString("option_id"));
+                                       //sharedPrefHelper.setString("2100f_radio_ids",jsonObjectOptionValues.getString("option_id"));
                                    }
-                                   else if(type_of_mobile.equals("4")&&jsonObjectOptionValues.getString("option_id").equals("2")){//01-02-2021
-                                       radioButton.setChecked(true);
+                                   if(type_of_mobile.equals("4")){
+                                       txtLabel.setVisibility(View.GONE);
+                                       radioButton.setVisibility(View.GONE);
+                                   }
+                                   /*else if(type_of_mobile.equals("4")&&jsonObjectOptionValues.getString("option_id").equals("1")){//01-02-2021
                                        radioButton.setEnabled(false);
                                    }
-                                   else if(type_of_mobile.equals("4")&&jsonObjectOptionValues.getString("option_id").equals("1")){
+                                   else if(type_of_mobile.equals("4")&&jsonObjectOptionValues.getString("option_id").equals("2")){
+                                       radioButton.setChecked(true);
                                        radioButton.setEnabled(false);
                                    }
                                    else if(type_of_mobile.equals("4")&&jsonObjectOptionValues.getString("option_id").equals("9")){
                                        radioButton.setEnabled(false);
-                                   }
+                                   }*/
+                               }
+                           }
+                           if(jsonObjectQuesType.getString("question_id").equals("83")){
+                               String type_of_mobile=sharedPrefHelper.getString("type_of_mobile","");
+                               if(type_of_mobile.equals("4")) {
+                                   txtLabel.setVisibility(View.GONE);
+                                   radioButton.setVisibility(View.GONE);
                                }
                            }
                            if(jsonObjectQuesType.getString("pre_field").equals("1")){
@@ -1852,7 +1898,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                                else if(group.getId()==101){
                                    if (radioID.equals("1")){
-                                       sharedPrefHelper.setString("2100f_radio_ids", radioID);
+                                       //sharedPrefHelper.setString("2100f_radio_ids", radioID);
                                    }
                                }
                                else if(group.getId()==111){
@@ -1872,7 +1918,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    }
                                }
                                else if(group.getId()==83){
-                                   for (int i = 0; i < ll_parent.getChildCount(); i++) {
+                                   /*for (int i = 0; i < ll_parent.getChildCount(); i++) {
                                        final View childView = ll_parent.getChildAt(i);
                                        sharedPrefHelper.setString("2100f_radio_ids",radioID);
                                        if (childView instanceof Spinner) {
@@ -1894,7 +1940,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                }
                                            }
                                        }
-                                   }
+                                   }*/
                                }
                            }
                        });
@@ -1974,14 +2020,19 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     checkBox.setChecked(true);
                                     checkBox.setEnabled(false);
                                 }else if(jsonObject1.getString("option_id").equals("1") && internetUse==2){
+                                    checkBox.setChecked(false);
                                     checkBox.setEnabled(false);
                                 }else if(jsonObject1.getString("option_id").equals("2") && internetUse==2){
+                                    checkBox.setChecked(false);
                                     checkBox.setEnabled(false);
                                 }else if(jsonObject1.getString("option_id").equals("3") && internetUse==2){
+                                    checkBox.setChecked(false);
                                     checkBox.setEnabled(false);
                                 }else if(jsonObject1.getString("option_id").equals("4") && internetUse==2){
+                                    checkBox.setChecked(false);
                                     checkBox.setEnabled(false);
                                 }else if(jsonObject1.getString("option_id").equals("5") && internetUse==2){
+                                    checkBox.setChecked(false);
                                     checkBox.setEnabled(false);
                                 }//
                            }
@@ -2204,7 +2255,31 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    spinner.setVisibility(View.GONE);
                                }
                            }
-                           if (jsonObjectQuesType.getString("question_id").equals("84")) {
+                           int internetUse=0;
+                           if(jsonObjectQuesType.getString("question_id").equals("84")){
+                               Gson gson = new Gson();
+                               java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+                               HashMap<Integer, String> testHashMap2 = gson.fromJson(sharedPrefHelper.getString("internetUse",""), type);
+                               ///JSONObject obj=new JSONObject(sharedPrefHelper.setString("householdMember","objMember.toString()"););
+                               if (testHashMap2!=null) {
+                                   Map<Integer, String> treeMapName = new TreeMap<>(testHashMap2);
+
+                                   for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
+                                       if (entry.getValue().equals("1")) {
+                                           internetUse = 1;
+                                           break;
+                                       }else if(entry.getValue().equals("2")){
+                                           internetUse = 2;
+                                           break;
+                                       }//
+                                   }
+                               }
+                               if (internetUse==2){
+                                   txtLabel.setVisibility(View.GONE);
+                                   spinner.setVisibility(View.GONE);
+                               }
+                           }
+                           /*if (jsonObjectQuesType.getString("question_id").equals("84")) {
                                String accessInternetOnMobile = sharedPrefHelper.getString("2100f_radio_ids", "");
                                if (accessInternetOnMobile.equals("1")) {
                                    txtLabel.setVisibility(View.VISIBLE);
@@ -2213,7 +2288,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    txtLabel.setVisibility(View.GONE);
                                    spinner.setVisibility(View.GONE);
                                }
-                           }
+                           }*/
                            if (questionID.equals("85")) {
                                String lastTimeAccessInternet = sharedPrefHelper.getString("last_time_access_internet", "");
                                if (lastTimeAccessInternet.equals("8")) {
