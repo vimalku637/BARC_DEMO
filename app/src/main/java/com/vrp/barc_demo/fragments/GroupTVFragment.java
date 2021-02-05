@@ -965,6 +965,212 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
         }
     }
 
+    public void btnStop(){
+        boolean flag=true;
+        JSONArray jsonArray = new JSONArray();
+        final JSONObject jsonObject = new JSONObject();
+        int count=0;
+        int nextPosition=startPositionBefore;
+        for (int i = 0; i < ll_parent.getChildCount(); i++) {
+            final View childView = ll_parent.getChildAt(i);
+            try {
+                if (childView instanceof EditText) {
+                    EditText editText = (EditText) childView;
+                    int viewID=editText.getId();
+                    if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
+                        answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
+                    }
+                    else{
+                        AnswerModel answerModel= new AnswerModel();
+                        answerModel.setOption_id("");
+                        answerModel.setOption_value(editText.getText().toString().trim());
+                        //answerModel.setSurveyID(survey_id);
+                        answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                        answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                        answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
+                        answerModelList.add(answerModel);
+                    }
+                    if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
+                        flag=false;
+                        break;
+                    }
+                    nextPosition++;
+                    count++;
+                }
+                if (childView instanceof Button) {
+                    count++;
+                }
+                else if (childView instanceof RadioGroup) {
+                    RadioGroup radioGroup = (RadioGroup) childView;
+                    int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                    RadioButton selectedRadioButton = (RadioButton) childView.findViewById(selectedRadioButtonId);
+                    int radioID=0;
+                    if (selectedRadioButton != null) {
+                        String strTag = selectedRadioButton.getTag().toString();
+                        int sepPos = strTag.indexOf("^");
+                        radioID = Integer.parseInt(strTag.substring(0, sepPos));
+                    }
+                    if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
+                        //if((back_status==true || screen_type.equals("survey_list")) && answerModelList.get(startPositionBefore).getQuestionID().equals(jsonArrayQuestions.getJSONObject(count).getString("question_id"))){
+                        answerModelList.get(nextPosition).setOption_id(Integer.toString(radioID));
+                    }else{
+                        AnswerModel answerModel= new AnswerModel();
+                        answerModel.setOption_id(Integer.toString(radioID));
+                        answerModel.setOption_value("");
+                        //answerModel.setSurveyID(survey_id);
+                        answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                        answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                        answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
+                        answerModelList.add(answerModel);
+                    }
+                    if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && radioID==0){
+                        flag=false;
+                        break;
+                    }
+                    nextPosition++;
+                    count++;
+                }
+                else if (childView instanceof Spinner) {
+                    Spinner spinner = (Spinner) childView;
+                    String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
+                    if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
+                        answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
+                    }else{
+                        AnswerModel answerModel= new AnswerModel();
+                        answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
+                        answerModel.setOption_value("");
+                        //answerModel.setSurveyID(survey_id);
+                        answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                        answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                        answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
+                        answerModelList.add(answerModel);
+                    }
+                    if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
+                            && (questionID.equals("62")||questionID.equals("65")||questionID.equals("66")
+                            ||questionID.equals("67")) &&spinner.getSelectedItemId()==0){
+                        flag=true;
+                    } else {
+                        if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if (questionID.equals("59")){
+                        String spinnerOptionId=Long.toString(spinner.getSelectedItemId());
+                        sharedPrefHelper.setString("spinnerOptionId", spinnerOptionId);
+                    }else if (questionID.equals("60")){
+                        String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
+                        sharedPrefHelper.setString("spinnerOptionIdTV", spinnerOptionIdTV);
+                    }/*else if (questionID.equals("64")){
+                                String spinnerOptionIdTVConnection=Long.toString(spinner.getSelectedItemId());
+                                sharedPrefHelper.setString("spinnerOptionIdTVConnection", spinnerOptionIdTVConnection);
+                            }*/
+                    nextPosition++;
+                    count++;
+                }
+                else if(childView instanceof TableLayout){
+                    TableLayout tableLayout = (TableLayout) childView;
+                    String selectedOptions="";
+                    for (int k = 0; k < tableLayout.getChildCount(); k++) {
+                        //final View childViewTable = tableLayout.getChildAt(k);
+                        final TableRow row = (TableRow) tableLayout.getChildAt(k);
+                        CheckBox checkBox = (CheckBox) row.getChildAt(0);
+                        if (checkBox.isChecked()) {
+                            jsonArray.put(checkBox.getText().toString().trim());
+                            jsonObject.put("check_box", jsonArray);
+                            if(selectedOptions.equals("")){
+                                selectedOptions=Integer.toString(checkBox.getId());
+                            }else{
+                                selectedOptions=selectedOptions+","+Integer.toString(checkBox.getId());
+                            }
+                        }
+                    }
+                    if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("64")){
+                                /*if(selectedOptions.contains("1")||selectedOptions.contains("3")
+                                        ||selectedOptions.contains("5"))*/
+                        sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
+                    }
+                    if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
+                        answerModelList.get(nextPosition).setOption_id(selectedOptions);
+                    }else{
+                        AnswerModel answerModel= new AnswerModel();
+                        answerModel.setOption_id(selectedOptions);
+                        answerModel.setOption_value("");
+                        //answerModel.setSurveyID(survey_id);
+                        answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                        answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                        answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
+                        answerModelList.add(answerModel);
+                    }
+                    if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("") && !jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("68")){
+                        flag=false;
+                        break;
+                    }
+
+                    nextPosition++;
+                    count++;
+                }
+                else{
+                    childView.getRootView();
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //back_status=false;
+        if(flag==true){
+            if(startScreenCount==0){
+                totalSingle = startPosition;
+            }
+            else{
+                lenSingle=totalSingle;
+                totalSingle = startPosition;
+            }
+            ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
+            if (answerModelList != null) {
+                answerModelListSingle.clear();
+                for (int i = lenSingle; i < totalSingle; i++) {
+                    answerModelListSingle.add(answerModelList.get(i));
+                }
+            }
+            if(answerTVtotal.size()>0){
+                if(startScreenCount<answerTVtotal.size()){
+                    answerTVtotal.set(startScreenCount,answerModelListSingle);
+                }else{
+                    answerTVtotal.add(answerModelListSingle);
+                }
+            }else{
+                answerTVtotal.add(answerModelListSingle);
+            }
+            //save tv_data in DB
+            if (!survey_id.equals("")) {
+                Gson gson = new Gson();
+                String listString = gson.toJson(
+                        answerModelList,
+                        new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                try {
+                    JSONArray json_array =  new JSONArray(listString);
+                    JSONObject json_object=new JSONObject();
+                    json_object.put("tv_data", json_array);
+                    Log.e(TAG, "onClick: "+json_object.toString());
+
+                    //update data in to local DB
+                    sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
+                    sqliteHelper.updateLocalFlag("partial", "survey",
+                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2,1);
+            doBack();
+        }else{
+            Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void showPopupForError(String data) {
         final SweetAlertDialog pDialog = new SweetAlertDialog(
                 context, SweetAlertDialog.WARNING_TYPE);
@@ -989,211 +1195,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
         pDialog.setCancelable(false);
     }
 
-    public void btnStop(){
-            boolean flag=true;
-            JSONArray jsonArray = new JSONArray();
-            final JSONObject jsonObject = new JSONObject();
-            int count=0;
-            int nextPosition=startPositionBefore;
-            for (int i = 0; i < ll_parent.getChildCount(); i++) {
-                final View childView = ll_parent.getChildAt(i);
-                try {
-                    if (childView instanceof EditText) {
-                        EditText editText = (EditText) childView;
-                        int viewID=editText.getId();
-                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                            answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
-                        }
-                        else{
-                            AnswerModel answerModel= new AnswerModel();
-                            answerModel.setOption_id("");
-                            answerModel.setOption_value(editText.getText().toString().trim());
-                            //answerModel.setSurveyID(survey_id);
-                            answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
-                            answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
-                            answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
-                            answerModelList.add(answerModel);
-                        }
-                        if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
-                            flag=false;
-                            break;
-                        }
-                        nextPosition++;
-                        count++;
-                    }
-                    if (childView instanceof Button) {
-                        count++;
-                    }
-                    else if (childView instanceof RadioGroup) {
-                        RadioGroup radioGroup = (RadioGroup) childView;
-                        int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-                        RadioButton selectedRadioButton = (RadioButton) childView.findViewById(selectedRadioButtonId);
-                        int radioID=0;
-                        if (selectedRadioButton != null) {
-                            String strTag = selectedRadioButton.getTag().toString();
-                            int sepPos = strTag.indexOf("^");
-                            radioID = Integer.parseInt(strTag.substring(0, sepPos));
-                        }
-                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                            //if((back_status==true || screen_type.equals("survey_list")) && answerModelList.get(startPositionBefore).getQuestionID().equals(jsonArrayQuestions.getJSONObject(count).getString("question_id"))){
-                            answerModelList.get(nextPosition).setOption_id(Integer.toString(radioID));
-                        }else{
-                            AnswerModel answerModel= new AnswerModel();
-                            answerModel.setOption_id(Integer.toString(radioID));
-                            answerModel.setOption_value("");
-                            //answerModel.setSurveyID(survey_id);
-                            answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
-                            answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
-                            answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
-                            answerModelList.add(answerModel);
-                        }
-                        if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && radioID==0){
-                            flag=false;
-                            break;
-                        }
-                        nextPosition++;
-                        count++;
-                    }
-                    else if (childView instanceof Spinner) {
-                        Spinner spinner = (Spinner) childView;
-                        String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
-                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                            answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
-                        }else{
-                            AnswerModel answerModel= new AnswerModel();
-                            answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
-                            answerModel.setOption_value("");
-                            //answerModel.setSurveyID(survey_id);
-                            answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
-                            answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
-                            answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
-                            answerModelList.add(answerModel);
-                        }
-                        if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
-                                && (questionID.equals("62")||questionID.equals("65")||questionID.equals("66")
-                                ||questionID.equals("67")) &&spinner.getSelectedItemId()==0){
-                            flag=true;
-                        } else {
-                            if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (questionID.equals("59")){
-                            String spinnerOptionId=Long.toString(spinner.getSelectedItemId());
-                            sharedPrefHelper.setString("spinnerOptionId", spinnerOptionId);
-                        }else if (questionID.equals("60")){
-                            String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
-                            sharedPrefHelper.setString("spinnerOptionIdTV", spinnerOptionIdTV);
-                        }/*else if (questionID.equals("64")){
-                                String spinnerOptionIdTVConnection=Long.toString(spinner.getSelectedItemId());
-                                sharedPrefHelper.setString("spinnerOptionIdTVConnection", spinnerOptionIdTVConnection);
-                            }*/
-                        nextPosition++;
-                        count++;
-                    }
-                    else if(childView instanceof TableLayout){
-                        TableLayout tableLayout = (TableLayout) childView;
-                        String selectedOptions="";
-                        for (int k = 0; k < tableLayout.getChildCount(); k++) {
-                            //final View childViewTable = tableLayout.getChildAt(k);
-                            final TableRow row = (TableRow) tableLayout.getChildAt(k);
-                            CheckBox checkBox = (CheckBox) row.getChildAt(0);
-                            if (checkBox.isChecked()) {
-                                jsonArray.put(checkBox.getText().toString().trim());
-                                jsonObject.put("check_box", jsonArray);
-                                if(selectedOptions.equals("")){
-                                    selectedOptions=Integer.toString(checkBox.getId());
-                                }else{
-                                    selectedOptions=selectedOptions+","+Integer.toString(checkBox.getId());
-                                }
-                            }
-                        }
-                        if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("64")){
-                                /*if(selectedOptions.contains("1")||selectedOptions.contains("3")
-                                        ||selectedOptions.contains("5"))*/
-                            sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
-                        }
-                        if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                            answerModelList.get(nextPosition).setOption_id(selectedOptions);
-                        }else{
-                            AnswerModel answerModel= new AnswerModel();
-                            answerModel.setOption_id(selectedOptions);
-                            answerModel.setOption_value("");
-                            //answerModel.setSurveyID(survey_id);
-                            answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
-                            answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
-                            answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
-                            answerModelList.add(answerModel);
-                        }
-                        if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("") && !jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("68")){
-                            flag=false;
-                            break;
-                        }
 
-                        nextPosition++;
-                        count++;
-                    }
-                    else{
-                        childView.getRootView();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            //back_status=false;
-            if(flag==true){
-                if(startScreenCount==0){
-                    totalSingle = startPosition;
-                }
-                else{
-                    lenSingle=totalSingle;
-                    totalSingle = startPosition;
-                }
-                ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
-                if (answerModelList != null) {
-                    answerModelListSingle.clear();
-                    for (int i = lenSingle; i < totalSingle; i++) {
-                        answerModelListSingle.add(answerModelList.get(i));
-                    }
-                }
-                if(answerTVtotal.size()>0){
-                    if(startScreenCount<answerTVtotal.size()){
-                        answerTVtotal.set(startScreenCount,answerModelListSingle);
-                    }else{
-                        answerTVtotal.add(answerModelListSingle);
-                    }
-                }else{
-                    answerTVtotal.add(answerModelListSingle);
-                }
-                //save tv_data in DB
-                if (!survey_id.equals("")) {
-                    Gson gson = new Gson();
-                    String listString = gson.toJson(
-                            answerModelList,
-                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
-                    try {
-                        JSONArray json_array =  new JSONArray(listString);
-                        JSONObject json_object=new JSONObject();
-                        json_object.put("tv_data", json_array);
-                        Log.e(TAG, "onClick: "+json_object.toString());
-
-                        //update data in to local DB
-                        sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
-                        sqliteHelper.updateLocalFlag("partial", "survey",
-                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2,1);
-                doBack();
-            }else{
-                Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
-            }
-        }
     private void startRecordingAnimation() {
         Animation animation = new AlphaAnimation((float) 0.5, 0); //to change visibility from visible to invisible
         animation.setDuration(1000); //1 second duration for each animation cycle

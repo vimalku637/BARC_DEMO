@@ -1464,19 +1464,22 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                                 String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                                 spinnerAL.add(spinnerOption);
                                             }
-                                        } else if (CWE_Status.equals("1")) {
+                                        }
+                                        else if (CWE_Status.equals("1")) {
+                                            String currentOccupation = "17";
                                             for (int k = 0; k < jsonArrayOptions.length(); k++) {
                                                 if(Q1h_Member_CWE.equals("1")){
-                                                    String currentOccupation = "17";
                                                     if(jsonArrayOptions.getJSONObject(k).getString("option_id").equals(currentOccupation)) {
                                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                                         spinnerAL.add(spinnerOption);
                                                     }
                                                 }else{
-                                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                                    spinnerAL.add(spinnerOption);
+                                                    if(!jsonArrayOptions.getJSONObject(k).getString("option_id").equals(currentOccupation)) {
+                                                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                                        spinnerAL.add(spinnerOption);
+                                                    }
                                                 }
                                             }
                                         }
