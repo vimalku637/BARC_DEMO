@@ -62,6 +62,8 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
     private static final String TAG = "Update_Survey";
     @BindView(R.id.btn_submit)
     MaterialButton btn_submit;
+    @BindView(R.id.btn_start_survey)
+    MaterialButton btn_start_survey;
     @BindView(R.id.spn_select_survey)
     Spinner spn_select_survey;
     @BindView(R.id.tv_person_name)
@@ -127,6 +129,13 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
                 } else {
                     CommonClass.showPopupForNoInternet(context);
                 }
+            }
+        });
+        btn_start_survey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(UpdateQuestions.this, MainMenu.class);
+                startActivity(intent);
             }
         });
     }
