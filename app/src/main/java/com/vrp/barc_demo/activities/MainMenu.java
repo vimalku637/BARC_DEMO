@@ -302,8 +302,9 @@ public class MainMenu extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) finish();
         if (item.getItemId()==R.id.logout){
-            sharedPrefHelper.setString("user_name_password", "");
-            sharedPrefHelper.setString("user_name", "");
+            /*sharedPrefHelper.setString("user_name_password", "");
+            sharedPrefHelper.setString("user_name", "");*/
+            sharedPrefHelper.setString("isLogin", "");
             Intent intentLoginActivity=new Intent(context, LoginActivity.class);
             intentLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLoginActivity);

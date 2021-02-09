@@ -98,7 +98,7 @@ public class AddressSelection extends AppCompatActivity {
     private SharedPrefHelper sharedPrefHelper;
     SurveyModel surveyModel;
     boolean isEditable=false;
-    String [] railwayStationSpnAL={"Select Railway Station","Railway Station","Post Office","Bus Stand","EP Address"};
+    String [] railwayStationSpnAL={"Select Address","Railway Station","Post Office","Bus Stand","EP Address"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

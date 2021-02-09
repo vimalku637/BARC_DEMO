@@ -387,6 +387,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         sharedPrefHelper.setString("supervisor_id", supervisor_id);
         sharedPrefHelper.setString("supervisor_name", supervisor_name);
         sharedPrefHelper.setString("agency_name", agency_name);
+        sharedPrefHelper.setString("isLogin", "1");
         sharedPrefHelper.setString("user_name_password", et_password.getText().toString().trim());
     }
 

@@ -461,7 +461,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
                                         && (questionID.equals("94")||questionID.equals("90")||questionID.equals("86")||questionID.equals("109")||questionID.equals("93")||questionID.equals("95")) && editText.getText().toString().trim().equals("")){
                                     flag=true;
-
                                 } else {
                                     if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                         flag=false;
@@ -548,23 +547,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
-                                    /*else if(questionID.equals("109")){
+                                    else if(questionID.equals("109")){
                                         landlineNo=editText.getText().toString().trim();
-                                        sharedPrefHelper.setString("landline_no", landlineNo);
-                                        *//*Pattern ps = Pattern.compile("^[6-9][0-9]{9}+$");
-                                        Matcher ms = ps.matcher(landlineNo);
-                                        boolean bs = ms.matches();*//*
-                                        if (!sharedPrefHelper.getString("landline_no", "").equals("")) {
-                                            if (sharedPrefHelper.getString("landline_no", "").length() < 10) {
-                                                editText.setError("Land  can't be less than 10 digit");
+                                        if (!landlineNo.equals("")) {
+                                            if (landlineNo.length()<11) {
+                                                editText.setError("Landline no. can't be less than 11 digit");
                                                 flag = false;
                                                 break;
-                                            }*//*else if (!bs) {
-                                            flag=false;
-                                            break;
-                                        }*//*
+                                            }
                                         }
-                                    }*/
+                                    }
                                     else if (questionID.equals("57")){
                                         String TvWorkingCondition=editText.getText().toString().trim();
                                         if(Integer.parseInt(TvWorkingCondition)>10 || Integer.parseInt(TvWorkingCondition)==0){
@@ -631,7 +623,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             flag=false;
                                             break;
                                         }
-                                    }else */if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("82")){
+                                    }else */
+                                    if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("82")){
                                         String selectedOptions=sharedPrefHelper.getString("type_of_mobile","");
                                         if (selectedOptions.contains("1")){
                                             flag=true;
@@ -893,7 +886,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     }
                                 }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("69")){//30-01-2021
-                                    if (selectedOptions.contains("1") || selectedOptions.contains("2") || selectedOptions.contains("3") || selectedOptions.contains("4") || selectedOptions.contains("5") || selectedOptions.contains("6") || selectedOptions.contains("7") || selectedOptions.contains("8") || selectedOptions.contains("9") || selectedOptions.contains("10") || selectedOptions.contains("11")){
+                                    String[] arrOfStr = selectedOptions.split("," );
+                                    for (String element : arrOfStr) {
+                                        if (element.equals("99")) {
+                                            if(arrOfStr.length>1){
+                                                showPopupForError("If you choose 'None' option then you are not allow to choose any other options.");
+                                                flag = false;
+                                            }
+                                        }
+                                    }
+                                    /*if (selectedOptions.contains("1") || selectedOptions.contains("2") || selectedOptions.contains("3") || selectedOptions.contains("4") || selectedOptions.contains("5") || selectedOptions.contains("6") || selectedOptions.contains("7") || selectedOptions.contains("8") || selectedOptions.contains("9") || selectedOptions.contains("10") || selectedOptions.contains("11")){
                                         if (selectedOptions.contains("99")){
                                             showPopupForError("if you choose 'None' option then you are not allow to choose any other options.");
                                             flag = false;
@@ -903,7 +905,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             showPopupForError("if you choose 'None' option then you are not allow to choose any other options.");
                                             flag = false;
                                         }
-                                    }
+                                    }*/
                                 }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("70")){//30-01-2021
                                     if (selectedOptions.contains("1") || selectedOptions.contains("2")){
@@ -983,93 +985,101 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         }
                     }
                 if(buttonText.equals("Submit")){
-                    btn_next.setEnabled(false);
                     //Toast.makeText(getApplicationContext(),"Thank you participation",Toast.LENGTH_LONG).show();
-                    stopRecording();
-                    //save data in to local DB.
-                    Gson gson = new Gson();
-                    String listString = gson.toJson(
-                            answerModelList,
-                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
-                    String listStringFamily = gson.toJson(
-                            answerModelHouseholdMemberListTotal,
-                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
-                    String listStringTV = gson.toJson(
-                            answerModelTVListTotal,
-                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
-                    try {
-                        JSONArray json_array =  new JSONArray(listString);
-                        JSONArray json_array_family =  new JSONArray(listStringFamily);
-                        JSONArray json_array_TV =  new JSONArray(listStringTV);
-                        JSONObject json_object=new JSONObject();
-                        json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
-                        json_object.put("survey_id", survey_id);
-                        json_object.put("app_version", AppConstants.APP_VERSION);
-                        json_object.put("survey_status", "1");//for completed
-                        json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
-                        json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
-                        json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
-                        if (AudioSavePathInDevice!=null) {
-                            json_object.put("audio_recording", AudioSavePathInDevice);
-                        }
-                        json_object.put("GPS_latitude_start", sharedPrefHelper.getString("LAT", ""));
-                        json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
-                        json_object.put("survey_data", json_array);
-                        json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
-                        json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
-                        json_object.put("family_data", json_array_family);
-                        json_object.put("tv_data", json_array_TV);
-                        json_object.put("date_time", sharedPrefHelper.getString("dateTime", ""));
-                        json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
-                        json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
-                        Log.e(TAG, "onClick: "+json_object.toString());
+                    if(flag==true) {
+                        btn_next.setEnabled(false);
+                        stopRecording();
+                        //save data in to local DB.
+                        Gson gson = new Gson();
+                        String listString = gson.toJson(
+                                answerModelList,
+                                new TypeToken<ArrayList<AnswerModel>>() {
+                                }.getType());
+                        String listStringFamily = gson.toJson(
+                                answerModelHouseholdMemberListTotal,
+                                new TypeToken<ArrayList<AnswerModel>>() {
+                                }.getType());
+                        String listStringTV = gson.toJson(
+                                answerModelTVListTotal,
+                                new TypeToken<ArrayList<AnswerModel>>() {
+                                }.getType());
+                        try {
+                            JSONArray json_array = new JSONArray(listString);
+                            JSONArray json_array_family = new JSONArray(listStringFamily);
+                            JSONArray json_array_TV = new JSONArray(listStringTV);
+                            JSONObject json_object = new JSONObject();
+                            json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
+                            json_object.put("survey_id", survey_id);
+                            json_object.put("app_version", AppConstants.APP_VERSION);
+                            json_object.put("survey_status", "1");//for completed
+                            json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
+                            json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
+                            json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
+                            if (AudioSavePathInDevice != null) {
+                                json_object.put("audio_recording", AudioSavePathInDevice);
+                            }
+                            json_object.put("GPS_latitude_start", sharedPrefHelper.getString("LAT", ""));
+                            json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
+                            json_object.put("survey_data", json_array);
+                            json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
+                            json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
+                            json_object.put("family_data", json_array_family);
+                            json_object.put("tv_data", json_array_TV);
+                            json_object.put("date_time", sharedPrefHelper.getString("dateTime", ""));
+                            json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
+                            json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
+                            Log.e(TAG, "onClick: " + json_object.toString());
 
-                        if (screen_type.equals("survey_list")) {
-                            sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
-                            if (CommonClass.isInternetOn(context)) {
-                                //get all data from survey table
-                                //sqliteHelper.getAllSurveyDataFromTable(survey_id);
+                            if (screen_type.equals("survey_list")) {
+                                sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
+                                if (CommonClass.isInternetOn(context)) {
+                                    //get all data from survey table
+                                    //sqliteHelper.getAllSurveyDataFromTable(survey_id);
                                 /*Gson gson = new Gson();
                                 String data = gson.toJson(clusterModel);*/
-                                String data = json_object.toString();
-                                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                                RequestBody body = RequestBody.create(JSON, data);
-                                //send data on server
-                                sendSurveyDataOnServer(body);
+                                    String data = json_object.toString();
+                                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                    RequestBody body = RequestBody.create(JSON, data);
+                                    //send data on server
+                                    sendSurveyDataOnServer(body);
+                                } else {
+                                    Intent intentSurveyActivity1 = new Intent(context, NextSurvey.class);
+                                    sqliteHelper.updateLocalFlag("household_survey", "survey", Integer.parseInt(survey_id), 0);
+                                    sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
+                                    Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
+                                    startActivity(intentSurveyActivity1);
+                                    finish();
+                                }
                             } else {
-                                Intent intentSurveyActivity1=new Intent(context, NextSurvey.class);
-                                sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 0);
-                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
-                                Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
-                                startActivity(intentSurveyActivity1);
-                                finish();
-                            }
-                        } else {
-                            //sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
-                            //update data in to local DB
-                            sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
-                            if (CommonClass.isInternetOn(context)) {
-                                //get all data from survey table
-                                //sqliteHelper.getAllSurveyDataFromTable(survey_id);
+                                //sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                                //update data in to local DB
+                                sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
+                                if (CommonClass.isInternetOn(context)) {
+                                    //get all data from survey table
+                                    //sqliteHelper.getAllSurveyDataFromTable(survey_id);
                                 /*Gson gson = new Gson();
                                 String data = gson.toJson(clusterModel);*/
-                                String data = json_object.toString();
-                                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                                RequestBody body = RequestBody.create(JSON, data);
-                                //send data on server
-                                sendSurveyDataOnServer(body);
-                            } else {
-                                Intent intentSurveyActivity1=new Intent(context, NextSurvey.class);
-                                sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 0);
-                                sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
-                                Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
-                                startActivity(intentSurveyActivity1);
-                                finish();
+                                    String data = json_object.toString();
+                                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                    RequestBody body = RequestBody.create(JSON, data);
+                                    //send data on server
+                                    sendSurveyDataOnServer(body);
+                                } else {
+                                    Intent intentSurveyActivity1 = new Intent(context, NextSurvey.class);
+                                    sqliteHelper.updateLocalFlag("household_survey", "survey", Integer.parseInt(survey_id), 0);
+                                    sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
+                                    Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
+                                    startActivity(intentSurveyActivity1);
+                                    finish();
+                                }
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            btn_next.setEnabled(true);
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        btn_next.setEnabled(true);
+                    }
+                    else {
+                        Toast.makeText(context, "Please fill all required correct fields/values", Toast.LENGTH_LONG).show();
                     }
                 }
                 else {
@@ -2048,15 +2058,25 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                selectedOptions=answerModelList.get(startPosition).getOption_id();
                                String[] arraySelectedOptions = selectedOptions.split(",");
                                boolean contains = Arrays.asList(arraySelectedOptions).contains(jsonObject1.getString("option_id"));
-                               if(contains){
-                                   checkBox.setChecked(true);
+                               if(questionID.equals("44")){
+                                   if(internetUse==2){
+                                       if(jsonObject1.getString("option_id").equals("6"))
+                                       checkBox.setChecked(true);
+                                   }else{
+                                        if(contains && !jsonObject1.getString("option_id").equals("6")){
+                                           checkBox.setChecked(true);
+                                       }
+                                   }
                                }
-                           }
-                           else if((questionID.equals("54"))){
-                               selectedOptions=sharedPrefHelper.getString("selectedDurables","");
-                               String[] arraySelectedOptions = selectedOptions.split(",");
-                               boolean contains = Arrays.asList(arraySelectedOptions).contains(jsonObject1.getString("option_id"));
-                               if(contains){
+                               else if((questionID.equals("54"))){
+                                   selectedOptions=sharedPrefHelper.getString("selectedDurables","");
+                                   String[] arraySelectedOptionsn = selectedOptions.split(",");
+                                   boolean containsn = Arrays.asList(arraySelectedOptionsn).contains(jsonObject1.getString("option_id"));
+                                   if(containsn){
+                                       checkBox.setChecked(true);
+                                   }
+                               }
+                               else if(contains){
                                    checkBox.setChecked(true);
                                }
                            }

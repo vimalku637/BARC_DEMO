@@ -300,8 +300,9 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
             startActivity(intentMainMenu);
         }
         if (item.getItemId()==R.id.logout){
-            sharedPrefHelper.setString("user_name_password", "");
-            sharedPrefHelper.setString("user_name", "");
+            /*sharedPrefHelper.setString("user_name_password", "");
+            sharedPrefHelper.setString("user_name", "");*/
+            sharedPrefHelper.setString("isLogin", "");
             Intent intentLoginActivity=new Intent(context, LoginActivity.class);
             intentLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLoginActivity);

@@ -258,8 +258,9 @@ public class Dashboard extends AppCompatActivity {
             startActivity(intentMainMenu);
         }
         if (item.getItemId() == R.id.logout) {
-            sharedPrefHelper.setString("user_name_password", "");
-            sharedPrefHelper.setString("user_name", "");
+            /*sharedPrefHelper.setString("user_name_password", "");
+            sharedPrefHelper.setString("user_name", "");*/
+            sharedPrefHelper.setString("isLogin", "");
             Intent i = new Intent(Dashboard.this, LoginActivity.class);
 // set the new task and clear flags
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
