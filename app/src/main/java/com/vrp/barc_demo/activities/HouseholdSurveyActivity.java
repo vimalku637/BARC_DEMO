@@ -809,7 +809,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         }*/
                                         else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("85")) {
                                             String lastTimeAccessInternet = sharedPrefHelper.getString("last_time_access_internet", "");
-                                            if (lastTimeAccessInternet.equals("8")) {
+                                            if (lastTimeAccessInternet.equals("9")) {
                                                 flag = true;
                                             } else {
                                                 flag = false;
@@ -2080,6 +2080,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    checkBox.setChecked(true);
                                }
                            }
+                           if((questionID.equals("54"))){
+                               selectedOptions=sharedPrefHelper.getString("selectedDurables","");
+                               String[] arraySelectedOptionsn = selectedOptions.split(",");
+                               boolean containsn = Arrays.asList(arraySelectedOptionsn).contains(jsonObject1.getString("option_id"));
+                               if(containsn){
+                                   checkBox.setChecked(true);
+                               }
+                           }
                            row.addView(checkBox);
                            linearLayoutCheckbox.addView(row);
                        }
@@ -2319,7 +2327,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }*/
                            if (questionID.equals("85")) {
                                String lastTimeAccessInternet = sharedPrefHelper.getString("last_time_access_internet", "");
-                               if (lastTimeAccessInternet.equals("8")) {
+                               if (lastTimeAccessInternet.equals("9")) {
                                    txtLabel.setVisibility(View.GONE);
                                    spinner.setVisibility(View.GONE);
                                }

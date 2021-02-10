@@ -807,12 +807,17 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                         answerModelList.add(answerModel);
                     }
-                    if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
-                            && (questionID.equals("62")||questionID.equals("65")||questionID.equals("66")
-                            ||questionID.equals("67")) &&spinner.getSelectedItemId()==0){
+                    if (questionID.equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1") || (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2") && !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")))){
                         flag=true;
+                    }
+                    else if (questionID.equals("66") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("4")){
+                        flag=true;
+                    }
+                    else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
+                            && (questionID.equals("62")||questionID.equals("65")) &&spinner.getSelectedItemId()==0){
+                            flag=true;
                     } else {
-                        if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
+                       if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
                             flag = false;
                             break;
                         }
@@ -1045,9 +1050,14 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                         answerModelList.add(answerModel);
                     }
-                    if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
-                            && (questionID.equals("62")||questionID.equals("65")||questionID.equals("66")
-                            ||questionID.equals("67")) &&spinner.getSelectedItemId()==0){
+                    if (questionID.equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1") || (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2") && !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")))){
+                        flag=true;
+                    }
+                    else if (questionID.equals("66") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("4")){
+                        flag=true;
+                    }
+                    else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
+                            && (questionID.equals("62")||questionID.equals("65")) &&spinner.getSelectedItemId()==0){
                         flag=true;
                     } else {
                         if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
