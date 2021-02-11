@@ -60,6 +60,7 @@ dependencies {
     implementation 'com.github.razir.progressbutton:progressbutton:2.1.0'
     //sweet-alert
     implementation 'com.github.f0ris.sweetalert:library:1.6.2'
+
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     //circle-image-view
     implementation 'de.hdodenhof:circleimageview:3.1.0'
