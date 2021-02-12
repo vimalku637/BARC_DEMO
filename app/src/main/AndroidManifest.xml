@@ -31,7 +31,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
-        <activity android:name=".activities.UpdateAppActivity"></activity>
+        <activity android:name=".activities.UpdateAppActivity" />
         <activity
             android:name=".activities.TerminateActivity"
             android:screenOrientation="portrait"

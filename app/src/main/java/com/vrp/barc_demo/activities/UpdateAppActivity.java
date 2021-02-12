@@ -13,7 +13,6 @@ import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 public class UpdateAppActivity extends AppCompatActivity {
-
     Button btn_update_app;
     SharedPrefHelper sharedPrefHelper;
     @Override
@@ -26,17 +25,11 @@ public class UpdateAppActivity extends AppCompatActivity {
         btn_update_app.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                    String url = "http://bamboo4sd.org/apk/bamboo4sd.apk";
+                    String url = "https://barc.indevconsultancy.com/apk/bi.apk";
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
-
-
-
             }
         });
-
-
     }
 }

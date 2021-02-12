@@ -137,18 +137,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setValues();
 
         if (Build.VERSION.SDK_INT >= 23) {
-            Log.d("TAG","@@@ IN IF Build.VERSION.SDK_INT >= 23");
+            Log.d("TAG", "@@@ IN IF Build.VERSION.SDK_INT >= 23");
             String[] PERMISSIONS = {
                     Manifest.permission.ACCESS_FINE_LOCATION
             };
             if (!hasPermissions(this, PERMISSIONS)) {
-                Log.d("TAG","@@@ IN IF hasPermissions");
-                ActivityCompat.requestPermissions((Activity) this, PERMISSIONS, REQUEST );
+                Log.d("TAG", "@@@ IN IF hasPermissions");
+                ActivityCompat.requestPermissions((Activity) this, PERMISSIONS, REQUEST);
             } else {
-                Log.d("TAG","@@@ IN ELSE hasPermissions");
+                Log.d("TAG", "@@@ IN ELSE hasPermissions");
             }
         } else {
-            Log.d("TAG","@@@ IN ELSE  Build.VERSION.SDK_INT >= 23");
+            Log.d("TAG", "@@@ IN ELSE  Build.VERSION.SDK_INT >= 23");
         }
 
         getGPS();
@@ -185,11 +185,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onResume() {
         super.onResume();
-      /*  PackageInfo pInfo = null;
+      PackageInfo pInfo = null;
         try {
             pInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
-            String version1 = pInfo.versionName;
-            if (!version.equalsIgnoreCase(version1)) {
+            String app_version = pInfo.versionName;
+            Log.i(TAG, "onResume: "+app_version);
+            if (!version.equalsIgnoreCase(app_version)) {
                 Intent intent = new Intent(LoginActivity.this, UpdateAppActivity.class);
                 startActivity(intent);
                 finish();
@@ -197,8 +198,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        }*/
-
+        }
     }
 
     private void setValues() {
@@ -206,7 +206,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         try {
             pInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
             String version1 = pInfo.versionName;
-            tv_app_version.setText(getString(R.string.app_version)+version1);
+            tv_app_version.setText(getString(R.string.app_version) + version1);
 
 
         } catch (PackageManager.NameNotFoundException e) {
@@ -246,7 +246,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void initialization() {
         sharedPrefHelper = new SharedPrefHelper(this);
-        sqliteHelper=new SqliteHelper(this);
+        sqliteHelper = new SqliteHelper(this);
         loginModel = new LoginModel();
     }
 
@@ -258,7 +258,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 loginModel.setUser_name(et_user_name.getText().toString());
                 loginModel.setUser_password(et_password.getText().toString());
-                loginModel.setFirebase_token(sharedPrefHelper.getString("Token",""));
+                loginModel.setFirebase_token(sharedPrefHelper.getString("Token", ""));
                 user_name = et_user_name.getText().toString().trim();
                 password = et_password.getText().toString().trim();
                 if (user_name.equalsIgnoreCase("") || (password.equalsIgnoreCase(""))) {
@@ -270,15 +270,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                     // Snackbar.make(view, "Please enter user name & password", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 } else {
-                    String userName=sharedPrefHelper.getString("user_name", "");
-                    String password=sharedPrefHelper.getString("user_name_password", "");
+                    String userName = sharedPrefHelper.getString("user_name", "");
+                    String password = sharedPrefHelper.getString("user_name_password", "");
 
-                    if(et_user_name.getText().toString().trim().equalsIgnoreCase(userName) && et_password.getText().toString().trim().equalsIgnoreCase(password)){
+                    if (et_user_name.getText().toString().trim().equalsIgnoreCase(userName) && et_password.getText().toString().trim().equalsIgnoreCase(password)) {
                         Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
                         startActivity(intentMainActivity);
                         finish();
-                    }
-                    else{
+                    } else {
                         if (!isInternetOn()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                             builder.setMessage("Network Error, check your network connection.")
@@ -293,8 +292,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             alert.setTitle(getString(R.string.Alert));
                             alert.show();
 
-                        }
-                        else if (isInternetOn()) {
+                        } else if (isInternetOn()) {
 
                             loginModel.setUser_name(et_user_name.getText().toString());
                             loginModel.setUser_password(et_password.getText().toString());
@@ -325,8 +323,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                             String supervisor_name = jsonObject.optString("supervisor_name");
                                             String agency_name = jsonObject.optString("agency_name");
 
-                                            download_city("sub_districts",user_id);
-                                            download_city("nccs_matrix",user_id);
+                                            download_city("sub_districts", user_id);
+                                            download_city("nccs_matrix", user_id);
                                             mprogressDialog.dismiss();
                                             ///set preference data/
                                             setAllDataInPreferences(user_id, interviewer_id, interviewer_name, user_name,
@@ -375,6 +373,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
+
     private void setAllDataInPreferences(String user_id, String interviewer_id, String interviewer_name,
                                          String user_name, String user_type_id, String mdl_id, String supervisor_id,
                                          String supervisor_name, String agency_name) {
@@ -391,7 +390,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         sharedPrefHelper.setString("user_name_password", et_password.getText().toString().trim());
     }
 
-    public void download_city(String table,String user_id){
+    public void download_city(String table, String user_id) {
         DataDownloadInput dataDownloadInput = new DataDownloadInput();
         dataDownloadInput.setTable_name(table);
         dataDownloadInput.setUser_id(user_id);
@@ -406,7 +405,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 try {
                     //JSONObject data=new JSONObject(response.body().toString().trim());
                     JsonArray data = response.body();
-                    Log.i("City Data ",""+data.toString());
+                    Log.i("City Data ", "" + data.toString());
 
                     sqliteHelper.dropTable(table);
                     for (int i = 0; i < data.size(); i++) {
@@ -434,13 +433,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
-
-
-    /*private boolean checkValidation() {
-    }*/
-
-
-
 
     private boolean isInternetOn() {
 
@@ -548,8 +540,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onStart() {
         super.onStart();
-        if(!mGoogleApiClient.isConnected())
-        mGoogleApiClient.connect();
+        if (!mGoogleApiClient.isConnected())
+            mGoogleApiClient.connect();
     }
 
     @Override
@@ -589,12 +581,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
         return true;
     }
+
     public String downlaodVersionCode() {
-
-
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        //StringRequest stringRequest = new StringRequest(Request.Method.GET, "http://bamboo4sd.org/api3/check_version.php",
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, "http://bamboo4sd.org/replica/api3/check_version.php",
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, "https://barc.indevconsultancy.com/apk/rmappversion.php",
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -602,15 +592,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             //getting the whole json object from the response
                             JSONObject obj = new JSONObject(response);
                             version = obj.getString("version");
-                            Log.e("version",version);
+                            Log.e("version", version);
                             sharedPrefHelper.setString("version", version);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-
-
                 }
                 ,
                 new com.android.volley.Response.ErrorListener() {
@@ -620,17 +608,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
 
 
-    });
+                });
         requestQueue.add(stringRequest);
         return version;
     }
 
-
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
-//        startActivity(intent);
-//        finish();
-//    }
 }
