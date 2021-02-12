@@ -16,6 +16,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -100,6 +101,25 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
         setSurveySpinner();
         setButtonClick();
         tv_person_name.setText( "Welcome "+sharedPrefHelper.getString("user_name", ""));
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String app_version = pInfo.versionName;
+            Log.i(TAG, "onResume: "+app_version);
+            String version=sharedPrefHelper.getString("version", app_version);
+            if (!version.equalsIgnoreCase(app_version)) {
+                Intent intent = new Intent(UpdateQuestions.this, UpdateAppActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setSurveySpinner() {

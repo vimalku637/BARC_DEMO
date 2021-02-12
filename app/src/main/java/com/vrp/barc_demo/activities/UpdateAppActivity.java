@@ -12,6 +12,8 @@ import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
+import static com.vrp.barc_demo.rest_api.ApiClient.BASE_URL_APK;
+
 public class UpdateAppActivity extends AppCompatActivity {
     Button btn_update_app;
     SharedPrefHelper sharedPrefHelper;
@@ -25,7 +27,7 @@ public class UpdateAppActivity extends AppCompatActivity {
         btn_update_app.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    String url = "https://barc.indevconsultancy.com/apk/bi.apk";
+                    String url = BASE_URL_APK+"bi.apk";
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);

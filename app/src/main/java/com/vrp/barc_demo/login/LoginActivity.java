@@ -84,6 +84,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.vrp.barc_demo.rest_api.ApiClient.BASE_URL_APK;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = "Login_Activity";
@@ -178,29 +180,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         };
         displayFirebaseRegId();
-        downlaodVersionCode();
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-      PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
-            String app_version = pInfo.versionName;
-            Log.i(TAG, "onResume: "+app_version);
-            if (!version.equalsIgnoreCase(app_version)) {
-                Intent intent = new Intent(LoginActivity.this, UpdateAppActivity.class);
-                startActivity(intent);
-                finish();
-            }
-
-            } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+        if(isInternetOn()) {
+            downlaodVersionCode();
         }
     }
-
     private void setValues() {
         PackageInfo pInfo = null;
         try {
@@ -584,7 +567,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     public String downlaodVersionCode() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, "https://barc.indevconsultancy.com/apk/rmappversion.php",
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, BASE_URL_APK+"rmappversion.php",
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -594,7 +577,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             version = obj.getString("version");
                             Log.e("version", version);
                             sharedPrefHelper.setString("version", version);
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
