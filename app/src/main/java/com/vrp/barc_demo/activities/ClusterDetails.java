@@ -113,7 +113,7 @@ public class ClusterDetails extends AppCompatActivity {
         spn_language.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                sharedPrefHelper.setInt("langID",i);
+                sharedPrefHelper.setInt("langID",i-1);
             }
 
             @Override

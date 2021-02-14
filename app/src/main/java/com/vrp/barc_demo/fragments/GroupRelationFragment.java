@@ -123,6 +123,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
     int totalQuestions;
     int totalScreen;
     JSONObject jsonQuestions = null;
+    JSONObject jsonQuestionsLangGroup = null;
     JSONArray jsonArrayQuestions=null;
     JSONArray jsonArrayScreen=null;
     JSONArray jsonArrayScreenGroup=null;
@@ -209,8 +210,23 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
         }
 
         try {
-            jsonQuestions = new JSONObject(MyJSON.loadJSONFromAsset(getActivity()));
-            if (jsonQuestions.has("group")) {
+            //jsonQuestions = new JSONObject(MyJSON.loadJSONFromAsset(getActivity()));
+            jsonQuestionsLangGroup = new JSONObject(MyJSON.loadJSONFromAsset(context));
+            if (jsonQuestionsLangGroup.has("language_group")) {
+                    /*JSONArray jsonArrayGroup=jsonQuestions.getJSONArray("group");
+                    JSONObject jsonObjectGroup=jsonArrayGroup.getJSONObject(0);*/
+                jsonQuestions = jsonQuestionsLangGroup.getJSONArray("language_group").getJSONObject(sharedPrefHelper.getInt("langID",0));
+                jsonArrayScreen=new JSONArray();
+                jsonArrayScreen = jsonQuestions.getJSONArray("group").getJSONObject(groupRelationId).getJSONArray("screens");
+                //jsonArrayScreenbackup=jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
+                totalScreen = jsonArrayScreen.length();
+                Log.e("Screen", "onCreate: " + jsonArrayScreen.toString());
+                if(totalScreen>0){
+                    answerTVtotal.clear();
+                    questionsPopulate();
+                }
+            }
+            else if (jsonQuestions.has("group")) {
                     /*JSONArray jsonArrayGroup=jsonQuestions.getJSONArray("group");
                     JSONObject jsonObjectGroup=jsonArrayGroup.getJSONObject(0);*/
                 jsonArrayScreen = jsonQuestions.getJSONArray("group").getJSONObject(groupRelationId).getJSONArray("screens");

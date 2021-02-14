@@ -151,6 +151,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     int familyTotalGroup;
     int totalScreen;
     JSONObject jsonQuestions = null;
+    JSONObject jsonQuestionsLangGroup = null;
     JSONArray jsonArrayQuestions=null;
     HashMap<Integer,String> languageHashMap=new HashMap<>();
     JSONArray jsonArrayScreen=null;
@@ -237,7 +238,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         }
         else {*/
             try {
-                jsonQuestions = new JSONObject(MyJSON.loadJSONFromAsset(context));
+                //jsonQuestions = new JSONObject(MyJSON.loadJSONFromAsset(context));
+                jsonQuestionsLangGroup = new JSONObject(MyJSON.loadJSONFromAsset(context));
                 /*if (jsonQuestions.has("screen")) {
                     jsonArrayScreen = jsonQuestions.getJSONArray("screen");
                     totalScreen = jsonArrayScreen.length();
@@ -246,9 +248,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         questionsPopulate();
                     }
                 }*/
-                if (jsonQuestions.has("group")) {
+                if (jsonQuestionsLangGroup.has("language_group")) {
                     /*JSONArray jsonArrayGroup=jsonQuestions.getJSONArray("group");
                     JSONObject jsonObjectGroup=jsonArrayGroup.getJSONObject(0);*/
+                    jsonQuestions = jsonQuestionsLangGroup.getJSONArray("language_group").getJSONObject(sharedPrefHelper.getInt("langID",0));
                     jsonArrayScreen=new JSONArray();
                     jsonArrayScreen = jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
                     //jsonArrayScreenbackup=jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
@@ -262,6 +265,22 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         sharedPrefHelper.setString("HH_Name","");
                     }
                 }
+                /*if (jsonQuestions.has("group")) {
+                    *//*JSONArray jsonArrayGroup=jsonQuestions.getJSONArray("group");
+                    JSONObject jsonObjectGroup=jsonArrayGroup.getJSONObject(0);*//*
+                    jsonArrayScreen=new JSONArray();
+                    jsonArrayScreen = jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
+                    //jsonArrayScreenbackup=jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
+                    totalScreen = jsonArrayScreen.length();
+                    Log.e("Screen", "onCreate: " + jsonArrayScreen.toString());
+                    if(totalScreen>0){
+                        questionsPopulate();
+                        sharedPrefHelper.setString("CWE_Yes","0");
+                        sharedPrefHelper.setString("HH_Yes","0");
+                        sharedPrefHelper.setString("CWE_Name","");
+                        sharedPrefHelper.setString("HH_Name","");
+                    }
+                }*/
 
                 /*if (jsonQuestions.has("questions")) {
                     jsonArrayQuestions = jsonQuestions.getJSONArray("questions");
