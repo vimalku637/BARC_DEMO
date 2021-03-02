@@ -466,6 +466,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 groupQuestionID=Integer.parseInt(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
+                                    answerModelList.get(nextPosition).setOption_id("");
+                                    answerModelList.get(nextPosition).setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                    answerModelList.get(nextPosition).setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                                    answerModelList.get(nextPosition).setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                 }
                                 else{
                                     AnswerModel answerModel= new AnswerModel();
@@ -479,7 +483,42 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 }
                                 if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
                                         && (questionID.equals("94")||questionID.equals("90")||questionID.equals("86")||questionID.equals("109")||questionID.equals("93")||questionID.equals("95")) && editText.getText().toString().trim().equals("")){
-                                    flag=true;
+                                    String town_village_class = sharedPrefHelper.getString("town_village_class", "");
+                                    if (questionID.equals("94")) {
+                                        if (!town_village_class.equalsIgnoreCase("Rural")) {
+                                            flag = true;
+                                        } else {
+                                            flag = false;
+                                            break;
+                                        }
+                                    }
+                                    else if (questionID.equals("90")) {
+                                        String ppNumber=sharedPrefHelper.getString("pp_number","0");
+                                        if (!ppNumber.equalsIgnoreCase("1")) {
+                                            flag = true;
+                                        } else {
+                                            flag = false;
+                                            break;
+                                        }
+                                    }
+                                    else if (questionID.equals("93")) {
+                                        if (!town_village_class.equalsIgnoreCase("Urban")) {
+                                            flag = true;
+                                        } else {
+                                            flag = false;
+                                            break;
+                                        }
+                                    }
+                                    else if (questionID.equals("95")) {
+                                        if (!town_village_class.equalsIgnoreCase("Urban")) {
+                                            flag = true;
+                                        } else {
+                                            flag = false;
+                                            break;
+                                        }
+                                    }else{
+                                        flag=true;
+                                    }
                                 } else {
                                     if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                         flag=false;
@@ -623,6 +662,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     //if((back_status==true || screen_type.equals("survey_list")) && answerModelList.get(startPositionBefore).getQuestionID().equals(jsonArrayQuestions.getJSONObject(count).getString("question_id"))){
                                     answerModelList.get(nextPosition).setOption_id(Integer.toString(radioID));
+                                    answerModelList.get(nextPosition).setOption_value("");
+                                    answerModelList.get(nextPosition).setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                    answerModelList.get(nextPosition).setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                                    answerModelList.get(nextPosition).setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id(Integer.toString(radioID));
@@ -725,8 +768,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("100")) {
                                         answerModelList.get(nextPosition).setOption_value(spinner.getSelectedItem().toString());
+                                    }else{
+                                        answerModelList.get(nextPosition).setOption_value("");
                                     }
                                     answerModelList.get(nextPosition).setOption_id(Long.toString(spinnerID));
+                                    answerModelList.get(nextPosition).setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                    answerModelList.get(nextPosition).setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                                    answerModelList.get(nextPosition).setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id(Long.toString(spinnerID));
@@ -784,7 +832,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         }
                                         else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("75")) {
                                             String town_village_class = sharedPrefHelper.getString("town_village_class", "");
-                                            if (!town_village_class.equals("Urban")) {
+                                            if (!town_village_class.equalsIgnoreCase("Urban")) {
                                                 flag = true;
                                             } else {
                                                 flag = false;
@@ -895,6 +943,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else {
                                         showPopupForTerminateForTV("Durables");
                                         flag = false;
+                                        break;
                                     }
                                         //setTerminattion("Durables");
                                 }
@@ -902,6 +951,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     if ((selectedOptions.contains("1") || selectedOptions.contains("2") || selectedOptions.contains("3")) && (selectedOptions.contains("6"))){
                                         showPopupForError("You can't choose no use internet with other options");
                                         flag = false;
+                                        break;
                                     }
                                 }
                                 else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("69")){//30-01-2021
@@ -911,6 +961,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             if(arrOfStr.length>1){
                                                 showPopupForError("If you choose 'None' option then you are not allow to choose any other options.");
                                                 flag = false;
+                                                break;
                                             }
                                         }
                                     }
@@ -931,11 +982,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         if (selectedOptions.contains("3")){
                                             showPopupForError("if you choose 'None' option then you are not allow to choose any other options.");
                                             flag = false;
+                                            break;
                                         }
                                     }else if(selectedOptions.contains("3")){
                                         if(selectedOptions.contains("1") || selectedOptions.contains("2")){
                                             showPopupForError("if you choose 'None' option then you are not allow to choose any other options.");
                                             flag = false;
+                                            break;
                                         }
                                     }
                                 }
@@ -948,16 +1001,22 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         if (selectedOptions.contains("4")){
                                             showPopupForError("if you choose 'Do not have a mobile phone' option then you are not allow to choose any other options.");
                                             flag = false;
+                                            break;
                                         }
                                     }else if(selectedOptions.contains("4")){
                                         if(selectedOptions.contains("1") || selectedOptions.contains("2") || selectedOptions.contains("3") || selectedOptions.contains("99")){
                                             showPopupForError("if you choose 'Do not have a mobile phone' option then you are not allow to choose any other options.");
                                             flag = false;
+                                            break;
                                         }
                                     }
                                 }
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     answerModelList.get(nextPosition).setOption_id(selectedOptions);
+                                    answerModelList.get(nextPosition).setOption_value("");
+                                    answerModelList.get(nextPosition).setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
+                                    answerModelList.get(nextPosition).setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
+                                    answerModelList.get(nextPosition).setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                                 }else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id(selectedOptions);
@@ -979,9 +1038,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             flag=false;
                                             break;
                                         }
-                                    }else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("70")) {
+                                    }
+                                   else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("70")) {
                                        String town_village_class=sharedPrefHelper.getString("town_village_class","");
-                                       if(!town_village_class.equals("Rural")){
+                                       if(!town_village_class.equalsIgnoreCase("Rural")){
                                            flag=true;
                                        }else{
                                            flag=false;
@@ -1029,7 +1089,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             JSONObject json_object = new JSONObject();
                             json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                             json_object.put("survey_id", survey_id);
-                            json_object.put("app_version", AppConstants.APP_VERSION);
+                            json_object.put("app_version", sharedPrefHelper.getString("version", "1.3"));
                             json_object.put("survey_status", "1");//for completed
                             json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                             json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
@@ -1566,14 +1626,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        }
                        if (jsonObjectQuesType.getString("question_id").equals("94")){
                            String town_village_class=sharedPrefHelper.getString("town_village_class","");
-                           if(!town_village_class.equals("Rural")){
+                           if(!town_village_class.equalsIgnoreCase("Rural")){
                                txtLabel.setVisibility(View.GONE);
                                editText.setVisibility(View.GONE);
                            }
                        }
                        if (jsonObjectQuesType.getString("question_id").equals("93") || jsonObjectQuesType.getString("question_id").equals("95") ){
                            String town_village_class=sharedPrefHelper.getString("town_village_class","");
-                           if(!town_village_class.equals("Urban")){
+                           if(!town_village_class.equalsIgnoreCase("Urban")){
                                txtLabel.setVisibility(View.GONE);
                                editText.setVisibility(View.GONE);
                            }
@@ -2011,7 +2071,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        }
                        if(questionID.equals("70")){
                            String town_village_class=sharedPrefHelper.getString("town_village_class","");
-                           if(!town_village_class.equals("Rural")){
+                           if(!town_village_class.equalsIgnoreCase("Rural")){
                                txtLabel.setVisibility(View.GONE);
                                linearLayoutCheckbox.setVisibility(View.GONE);
                            }
@@ -2166,14 +2226,19 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    int spnposI = 0;
                                    int spnposP = 0;
                                    Map<Integer, String> treeMapAge = new TreeMap<>(testHashMap2);
-                                   for (Map.Entry<Integer, String> entry : treeMapAge.entrySet()) {
-                                       if (Integer.parseInt(answerModelList.get(startPosition).getOption_id()) - 1 == spnposP) {
-                                           position = spnposP;
-                                           break;
+                                   try {
+                                       for (Map.Entry<Integer, String> entry : treeMapAge.entrySet()) {
+                                           if (Integer.parseInt(answerModelList.get(startPosition).getOption_id()) - 1 == spnposP) {
+                                               position = spnposP;
+                                               break;
+                                           }
+                                           spnposP++;
                                        }
-                                       spnposP++;
+                                       spinner.setSelection(position + 1);
+                                   }catch(Exception ex){
+                                       Log.e("CWE Error",ex.getMessage());
                                    }
-                                   spinner.setSelection(position + 1);
+
                                }
                             }
                        }
@@ -2211,7 +2276,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                           if (jsonObjectQuesType.getString("question_id").equals("51")) {//01-02-2021
                                String currentWorkingStatus=sharedPrefHelper.getString("currentWorkingStatus","");
                                String town_village_class = sharedPrefHelper.getString("town_village_class", "");
-                               if (town_village_class.equals("Urban")) {
+                               if (town_village_class.equalsIgnoreCase("Urban")) {
                                    for (int k = 0; k < 15; k++) {
                                        if (!currentWorkingStatus.equals("3") && !currentWorkingStatus.equals("4")
                                                && !currentWorkingStatus.equals("6") && !currentWorkingStatus.equals("7")) {
@@ -2229,7 +2294,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    }
                                }
                                else {
-                                   for (int k = 16; k < 40; k++) {
+                                   for (int k = 15; k < 40; k++) {
                                        if (!currentWorkingStatus.equals("3") && !currentWorkingStatus.equals("4")
                                                && !currentWorkingStatus.equals("6") && !currentWorkingStatus.equals("7")) {
                                            String currentOccupation = "99";
@@ -2268,24 +2333,28 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                   // spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
                                    int spinnerpos=0;
                                    boolean isBreak=false;
-
-                                   for(int j = 0; j < spinnerAL.size(); j++){
+                               if(!answerModelList.get(startPosition).getOption_id().equals("0")) {
+                                   for (int j = 0; j < spinnerAL.size(); j++) {
                                        for (int k = 0; k < jsonArrayOptions.length(); k++) {
                                            JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                            String spinnerOptionOptionID = jsonObjectOptionValues.getString("option_id");
-                                           if(spinnerOptionOptionID.equals(answerModelList.get(startPosition).getOption_id()) && spinnerAL.get(j).equals(jsonObjectOptionValues.getString("option_value"))){
+                                           if (spinnerOptionOptionID.equals(answerModelList.get(startPosition).getOption_id()) && spinnerAL.get(j).equals(jsonObjectOptionValues.getString("option_value"))) {
                                                //spinnerpos++;
-                                               isBreak=true;
+                                               isBreak = true;
                                                break;
                                            }
                                        }
-                                       if(isBreak){ break; }else{
-                                           if(spinnerpos<spinnerAL.size()-1){
+                                       if (isBreak) {
+                                           break;
+                                       } else {
+                                           if (spinnerpos < spinnerAL.size() - 1) {
                                                spinnerpos++;
                                            }
                                        }
                                    }
+                               }
                                    //spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
+
                                    spinner.setSelection(spinnerpos);
                                }
                            //}
@@ -2305,7 +2374,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            if ((questionID.equals("75"))) {
                                String town_village_class = sharedPrefHelper.getString("town_village_class", "");
-                               if (!town_village_class.equals("Urban")) {
+                               if (!town_village_class.equalsIgnoreCase("Urban")) {
                                    txtLabel.setVisibility(View.GONE);
                                    spinner.setVisibility(View.GONE);
                                }

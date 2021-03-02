@@ -831,7 +831,15 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     }
                     else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
                             && (questionID.equals("62")||questionID.equals("65")) &&spinner.getSelectedItemId()==0){
+                        if (questionID.equals("62")&&sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1")){
                             flag=true;
+                        }
+                        else if (questionID.equals("65")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("1")){
+                            flag=true;
+                        }else{
+                            flag=false;
+                            break;
+                        }
                     } else {
                        if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
                             flag = false;
@@ -877,11 +885,13 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             if (tvConnection.contains("7") || tvConnection.contains("8")){
                                 showPopupForError("if you choose 'DK/CS' or 'None' option then you are not allow to choose any other options.");
                                 flag = false;
+                                break;
                             }
                         }else if(tvConnection.contains("7") || tvConnection.contains("8")){
                             if (tvConnection.contains("1") || tvConnection.contains("2") || tvConnection.contains("3") || tvConnection.contains("4") || tvConnection.contains("5") || tvConnection.contains("6")){
                                 showPopupForError("if you choose 'DK/CS' or 'None' option then you are not allow to choose any other options.");
                                 flag = false;
+                                break;
                             }
                         }//
                     }
@@ -897,9 +907,17 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                         answerModelList.add(answerModel);
                     }
-                    if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("") && !jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("68")){
-                        flag=false;
-                        break;
+                    if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("")){
+                        if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("68")){
+                            String selectedTVConnection=sharedPrefHelper.getString("selectedTVConnection",selectedOptions);
+                            if(selectedTVConnection.contains("6")){
+                                flag=false;
+                                break;
+                            }
+                        }else{
+                            flag=false;
+                            break;
+                        }
                     }
                     nextPosition++;
                     count++;
@@ -1074,7 +1092,15 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     }
                     else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
                             && (questionID.equals("62")||questionID.equals("65")) &&spinner.getSelectedItemId()==0){
-                        flag=true;
+                        if (questionID.equals("62")&&sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1")){
+                            flag=true;
+                        }
+                        else if (questionID.equals("65")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("1")){
+                            flag=true;
+                        }else{
+                            flag=false;
+                            break;
+                        }
                     } else {
                         if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
                             flag = false;
@@ -1128,9 +1154,17 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                         answerModelList.add(answerModel);
                     }
-                    if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("") && !jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("68")){
-                        flag=false;
-                        break;
+                    if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("")){
+                        if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("68")){
+                            String selectedTVConnection=sharedPrefHelper.getString("selectedTVConnection",selectedOptions);
+                            if(selectedTVConnection.contains("6")){
+                                flag=false;
+                                break;
+                            }
+                        }else{
+                            flag=false;
+                            break;
+                        }
                     }
 
                     nextPosition++;
@@ -1281,7 +1315,8 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     totalSingle = startPosition;
                 }
                 else{
-                    lenSingle=totalSingle;
+                    //lenSingle=totalSingle;
+                    lenSingle=startScreenCount*11;
                     totalSingle = startPosition;
                 }
                 ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
@@ -1300,6 +1335,21 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     answerTVtotal.add(answerModelListSingle);
                 }
                 startScreenCount++;
+            }
+            else if(startScreenPosition==3){
+                if(startScreenCount==0){
+                    lenSingle=0;
+                }
+                else{
+                    //lenSingle=totalSingle;
+                    lenSingle=startScreenCount*11;
+                }
+                if(answerModelList.get(lenSingle+2).getQuestionID().equals("60")){
+                    sharedPrefHelper.setString("spinnerOptionIdTV",answerModelList.get(lenSingle+2).getOption_id());
+                }
+                if(answerModelList.get(lenSingle+6).getQuestionID().equals("64")){
+                    sharedPrefHelper.setString("selectedTVConnection",answerModelList.get(lenSingle+6).getOption_id());
+                }
             }
             for(int l=startScreenPosition;l<endScreenPosition;l++){
                 JSONObject jsonObjectScreen=jsonArrayScreen.getJSONObject(l);
@@ -1525,20 +1575,23 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                                 int spinnerpos=0;
                                 boolean isBreak=false;
-
-                                for(int j = 0; j < spinnerAL.size(); j++){
-                                    for (int k = 0; k < jsonArrayOptions.length(); k++) {
-                                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOptionOptionID = jsonObjectOptionValues.getString("option_id");
-                                        if(spinnerOptionOptionID.equals(answerModelList.get(startPosition).getOption_id()) && spinnerAL.get(j).equals(jsonObjectOptionValues.getString("option_value"))){
-                                            //spinnerpos++;
-                                            isBreak=true;
-                                            break;
+                               if(!answerModelList.get(startPosition).getOption_id().equals("0")){
+                                    for (int j = 0; j < spinnerAL.size(); j++) {
+                                        for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                            JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                            String spinnerOptionOptionID = jsonObjectOptionValues.getString("option_id");
+                                            if (spinnerOptionOptionID.equals(answerModelList.get(startPosition).getOption_id()) && spinnerAL.get(j).equals(jsonObjectOptionValues.getString("option_value"))) {
+                                                //spinnerpos++;
+                                                isBreak = true;
+                                                break;
+                                            }
                                         }
-                                    }
-                                    if(isBreak){ break; }else{
-                                        if(spinnerpos<spinnerAL.size()-1){
-                                            spinnerpos++;
+                                        if (isBreak) {
+                                            break;
+                                        } else {
+                                            if (spinnerpos <spinnerAL.size() - 1) {
+                                                spinnerpos++;
+                                            }
                                         }
                                     }
                                 }

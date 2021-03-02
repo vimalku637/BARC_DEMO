@@ -140,7 +140,10 @@ public class ClusterDetails extends AppCompatActivity {
                     return;
                 }
                 Long aLong = System.currentTimeMillis()/1000;
-                String uuid = aLong.toString();
+                //String uuid = aLong.toString();
+                DateFormat dateFormatUUID = new SimpleDateFormat("yyyyMMddHHmmss");
+                Calendar calUUID = Calendar.getInstance();
+                String uuid = dateFormatUUID.format(calUUID.getTime())+""+sharedPrefHelper.getString("user_id", "");
                 sharedPrefHelper.setString("survey_id", uuid);
                 Intent intentSurveyActivity=new Intent(context, HouseholdSurveyActivity.class);
                 intentSurveyActivity.putExtra("survey_id", uuid);

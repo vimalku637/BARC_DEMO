@@ -1436,7 +1436,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 else if (jsonObjectQuesType.getString("question_id").equals("38")) {
                                     String currentWorkingStatus=sharedPrefHelper.getString("currentWorkingStatus","");
                                     String town_village_class = sharedPrefHelper.getString("town_village_class", "");
-                                    if (town_village_class.equals("Urban")) {
+                                    if (town_village_class.equalsIgnoreCase("Urban")) {
                                         for (int k = 0; k < 15; k++) {
                                             if (!currentWorkingStatus.equals("3") && !currentWorkingStatus.equals("4")
                                                     && !currentWorkingStatus.equals("6") && !currentWorkingStatus.equals("7")) {
@@ -1454,7 +1454,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                         }
                                     }
                                     else {
-                                        for (int k = 16; k < 40; k++) {
+                                        for (int k = 15; k < 40; k++) {
                                             if (!currentWorkingStatus.equals("3") && !currentWorkingStatus.equals("4")
                                                     && !currentWorkingStatus.equals("6") && !currentWorkingStatus.equals("7")) {
                                                 String currentOccupation = "99";
