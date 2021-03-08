@@ -108,7 +108,7 @@ public class TerminateActivity extends AppCompatActivity {
     /*normal widgets*/
     private Context context=this;
     private String screen_type="", radio_button_id="", reason="",survey_id,
-            halt_radio_button_id="", AudioSavePathInDevice=null;
+            halt_radio_button_id="", AudioSavePathInDevice=null,radioButtonText="";
     private SqliteHelper sqliteHelper;
     private SharedPrefHelper sharedPrefHelper;
     public static ArrayList<AnswerModel> answerModelList;
@@ -131,6 +131,7 @@ public class TerminateActivity extends AppCompatActivity {
         if (bundle!=null) {
             screen_type=bundle.getString("screen_type", "");
             radio_button_id=bundle.getString("radio_button_id", "");
+            radioButtonText=bundle.getString("radioButtonText", "");
             AudioSavePathInDevice=bundle.getString("AudioSavePathInDevice", "");
             groupID=bundle.getInt("groupID", 0);
             answerModelList = (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerModelList");
@@ -255,7 +256,7 @@ public class TerminateActivity extends AppCompatActivity {
 
                     json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                     json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
-                    json_object.put("app_version", AppConstants.APP_VERSION);
+                    json_object.put("app_version", sharedPrefHelper.getString("version", "1.4"));
                     json_object.put("survey_status", "3");//for terminate
                     json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                     json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
@@ -266,7 +267,7 @@ public class TerminateActivity extends AppCompatActivity {
                     json_object.put("GPS_latitude_start", sharedPrefHelper.getString("LAT", ""));
                     json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
                     if (!radio_button_id.equals("")) {
-                        json_object.put("reason", radio_button_id);
+                        json_object.put("reason", radioButtonText);
                         json_object.put("description", "terminate");
                     }
                     if (groupID==25){
@@ -306,7 +307,7 @@ public class TerminateActivity extends AppCompatActivity {
                         tv_survey_terminate.setVisibility(View.VISIBLE);
                         btn_start_new_survey.setVisibility(View.VISIBLE);
                         sqliteHelper.updateLocalFlag("terminate", "survey",
-                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                sharedPrefHelper.getString("survey_id", ""), 1);
                         Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                     }
 
@@ -337,9 +338,9 @@ public class TerminateActivity extends AppCompatActivity {
                         btn_start_new_survey.setVisibility(View.VISIBLE);
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey",
-                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), survey_data_monitoring_id);
+                                sharedPrefHelper.getString("survey_id", ""), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("terminate", "survey",
-                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                sharedPrefHelper.getString("survey_id", ""), 1);
 
                         //send audio here
                         Uri imageUri = Uri.parse(AudioSavePathInDevice);
@@ -424,7 +425,7 @@ public class TerminateActivity extends AppCompatActivity {
 
                                 json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                                 json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
-                                json_object.put("app_version", AppConstants.APP_VERSION);
+                                json_object.put("app_version", sharedPrefHelper.getString("version", "1.3"));
                                 json_object.put("survey_status", "2");// for halt
                                 json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                                 json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
@@ -464,7 +465,7 @@ public class TerminateActivity extends AppCompatActivity {
                                     tv_survey_terminate.setVisibility(View.VISIBLE);
                                     btn_start_new_survey.setVisibility(View.VISIBLE);
                                     sqliteHelper.updateLocalFlag("halt", "survey",
-                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                            sharedPrefHelper.getString("survey_id", ""), 1);
                                     Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                 }
 
@@ -501,7 +502,7 @@ public class TerminateActivity extends AppCompatActivity {
 
                             json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
                             json_object.put("survey_id", sharedPrefHelper.getString("survey_id", ""));
-                            json_object.put("app_version", AppConstants.APP_VERSION);
+                            json_object.put("app_version", sharedPrefHelper.getString("version", "1.3"));
                             json_object.put("survey_status", "3");//for terminate
                             json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                             json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
@@ -512,7 +513,7 @@ public class TerminateActivity extends AppCompatActivity {
                             json_object.put("GPS_latitude_start", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
                             if (!radio_button_id.equals("")) {
-                                json_object.put("reason", radio_button_id);
+                                json_object.put("reason", radioButtonText);
                                 json_object.put("description", "terminate");
                             }else{
                                 json_object.put("reason", reason);
@@ -551,7 +552,7 @@ public class TerminateActivity extends AppCompatActivity {
                                 tv_survey_terminate.setVisibility(View.VISIBLE);
                                 btn_start_new_survey.setVisibility(View.VISIBLE);
                                 sqliteHelper.updateLocalFlag("terminate", "survey",
-                                        Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                        sharedPrefHelper.getString("survey_id", ""), 1);
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                             }
 
@@ -640,9 +641,9 @@ public class TerminateActivity extends AppCompatActivity {
                         btn_start_new_survey.setVisibility(View.VISIBLE);
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey",
-                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), survey_data_monitoring_id);
+                                sharedPrefHelper.getString("survey_id", ""), survey_data_monitoring_id);
                         sqliteHelper.updateLocalFlag("halt", "survey",
-                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                sharedPrefHelper.getString("survey_id", ""), 1);
 
                         //send audio here
                         Uri imageUri = Uri.parse(AudioSavePathInDevice);

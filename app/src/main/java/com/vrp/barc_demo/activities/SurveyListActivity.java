@@ -40,7 +40,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -196,6 +199,13 @@ public class SurveyListActivity extends AppCompatActivity {
                             intentSurveyActivity.putExtra("answerModelListFamily", answerModelHouseholdMemberList);
                             intentSurveyActivity.putExtra("answerModelListTV", answerModelTVList);
                             intentSurveyActivity.putExtra("screen_type", "survey_list");
+                           /* String dateTime=surveyModelAl.get(position).getDate_time();
+                            if(dateTime.equals("")){
+                                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                Calendar cal = Calendar.getInstance();
+                                dateTime=dateFormat.format(cal.getTime());
+                            }
+                            sharedPrefHelper.setString("dateTime", dateTime);*/
                             startActivity(intentSurveyActivity);
                         }
                     }else{

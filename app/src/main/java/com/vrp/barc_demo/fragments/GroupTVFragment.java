@@ -219,6 +219,8 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                 if(totalScreen>0){
                     answerTVtotal.clear();
                     questionsPopulate();
+                    btn_next.setEnabled(true);
+                    btn_stop.setEnabled(true);
                 }
             }
         }catch (JSONException ex){
@@ -514,6 +516,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2,2);
                     doBack();
                 }else{
+                    btn_next.setEnabled(true);
                     btn_next.setVisibility(View.VISIBLE);
                     btn_stop.setVisibility(View.GONE);
                     startPosition=startPosition-(endPosition+Integer.parseInt(arrayScreenWiseQuestionModel.get(startScreenPosition).getquestions()));
@@ -974,12 +977,12 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             //save data in to local DB.
                             sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
                             sqliteHelper.updateLocalFlag("partial", "survey",
-                                    Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                    sharedPrefHelper.getString("survey_id", ""), 1);
                         } else {
                             //update data in to local DB
                             sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
                             sqliteHelper.updateLocalFlag("partial", "survey",
-                                    Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                    sharedPrefHelper.getString("survey_id", ""), 1);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -993,6 +996,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                 //btn_next.setText("Submit");
                 startScreenPosition++;
                 endScreenPosition++;
+                btn_next.setEnabled(false);
                 btn_stop.setVisibility(View.VISIBLE);
                 btn_next.setVisibility(View.GONE);
             }
@@ -1181,6 +1185,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
 
         //back_status=false;
         if(flag==true){
+            btn_stop.setEnabled(false);
             if(startScreenCount==0){
                 totalSingle = startPosition;
             }
@@ -1219,7 +1224,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     //update data in to local DB
                     sqliteHelper.updateTVDataInTable("survey", "survey_id", survey_id, json_object);
                     sqliteHelper.updateLocalFlag("partial", "survey",
-                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                            sharedPrefHelper.getString("survey_id", ""), 1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1279,8 +1284,8 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     if (success.equals("1")) {
                         AlertDialogClass.dismissProgressDialog();
                         //update id on the bases of survey id
-                        sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
-                        sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
+                        sqliteHelper.updateServerId("survey", survey_id, survey_data_monitoring_id);
+                        sqliteHelper.updateLocalFlag("household_survey","survey", survey_id, 1);
                         Intent intentSurveyActivity1=new Intent(getActivity(), ClusterDetails.class);
                         startActivity(intentSurveyActivity1);
                     } else {
@@ -1575,29 +1580,31 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                                 int spinnerpos=0;
                                 boolean isBreak=false;
-                               if(!answerModelList.get(startPosition).getOption_id().equals("0")){
-                                    for (int j = 0; j < spinnerAL.size(); j++) {
-                                        for (int k = 0; k < jsonArrayOptions.length(); k++) {
-                                            JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                            String spinnerOptionOptionID = jsonObjectOptionValues.getString("option_id");
-                                            if (spinnerOptionOptionID.equals(answerModelList.get(startPosition).getOption_id()) && spinnerAL.get(j).equals(jsonObjectOptionValues.getString("option_value"))) {
-                                                //spinnerpos++;
-                                                isBreak = true;
-                                                break;
+                                if (spinner.getVisibility() == View.VISIBLE) {
+                                    if(!answerModelList.get(startPosition).getOption_id().equals("0")){
+                                        for (int j = 0; j < spinnerAL.size(); j++) {
+                                            for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                                JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                                String spinnerOptionOptionID = jsonObjectOptionValues.getString("option_id");
+                                                if (spinnerOptionOptionID.equals(answerModelList.get(startPosition).getOption_id()) && spinnerAL.get(j).equals(jsonObjectOptionValues.getString("option_value"))) {
+                                                    //spinnerpos++;
+                                                    isBreak = true;
+                                                    break;
+                                                }
                                             }
-                                        }
-                                        if (isBreak) {
-                                            break;
-                                        } else {
-                                            if (spinnerpos <spinnerAL.size() - 1) {
-                                                spinnerpos++;
+                                            if (isBreak) {
+                                                break;
+                                            } else {
+                                                if (spinnerpos <spinnerAL.size() - 1) {
+                                                    spinnerpos++;
+                                                }
                                             }
                                         }
                                     }
+                                    //spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
+                                    spinner.setSelection(spinnerpos);
+                                    //spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
                                 }
-                                //spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
-                                spinner.setSelection(spinnerpos);
-                                //spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
                             }
                         //}
                         startPosition++;

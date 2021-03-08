@@ -197,8 +197,8 @@ public class MainMenu extends AppCompatActivity {
                     int survey_data_monitoring_id=jsonObject.getInt("survey_data_monitoring_id");
                     if (success.equals("1")) {
                         //update id on the bases of survey id
-                        sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
-                        sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
+                        sqliteHelper.updateServerId("survey", survey_id, survey_data_monitoring_id);
+                        sqliteHelper.updateLocalFlag("household_survey","survey", survey_id, 1);
                         if(count>0){
                             count=count-1;
                             //AlertDialogClass.dismissProgressDialog();

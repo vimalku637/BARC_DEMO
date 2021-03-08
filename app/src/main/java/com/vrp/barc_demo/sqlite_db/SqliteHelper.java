@@ -100,7 +100,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 values.put("city", "4");
                 values.put("town", "3");
                 values.put("user_id", sharedPrefHelper.getString("user_id", ""));
-                values.put("date_time", "");
+                values.put("date_time", sharedPrefHelper.getString("dateTime", ""));
                 values.put("household_name", sharedPrefHelper.getString("interviewer_name", ""));
                 values.put("address", "");
                 values.put("address_type", sharedPrefHelper.getString("address_type", ""));
@@ -236,7 +236,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         String cluster_no= sharedPrefHelper.getString("cluster_no", "");
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_id,household_name,status,cluster_no from survey where cluster_no='"+cluster_no+"'";
+                String query = "select survey_id,household_name,status,cluster_no,date_time from survey where cluster_no='"+cluster_no+"'";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -246,6 +246,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                         surveyModel.setHousehold_name(cursor.getString(cursor.getColumnIndex("household_name")));
                         surveyModel.setStatus(cursor.getString(cursor.getColumnIndex("status")));
                         surveyModel.setCluster_no(cursor.getString(cursor.getColumnIndex("cluster_no")));
+                        surveyModel.setDate_time(cursor.getString(cursor.getColumnIndex("date_time")));
 
                         cursor.moveToNext();
                         arrayList.add(surveyModel);
@@ -400,7 +401,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put("survey_data", String.valueOf(jsonObject));
 
-                inserted_id = db.update(table, values, whr + " = " + survey_id + "", null);
+                inserted_id = db.update(table, values, whr + " = '" + survey_id + "'", null);
                 db.close();
             }
 
@@ -418,7 +419,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put("family_data", String.valueOf(jsonObject));
 
-                inserted_id = db.update(table, values, whr + " = " + survey_id + "", null);
+                inserted_id = db.update(table, values, whr + " = '" + survey_id + "'", null);
                 db.close();
             }
 
@@ -436,7 +437,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put("tv_data", String.valueOf(jsonObject));
 
-                inserted_id = db.update(table, values, whr + " = " + survey_id + "", null);
+                inserted_id = db.update(table, values, whr + " = '" + survey_id + "'", null);
                 db.close();
             }
 
@@ -559,7 +560,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public long updateServerId(String table, int survey_id, int surveyID) {
+    public long updateServerId(String table, String survey_id, int surveyID) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -567,7 +568,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put("id", surveyID);
 
-                inserted_id = db.update(table, values, "survey_id" + " = " + survey_id + "", null);
+                inserted_id = db.update(table, values, "survey_id" + " = '" + survey_id + "'", null);
 
                 db.close();
             }
@@ -598,7 +599,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return inserted_id;
     }
 
-    public long updateAudioFileInTable(String table, int survey_id, String audio_file) {
+    public long updateAudioFileInTable(String table, String survey_id, String audio_file) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -606,7 +607,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put("audio_recording", audio_file);
 
-                inserted_id = db.update(table, values, "survey_id" + " = " + survey_id + "", null);
+                inserted_id = db.update(table, values, "survey_id" + " = '" + survey_id + "'", null);
 
                 db.close();
             }
@@ -618,7 +619,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return inserted_id;
     }
 
-    public long updateLocalFlag(String screenType, String table, int survey_id, int flag) {
+    public long updateLocalFlag(String screenType, String table, String survey_id, int flag) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -634,7 +635,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 else if (screenType.equals("partial"))
                     values.put("status", 0);
 
-                inserted_id = db.update(table, values, "survey_id" + " = " + survey_id + "", null);
+                inserted_id = db.update(table, values, "survey_id" + " = '" + survey_id + "'", null);
 
                 db.close();
             }

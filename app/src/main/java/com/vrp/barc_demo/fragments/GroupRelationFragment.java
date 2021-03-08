@@ -224,6 +224,8 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                 if(totalScreen>0){
                     answerTVtotal.clear();
                     questionsPopulate();
+                    btn_next.setEnabled(true);
+                    btn_stop.setEnabled(true);
                 }
             }
             else if (jsonQuestions.has("group")) {
@@ -608,12 +610,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     //save data in to local DB.
                                     sqliteHelper.updateFamilyDataInTable("survey", "survey_id", survey_id, json_object);
                                     sqliteHelper.updateLocalFlag("partial", "survey",
-                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                            sharedPrefHelper.getString("survey_id", ""), 1);
                                 } else {
                                     //update data in to local DB
                                     sqliteHelper.updateFamilyDataInTable("survey", "survey_id", survey_id, json_object);
                                     sqliteHelper.updateLocalFlag("partial", "survey",
-                                            Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                            sharedPrefHelper.getString("survey_id", ""), 1);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -627,13 +629,13 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         //btn_next.setText("Submit");
                         startScreenPosition++;
                         endScreenPosition++;
+                        btn_next.setEnabled(false);
                         btn_stop.setVisibility(View.VISIBLE);
                         btn_next.setVisibility(View.GONE);
                     }
                     totalScreenCount++;
                     endScreenCount++;
                     questionsPopulate();
-
                 }
                 else{
                     Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
@@ -662,6 +664,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,1,2);
                     doBack();
                 }else{
+                    btn_next.setEnabled(true);
                     btn_next.setVisibility(View.VISIBLE);
                     btn_stop.setVisibility(View.GONE);
                     totalScreenCount--;
@@ -880,6 +883,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                 }
                 //back_status=false;
                 if(flag==true){
+                    btn_stop.setEnabled(false);
                     if(startScreenCount==0){
                         totalSingle = startPosition;
                     }
@@ -916,7 +920,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             //update data in to local DB
                             sqliteHelper.updateFamilyDataInTable("survey", "survey_id", survey_id, json_object);
                             sqliteHelper.updateLocalFlag("partial", "survey",
-                                    Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                    sharedPrefHelper.getString("survey_id", ""), 1);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1022,8 +1026,8 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     if (success.equals("1")) {
                         AlertDialogClass.dismissProgressDialog();
                         //update id on the bases of survey id
-                        sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
-                        sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
+                        sqliteHelper.updateServerId("survey", survey_id, survey_data_monitoring_id);
+                        sqliteHelper.updateLocalFlag("household_survey","survey", survey_id, 1);
                         Intent intentSurveyActivity1=new Intent(getActivity(), ClusterDetails.class);
                         startActivity(intentSurveyActivity1);
                     } else {

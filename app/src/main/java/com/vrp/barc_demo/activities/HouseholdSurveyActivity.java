@@ -263,6 +263,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         sharedPrefHelper.setString("HH_Yes","0");
                         sharedPrefHelper.setString("CWE_Name","");
                         sharedPrefHelper.setString("HH_Name","");
+                        sharedPrefHelper.setString("CWE_Status","");
+                        sharedPrefHelper.setString("last_time_access_internet", "");
                     }
                 }
                 /*if (jsonQuestions.has("group")) {
@@ -465,6 +467,19 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 editFieldValues=editText.getText().toString().trim();
                                 groupQuestionID=Integer.parseInt(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
+                                    if(questionID.equals("31")){
+                                        if(!answerModelList.get(nextPosition).getOption_value().equals(editText.getText().toString().trim())){
+                                            showPopupForDataEraseEditText(Integer.parseInt(questionID),answerModelList.get(nextPosition).getOption_value(),editText,nextPosition);
+                                            flag=false;
+                                            break;
+                                        }
+                                    }else if(questionID.equals("57")){
+                                        if(!answerModelList.get(nextPosition).getOption_value().equals(editText.getText().toString().trim())){
+                                            showPopupForDataEraseEditText(Integer.parseInt(questionID),answerModelList.get(nextPosition).getOption_value(),editText,nextPosition);
+                                            flag=false;
+                                            break;
+                                        }
+                                    }
                                     answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
                                     answerModelList.get(nextPosition).setOption_id("");
                                     answerModelList.get(nextPosition).setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
@@ -854,7 +869,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                         break;
                                                     }else if(entry.getValue().equals("2")){
                                                         internetUse = 2;
-                                                        break;
                                                     }//
                                                 }
                                             }
@@ -1104,6 +1118,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
                             json_object.put("family_data", json_array_family);
                             json_object.put("tv_data", json_array_TV);
+                            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                            Calendar cal = Calendar.getInstance();
+                            sharedPrefHelper.setString("dateTime", dateFormat.format(cal.getTime()));
                             json_object.put("date_time", sharedPrefHelper.getString("dateTime", ""));
                             json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
@@ -1123,7 +1140,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     sendSurveyDataOnServer(body);
                                 } else {
                                     Intent intentSurveyActivity1 = new Intent(context, NextSurvey.class);
-                                    sqliteHelper.updateLocalFlag("household_survey", "survey", Integer.parseInt(survey_id), 0);
+                                    sqliteHelper.updateLocalFlag("household_survey", "survey", survey_id, 0);
                                     sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                     Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                     startActivity(intentSurveyActivity1);
@@ -1145,7 +1162,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     sendSurveyDataOnServer(body);
                                 } else {
                                     Intent intentSurveyActivity1 = new Intent(context, NextSurvey.class);
-                                    sqliteHelper.updateLocalFlag("household_survey", "survey", Integer.parseInt(survey_id), 0);
+                                    sqliteHelper.updateLocalFlag("household_survey", "survey", survey_id, 0);
                                     sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
                                     Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                                     startActivity(intentSurveyActivity1);
@@ -1192,25 +1209,26 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         //update data in to local DB
                                         sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                                         sqliteHelper.updateLocalFlag("partial", "survey",
-                                                Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                                sharedPrefHelper.getString("survey_id", ""), 1);
                                     } else {
                                         if (endScreenPosition==1) {
                                             if (sqliteHelper.getSurveyIDFromTable(survey_id).equals(survey_id)){
                                                 //update data in to local DB
                                                 sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                                                 sqliteHelper.updateLocalFlag("partial", "survey",
-                                                        Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                                        sharedPrefHelper.getString("survey_id", ""), 1);
                                             }else{
                                                 //save data in to local DB.
+                                                //date-time
                                                 sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
                                                 sqliteHelper.updateLocalFlag("partial", "survey",
-                                                        Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                                       sharedPrefHelper.getString("survey_id", ""), 1);
                                             }
                                         } else {
                                             //update data in to local DB
                                             sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                                             sqliteHelper.updateLocalFlag("partial", "survey",
-                                                    Integer.parseInt(sharedPrefHelper.getString("survey_id", "")), 1);
+                                                    sharedPrefHelper.getString("survey_id", ""), 1);
                                         }
                                     }
                                 } catch (JSONException e) {
@@ -1249,6 +1267,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         }
                         if (groupRelationId!=null&&!groupRelationId.equalsIgnoreCase("0")) {
                            if (groupRelationId.equalsIgnoreCase("1")) {
+                               btn_next.setEnabled(false);
                                familyTotalGroup=Integer.parseInt(editFieldValues);
                                 Bundle bundle=new Bundle();
                                 bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
@@ -1265,6 +1284,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 transaction.commit();
                             }
                             if (groupRelationId.equalsIgnoreCase("2")) {
+                                btn_next.setEnabled(false);
                                 Bundle bundle=new Bundle();
                                 tvTotalGroup=Integer.parseInt(editFieldValues);
                                 bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
@@ -1352,8 +1372,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     int survey_data_monitoring_id=jsonObject.getInt("survey_data_monitoring_id");
                     if (success.equals("1")) {
                         //update id on the bases of survey id
-                        sqliteHelper.updateServerId("survey", Integer.parseInt(survey_id), survey_data_monitoring_id);
-                        sqliteHelper.updateLocalFlag("household_survey","survey", Integer.parseInt(survey_id), 1);
+                        sqliteHelper.updateServerId("survey", survey_id, survey_data_monitoring_id);
+                        sqliteHelper.updateLocalFlag("household_survey","survey", survey_id, 1);
                         sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
 
                         //send audio here
@@ -1743,6 +1763,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            int idd=Integer.parseInt(str_id);
                            radioButton.setId(idd);
                            radioButton.setTag(Integer.parseInt(jsonObjectOptionValues.getString("option_id"))+"^"+Integer.parseInt(jsonObjectOptionValues.getString("is_terminate")));
+                           if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
+                               radioButton.setChecked(true);
+                           }
                            if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>startPosition){
                                if(answerModelList.get(startPosition).getOption_id().equals(jsonObjectOptionValues.getString("option_id"))){
                                    radioButton.setChecked(true);
@@ -1831,9 +1854,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            if(jsonObjectQuesType.getString("pre_field").equals("1")){
                                radioButton.setEnabled(false);
                            }
-                           if(jsonObjectQuesType.getString("question_id").equals("22") && jsonObjectOptionValues.getString("option_id").equals(sharedPrefHelper.getString("address_type", "0"))){
-                               radioButton.setChecked(true);
-                           }
                            else if(jsonObjectQuesType.getString("question_id").equals("76")){
                                String tenement_type=sharedPrefHelper.getString("tenement_type","");
                                if(tenement_type.equals("1") && jsonObjectOptionValues.getString("option_id").equals("1")){
@@ -1916,7 +1936,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                            //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
                                        //}
                                    }
-                               }if (group.getId()==26){
+                               }
+                               if (group.getId()==26){
                                    if (rb.isChecked()){
                                        //if(id.equals("1")){
                                        //setTerminattion(id);
@@ -1926,7 +1947,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
                                        //}
                                    }
-                               }if (group.getId()==27){
+                               }
+                               if (group.getId()==27){
                                    if (rb.isChecked()){
                                        //if(id.equals("1")){
                                        //setTerminattion(id);
@@ -1938,36 +1960,42 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    }
                                }
                                if(group.getId()==23){
-                                    sharedPrefHelper.setString("CWE_Status",radioID);
-                                    if(radioID.equalsIgnoreCase("1")){
+                                   if(rb.isChecked()){
+                                       if(sharedPrefHelper.getString("CWE_Status","").equals(radioID) || sharedPrefHelper.getString("CWE_Status","").equals("")){
+                                           sharedPrefHelper.setString("CWE_Status",radioID);
+                                           if(radioID.equalsIgnoreCase("1")){
                                         /*jsonArrayScreen.remove(11);
                                         jsonArrayScreen.remove(11);*/
-                                        try{
-                                            JSONArray list = new JSONArray();
-                                            int len = jsonArrayScreen.length();
-                                            if (jsonArrayScreen != null) {
-                                                for (int i=0;i<len;i++)
-                                                {
-                                                    if (i != 11 && i != 12)
-                                                    {
-                                                        list.put(jsonArrayScreen.get(i));
-                                                    }
-                                                }
-                                            }
-                                            jsonArrayScreen=list;
-                                            totalScreen=jsonArrayScreen.length();
-                                        } catch (JSONException e) {
-                                           e.printStackTrace();
+                                               try{
+                                                   JSONArray list = new JSONArray();
+                                                   int len = jsonArrayScreen.length();
+                                                   if (jsonArrayScreen != null) {
+                                                       for (int i=0;i<len;i++)
+                                                       {
+                                                           if (i != 11 && i != 12)
+                                                           {
+                                                               list.put(jsonArrayScreen.get(i));
+                                                           }
+                                                       }
+                                                   }
+                                                   jsonArrayScreen=list;
+                                                   totalScreen=jsonArrayScreen.length();
+                                               } catch (JSONException e) {
+                                                   e.printStackTrace();
+                                               }
+                                           }else{
+                                               try {
+                                                   //jsonArrayScreen=new JSONArray();
+                                                   jsonArrayScreen=jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
+                                               } catch (JSONException e) {
+                                                   e.printStackTrace();
+                                               }
+                                               totalScreen=jsonArrayScreen.length();
+                                           }
+                                       }else{
+                                           showPopupForDataEraseRadio(group.getId(),radioGroup,radioID);
                                        }
-                                    }else{
-                                        try {
-                                            //jsonArrayScreen=new JSONArray();
-                                            jsonArrayScreen=jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                        totalScreen=jsonArrayScreen.length();
-                                    }
+                                   }
                                }
                                else if(group.getId()==24){
                                    //start recording here
@@ -2195,11 +2223,73 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            selectedOptionsSpinner=sharedPrefHelper.getString("family_language","");
                            arrayselectedOptionsSpinner = selectedOptionsSpinner.split(",");
                        }
-                       if(questionID.equals("50") || questionID.equals("51") || questionID.equals("52")){
+                       else if(questionID.equals("50") || questionID.equals("51") || questionID.equals("52")){
                            selectedOptionsSpinner=sharedPrefHelper.getString("CWE_Status","");
                            if(selectedOptionsSpinner.equals("1")){
                              spinner.setVisibility(View.GONE);
                              txtLabel.setVisibility(View.GONE);
+                           }
+                       }
+                       else if ((questionID.equals("72"))) {
+                           String stayWith = sharedPrefHelper.getString("stayWith", "");
+                           if (!stayWith.equals("1")) {
+                               txtLabel.setVisibility(View.GONE);
+                               spinner.setVisibility(View.GONE);
+                           }
+                       }
+                       else if ((questionID.equals("73"))) {
+                           String stayWith = sharedPrefHelper.getString("stayWith", "");
+                           if (!stayWith.equals("2")) {
+                               txtLabel.setVisibility(View.GONE);
+                               spinner.setVisibility(View.GONE);
+                           }
+                       }
+                       else if ((questionID.equals("75"))) {
+                           String town_village_class = sharedPrefHelper.getString("town_village_class", "");
+                           if (!town_village_class.equalsIgnoreCase("Urban")) {
+                               txtLabel.setVisibility(View.GONE);
+                               spinner.setVisibility(View.GONE);
+                           }
+                       }
+                       int internetUse=0;
+                       if(jsonObjectQuesType.getString("question_id").equals("84")){
+                           Gson gson = new Gson();
+                           java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+                           HashMap<Integer, String> testHashMap2 = gson.fromJson(sharedPrefHelper.getString("internetUse",""), type);
+                           ///JSONObject obj=new JSONObject(sharedPrefHelper.setString("householdMember","objMember.toString()"););
+                           if (testHashMap2!=null) {
+                               Map<Integer, String> treeMapName = new TreeMap<>(testHashMap2);
+
+                               for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
+                                   if (entry.getValue().equals("1")) {
+                                       internetUse = 1;
+                                       break;
+                                   }else if(entry.getValue().equals("2")){
+                                       internetUse = 2;
+                                       //break;
+                                   }//
+                               }
+                           }
+                           if (internetUse==2){
+                               txtLabel.setVisibility(View.GONE);
+                               spinner.setVisibility(View.GONE);
+                           }
+                       }
+                           /*if (jsonObjectQuesType.getString("question_id").equals("84")) {
+                               String accessInternetOnMobile = sharedPrefHelper.getString("2100f_radio_ids", "");
+                               if (accessInternetOnMobile.equals("1")) {
+                                   txtLabel.setVisibility(View.VISIBLE);
+                                   spinner.setVisibility(View.VISIBLE);
+                               } else {
+                                   txtLabel.setVisibility(View.GONE);
+                                   spinner.setVisibility(View.GONE);
+                               }
+                           }*/
+                       if (questionID.equals("85")) {
+                           String lastTimeAccessInternet = sharedPrefHelper.getString("last_time_access_internet", "");
+                           if (lastTimeAccessInternet.equals("9")) {
+                               txtLabel.setVisibility(View.GONE);
+                               spinner.setVisibility(View.GONE);
                            }
                        }
                        if (jsonObjectQuesType.getString("question_id").equals("100")) {
@@ -2328,96 +2418,33 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            spinnerAL.add(0, getString(R.string.select_option));
                            ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.custom_spinner_dropdown, spinnerAL);
                            spinner.setAdapter(arrayAdapter);
-
-                           if ((back_status == true || screen_type.equals("survey_list")) && answerModelList.size() > startPosition) {
-                                  // spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
+                           if (spinner.getVisibility() == View.VISIBLE) {
+                               if ((back_status == true || screen_type.equals("survey_list")) && answerModelList.size() > startPosition) {
+                                   // spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
                                    int spinnerpos=0;
                                    boolean isBreak=false;
-                               if(!answerModelList.get(startPosition).getOption_id().equals("0")) {
-                                   for (int j = 0; j < spinnerAL.size(); j++) {
-                                       for (int k = 0; k < jsonArrayOptions.length(); k++) {
-                                           JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                           String spinnerOptionOptionID = jsonObjectOptionValues.getString("option_id");
-                                           if (spinnerOptionOptionID.equals(answerModelList.get(startPosition).getOption_id()) && spinnerAL.get(j).equals(jsonObjectOptionValues.getString("option_value"))) {
-                                               //spinnerpos++;
-                                               isBreak = true;
+                                   if(!answerModelList.get(startPosition).getOption_id().equals("0")) {
+                                       for (int j = 0; j < spinnerAL.size(); j++) {
+                                           for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                               JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                               String spinnerOptionOptionID = jsonObjectOptionValues.getString("option_id");
+                                               if (spinnerOptionOptionID.equals(answerModelList.get(startPosition).getOption_id()) && spinnerAL.get(j).equals(jsonObjectOptionValues.getString("option_value"))) {
+                                                   //spinnerpos++;
+                                                   isBreak = true;
+                                                   break;
+                                               }
+                                           }
+                                           if (isBreak) {
                                                break;
-                                           }
-                                       }
-                                       if (isBreak) {
-                                           break;
-                                       } else {
-                                           if (spinnerpos < spinnerAL.size() - 1) {
-                                               spinnerpos++;
+                                           } else {
+                                               if (spinnerpos < spinnerAL.size() - 1) {
+                                                   spinnerpos++;
+                                               }
                                            }
                                        }
                                    }
-                               }
                                    //spinner.setSelection(Integer.parseInt(answerModelList.get(startPosition).getOption_id()));
-
                                    spinner.setSelection(spinnerpos);
-                               }
-                           //}
-                           if ((questionID.equals("72"))) {
-                               String stayWith = sharedPrefHelper.getString("stayWith", "");
-                               if (!stayWith.equals("1")) {
-                                   txtLabel.setVisibility(View.GONE);
-                                   spinner.setVisibility(View.GONE);
-                               }
-                           }
-                           if ((questionID.equals("73"))) {
-                               String stayWith = sharedPrefHelper.getString("stayWith", "");
-                               if (!stayWith.equals("2")) {
-                                   txtLabel.setVisibility(View.GONE);
-                                   spinner.setVisibility(View.GONE);
-                               }
-                           }
-                           if ((questionID.equals("75"))) {
-                               String town_village_class = sharedPrefHelper.getString("town_village_class", "");
-                               if (!town_village_class.equalsIgnoreCase("Urban")) {
-                                   txtLabel.setVisibility(View.GONE);
-                                   spinner.setVisibility(View.GONE);
-                               }
-                           }
-                           int internetUse=0;
-                           if(jsonObjectQuesType.getString("question_id").equals("84")){
-                               Gson gson = new Gson();
-                               java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-                               HashMap<Integer, String> testHashMap2 = gson.fromJson(sharedPrefHelper.getString("internetUse",""), type);
-                               ///JSONObject obj=new JSONObject(sharedPrefHelper.setString("householdMember","objMember.toString()"););
-                               if (testHashMap2!=null) {
-                                   Map<Integer, String> treeMapName = new TreeMap<>(testHashMap2);
-
-                                   for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
-                                       if (entry.getValue().equals("1")) {
-                                           internetUse = 1;
-                                           break;
-                                       }else if(entry.getValue().equals("2")){
-                                           internetUse = 2;
-                                           break;
-                                       }//
-                                   }
-                               }
-                               if (internetUse==2){
-                                   txtLabel.setVisibility(View.GONE);
-                                   spinner.setVisibility(View.GONE);
-                               }
-                           }
-                           /*if (jsonObjectQuesType.getString("question_id").equals("84")) {
-                               String accessInternetOnMobile = sharedPrefHelper.getString("2100f_radio_ids", "");
-                               if (accessInternetOnMobile.equals("1")) {
-                                   txtLabel.setVisibility(View.VISIBLE);
-                                   spinner.setVisibility(View.VISIBLE);
-                               } else {
-                                   txtLabel.setVisibility(View.GONE);
-                                   spinner.setVisibility(View.GONE);
-                               }
-                           }*/
-                           if (questionID.equals("85")) {
-                               String lastTimeAccessInternet = sharedPrefHelper.getString("last_time_access_internet", "");
-                               if (lastTimeAccessInternet.equals("9")) {
-                                   txtLabel.setVisibility(View.GONE);
-                                   spinner.setVisibility(View.GONE);
                                }
                            }
                        }
@@ -2516,6 +2543,137 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             e.printStackTrace();
         }
 
+    }
+
+    private void showPopupForDataEraseEditText(int questionid,String value,EditText editText,int position) {
+        String msg="";
+        if(questionid==31){
+            msg="If you change no. of members then all members data will remove and you have to submit again";
+        }
+        else if(questionid==57){
+            msg="If you change no. of tv then all tv data will remove and you have to submit again";
+        }
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        pDialog.setTitleText("Are you sure?")
+                .setContentText(msg)
+                .setConfirmText("Yes")
+                .setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        if(questionid==31){
+                            answerModelHouseholdMemberList.clear();
+                            answerModelHouseholdMemberListTotal.clear();
+                            sharedPrefHelper.setString("CWE_Yes","0");
+                            sharedPrefHelper.setString("HH_Yes","0");
+                            sharedPrefHelper.setString("CWE_Name","");
+                            sharedPrefHelper.setString("HH_Name","");
+                            answerModelList.get(position).setOption_value(editText.getText().toString().trim());
+                        }
+                        else if(questionid==57){
+                            answerModelTVList.clear();
+                            answerModelTVListTotal.clear();
+                            answerModelList.get(position).setOption_value(editText.getText().toString().trim());
+                        }
+                        sDialog.dismiss();
+
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        editText.setText(value);
+                        sDialog.dismiss();
+                    }
+                })
+                .show();
+        pDialog.setCancelable(false);
+    }
+    private void showPopupForDataEraseRadio(int questionid, RadioGroup radiogroup,String value) {
+        String msg="";
+        msg="If you change CWE status then all data will remove and you have to submit again";
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        pDialog.setTitleText("Are you sure?")
+                .setContentText(msg)
+                .setConfirmText("Yes")
+                .setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        if(questionid==23){
+                            ArrayList<AnswerModel> list= new ArrayList<>();
+                            if (jsonArrayScreen != null) {
+                                for (int i=0;i<24;i++)
+                                {
+                                    if(answerModelList.size()>i) {
+                                        list.add(answerModelList.get(i));
+                                    }else{
+                                        break;
+                                    }
+                                }
+                            }
+                            answerModelList.clear();
+                            answerModelList=list;
+                            answerModelHouseholdMemberList.clear();
+                            answerModelHouseholdMemberListTotal.clear();
+                            answerModelTVList.clear();
+                            answerModelTVListTotal.clear();
+                            sharedPrefHelper.setString("CWE_Status",value);
+                            sharedPrefHelper.setString("CWE_Yes","0");
+                            sharedPrefHelper.setString("HH_Yes","0");
+                            sharedPrefHelper.setString("CWE_Name","");
+                            sharedPrefHelper.setString("HH_Name","");
+                            if(value.equalsIgnoreCase("1")){
+                                        /*jsonArrayScreen.remove(11);
+                                        jsonArrayScreen.remove(11);*/
+                                try{
+                                    JSONArray jlist = new JSONArray();
+                                    int len = jsonArrayScreen.length();
+                                    if (jsonArrayScreen != null) {
+                                        for (int i=0;i<len;i++)
+                                        {
+                                            if (i != 11 && i != 12)
+                                            {
+                                                jlist.put(jsonArrayScreen.get(i));
+                                            }
+                                        }
+                                    }
+                                    jsonArrayScreen=jlist;
+                                    totalScreen=jsonArrayScreen.length();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else{
+                                try {
+                                    //jsonArrayScreen=new JSONArray();
+                                    jsonArrayScreen=jsonQuestions.getJSONArray("group").getJSONObject(0).getJSONArray("screens");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                totalScreen=jsonArrayScreen.length();
+                            }
+                        }
+                        sDialog.dismiss();
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        try {
+                            radiogroup.clearCheck();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .show();
+        pDialog.setCancelable(false);
     }
 
     private void openDialogForAgeConfirmation(EditText editText,String value) {
@@ -2637,7 +2795,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             }
         }
         sharedPrefHelper.setString("AudioSavePathInDevice",AudioSavePathInDevice);
-        sqliteHelper.updateAudioFileInTable("survey", Integer.parseInt(survey_id), AudioSavePathInDevice);
+        sqliteHelper.updateAudioFileInTable("survey", survey_id, AudioSavePathInDevice);
         //Toast.makeText(context, ""+AudioSavePathInDevice, Toast.LENGTH_SHORT).show();
     }
     public boolean checkPermission() {
@@ -2728,11 +2886,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         return super.onOptionsItemSelected(item);
     }
 
-    public void setTerminattion(String id, int groupID) {
+    public void setTerminattion(String id, int groupID,String radioButtonText) {
         stopRecording();
         Intent intentTerminate = new Intent(context, TerminateActivity.class);
         intentTerminate.putExtra("screen_type", "terminate");
         intentTerminate.putExtra("radio_button_id", id);//id=(reason)
+        intentTerminate.putExtra("radioButtonText", radioButtonText);//id=(reason)
         intentTerminate.putExtra("answerModelList", answerModelList);
         intentTerminate.putExtra("answerFamilyMemberModelList", answerModelHouseholdMemberListTotal);
         intentTerminate.putExtra("answerTVModelList", answerModelTVListTotal);
@@ -2784,7 +2943,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismiss();
-                        setTerminattion("",0);
+                        setTerminattion("",0,"");
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -2809,7 +2968,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismiss();
-                        setTerminattion(id,groupID);
+                        setTerminattion(id,groupID,radioButtonText);
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -2838,7 +2997,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismiss();
-                        setTerminattion(id,0);
+                        setTerminattion(id,0,"Electricity required in durables");
                     }
                 })
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -2972,6 +3131,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     public void passDataToActivity(ArrayList<ArrayList<AnswerModel>> answerModelListTotal,ArrayList<AnswerModel> answerModelList,int type,int mode){
        // Log.e("Fragment Dismissed",someValue);
         onBackPressedListener = null;
+        btn_next.setEnabled(true);
         if(type==1){
             //answerModelHouseholdMemberList.clear();
             ArrayList<ArrayList<AnswerModel>> answerModelListNTotal=answerModelListTotal;
@@ -3007,9 +3167,5 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         // Stop Speaker.
         audioManager.setSpeakerphoneOn(false);
 
-        //date-time
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        sharedPrefHelper.setString("dateTime", dateFormat.format(cal.getTime()));
     }
 }
