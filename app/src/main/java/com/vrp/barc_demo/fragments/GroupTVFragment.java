@@ -1076,11 +1076,21 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                 else if (childView instanceof Spinner) {
                     Spinner spinner = (Spinner) childView;
                     String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
+                    JSONArray jsonArrayOptions = jsonArrayQuestions.getJSONObject(count).getJSONArray("question_options");
+                    String selectedItem=Long.toString(spinner.getSelectedItemId());
+                    for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                        String spinnerOptionOptionValue = jsonObjectOptionValues.getString("option_value");
+                        if(spinnerOptionOptionValue.equals(spinner.getSelectedItem())){
+                            selectedItem=jsonObjectOptionValues.getString("option_id");
+                            break;
+                        }
+                    }
                     if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                        answerModelList.get(nextPosition).setOption_id(Long.toString(spinner.getSelectedItemId()));
+                        answerModelList.get(nextPosition).setOption_id(selectedItem);
                     }else{
                         AnswerModel answerModel= new AnswerModel();
-                        answerModel.setOption_id(Long.toString(spinner.getSelectedItemId()));
+                        answerModel.setOption_id(selectedItem);
                         answerModel.setOption_value("");
                         //answerModel.setSurveyID(survey_id);
                         answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
@@ -1112,11 +1122,11 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         }
                     }
                     if (questionID.equals("59")){
-                        String spinnerOptionId=Long.toString(spinner.getSelectedItemId());
-                        sharedPrefHelper.setString("spinnerOptionId", spinnerOptionId);
+                        //String spinnerOptionId=Long.toString(spinner.getSelectedItemId());
+                        sharedPrefHelper.setString("spinnerOptionId", selectedItem);
                     }else if (questionID.equals("60")){
-                        String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
-                        sharedPrefHelper.setString("spinnerOptionIdTV", spinnerOptionIdTV);
+                        //String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
+                        sharedPrefHelper.setString("spinnerOptionIdTV", selectedItem);
                     }/*else if (questionID.equals("64")){
                                 String spinnerOptionIdTVConnection=Long.toString(spinner.getSelectedItemId());
                                 sharedPrefHelper.setString("spinnerOptionIdTVConnection", spinnerOptionIdTVConnection);
