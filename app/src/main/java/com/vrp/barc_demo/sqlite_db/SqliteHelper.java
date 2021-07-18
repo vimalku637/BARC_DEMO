@@ -653,7 +653,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                String query = "select survey_id, survey_data, audio_recording from survey where flag=0 and status=1";
+                String query = "select survey_id, survey_data, audio_recording,status from survey where flag=0 and status in (1,3)";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -662,6 +662,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                         surveyModel.setSurvey_id(cursor.getString(cursor.getColumnIndex("survey_id")));
                         surveyModel.setSurvey_data(cursor.getString(cursor.getColumnIndex("survey_data")));
                         surveyModel.setAudio_recording(cursor.getString(cursor.getColumnIndex("audio_recording")));
+                        surveyModel.setStatus(cursor.getString(cursor.getColumnIndex("status")));
 
                         cursor.moveToNext();
                         arrayList.add(surveyModel);

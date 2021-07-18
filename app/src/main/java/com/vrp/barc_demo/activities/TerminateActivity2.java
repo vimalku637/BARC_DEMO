@@ -8,13 +8,8 @@
 
 package com.vrp.barc_demo.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.content.Context;
 import android.content.Intent;
-import android.media.midi.MidiOutputPort;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +20,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -33,7 +32,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.vrp.barc_demo.R;
-import com.vrp.barc_demo.location_gps.AppConstants;
 import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
@@ -60,9 +58,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Query;
 
-public class TerminateActivity extends AppCompatActivity {
+public class TerminateActivity2 extends AppCompatActivity {
     private static final String TAG = "Terminate>>";
     @BindView(R.id.cl_terminate)
     ConstraintLayout cl_terminate;
@@ -158,13 +155,10 @@ public class TerminateActivity extends AppCompatActivity {
             arrayListFM= (ArrayList<AnswerModel>) getIntent().getSerializableExtra("answerTVModelList");
             answerModelTVListTotal.add(arrayListTV);
         }
-        survey_id=sharedPrefHelper.getString("survey_id", "");
-         if (screen_id.equals("1")||screen_id.equals("2")||screen_id.equals("3")||screen_id.equals("4") ||screen_id.equals("5")||screen_id.equals("6")||screen_id.equals("7")||screen_id.equals("8")||screen_id.equals("9")) {
-             rb_in_eligible_nccs.setVisibility(View.GONE);
-         } else {
-             rb_in_eligible_nccs.setVisibility(View.VISIBLE);
-         }
-
+        Long aLong = System.currentTimeMillis()/1000;
+        String uuid = aLong.toString()+""+sharedPrefHelper.getString("user_id", "");
+        survey_id=uuid;
+        rb_in_eligible_nccs.setVisibility(View.GONE);
         //date-time
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
@@ -269,33 +263,36 @@ public class TerminateActivity extends AppCompatActivity {
                         til_comment.setVisibility(View.VISIBLE);
                         rb_ine_language.setError(null);
                         break;
-
                     case R.id.rb_intro_exit:
                         reason=getResources().getString(R.string.intro_exit);
                         halt_radio_button_id="7";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
+                        til_comment.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_age_terminate:
                         reason=getResources().getString(R.string.age_terminate);
                         halt_radio_button_id="8";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
+                        til_comment.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_terminate:
                         reason=getResources().getString(R.string.terminate);
                         halt_radio_button_id="9";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
+                        til_comment.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                     case R.id.rb_call_back:
                         reason=getResources().getString(R.string.call_back);
                         halt_radio_button_id="10";
-                        til_name.setVisibility(View.VISIBLE);
-                        til_address.setVisibility(View.VISIBLE);
+                        til_name.setVisibility(View.GONE);
+                        til_address.setVisibility(View.GONE);
+                        til_comment.setVisibility(View.VISIBLE);
                         rb_door_lock.setError(null);
                         break;
                 }
@@ -377,7 +374,7 @@ public class TerminateActivity extends AppCompatActivity {
                         tv_survey_terminate.setVisibility(View.VISIBLE);
                         btn_start_new_survey.setVisibility(View.VISIBLE);
                         sqliteHelper.updateLocalFlag("terminate", "survey",
-                                sharedPrefHelper.getString("survey_id", ""), 0);
+                                sharedPrefHelper.getString("survey_id", ""), 1);
                         Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                     }
 
@@ -400,55 +397,25 @@ public class TerminateActivity extends AppCompatActivity {
                     Log.e(TAG, "survey_data-: "+jsonObject.toString());
                     String success=jsonObject.getString("success");
                     String message=jsonObject.getString("message");
-                    int survey_data_monitoring_id=jsonObject.getInt("survey_data_monitoring_id");
+                    //int survey_data_monitoring_id=jsonObject.getInt("survey_data_monitoring_id");
                     if (success.equals("1")) {
                         AlertDialogClass.dismissProgressDialog();
                         cl_terminate.setVisibility(View.GONE);
                         tv_survey_terminate.setVisibility(View.VISIBLE);
                         btn_start_new_survey.setVisibility(View.VISIBLE);
                         //update id on the bases of survey id
-                        sqliteHelper.updateServerId("survey",
-                                sharedPrefHelper.getString("survey_id", ""), survey_data_monitoring_id);
+                        /*sqliteHelper.updateServerId("survey",
+                                survey_id, survey_data_monitoring_id);*/
                         sqliteHelper.updateLocalFlag("terminate", "survey",
-                                sharedPrefHelper.getString("survey_id", ""), 1);
+                                survey_id, 1);
 
-                        //send audio here
-                        Uri imageUri = Uri.parse(AudioSavePathInDevice);
-                        File file = new File(imageUri.getPath());
-                        RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
-                        part= MultipartBody.Part.createFormData("audio_name", file.getName(), fileReqBody);
-                        Log.e("audio_params-", "audio_params- "
-                                +"\n"+sharedPrefHelper.getString("user_id", "")
-                                +"\n"+survey_id+"\n"+survey_data_monitoring_id+"\n"+part);
-
-                        ApiClient.getClient().create(BARC_API.class).sendAudio(sharedPrefHelper.getString("user_id", ""), survey_id, survey_data_monitoring_id, part).enqueue(new Callback<JsonObject>() {
-                            @Override
-                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response.body().toString());
-                                    Log.e("audio-upload",jsonObject.toString());
-                                    String success=jsonObject.optString("success");
-                                    String message=jsonObject.optString("message");
-                                    String name=jsonObject.optString("name");
-                                    String file_status=jsonObject.optString("file_status");
-                                    if (success.equalsIgnoreCase("1")) {
-                                    }
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<JsonObject> call, Throwable t) {
-                            }
-                        });
                     } else {
                         AlertDialogClass.dismissProgressDialog();
                         CommonClass.showPopupForNoInternet(context);
                     }
 
                 } catch (Exception e) {
+                    AlertDialogClass.dismissProgressDialog();
                     e.printStackTrace();
                 }
             }
@@ -470,6 +437,7 @@ public class TerminateActivity extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btn_next.setEnabled(false);
                 if (halt_radio_button_id.equals("12")) {
                     if (checkValidationHalt()) {
                         //save data in to local DB.
@@ -545,6 +513,8 @@ public class TerminateActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                    }else{
+                        btn_next.setEnabled(true);
                     }
                 }
                 if(halt_radio_button_id.equals("1")||halt_radio_button_id.equals("2")||halt_radio_button_id.equals("3")
@@ -554,7 +524,7 @@ public class TerminateActivity extends AppCompatActivity {
                     cl_terminate.setVisibility(View.GONE);
                     //save data in to local DB.
                     Gson gson = new Gson();
-                    String listString = gson.toJson(
+                   /* String listString = gson.toJson(
                             answerModelList,
                             new TypeToken<ArrayList<AnswerModel>>() {}.getType());
                     String listStringFamily = gson.toJson(
@@ -562,12 +532,12 @@ public class TerminateActivity extends AppCompatActivity {
                             new TypeToken<ArrayList<AnswerModel>>() {}.getType());
                     String listStringTV = gson.toJson(
                             answerModelTVListTotal,
-                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());
+                            new TypeToken<ArrayList<AnswerModel>>() {}.getType());*/
                     try {
                         try {
-                            JSONArray json_array =  new JSONArray(listString);
+                            /*JSONArray json_array =  new JSONArray(listString);
                             JSONArray json_array_family =  new JSONArray(listStringFamily);
-                            JSONArray json_array_TV =  new JSONArray(listStringTV);
+                            JSONArray json_array_TV =  new JSONArray(listStringTV);*/
                             JSONObject json_object = new JSONObject();
 
                             json_object.put("user_id", sharedPrefHelper.getString("user_id", ""));
@@ -577,9 +547,7 @@ public class TerminateActivity extends AppCompatActivity {
                             json_object.put("cluster_no", sharedPrefHelper.getString("cluster_no", ""));
                             json_object.put("reason_of_change", sharedPrefHelper.getString("reason_of_change", ""));
                             json_object.put("census_district_code", sharedPrefHelper.getString("census_district_code", ""));
-                            if (AudioSavePathInDevice!=null) {
-                                json_object.put("audio_recording", AudioSavePathInDevice);
-                            }
+                            json_object.put("audio_recording", "");
                             json_object.put("GPS_latitude_start", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_start", sharedPrefHelper.getString("LONG", ""));
                             if (!radio_button_id.equals("")) {
@@ -597,11 +565,11 @@ public class TerminateActivity extends AppCompatActivity {
                                     ||halt_radio_button_id.equals("8")||halt_radio_button_id.equals("9")||halt_radio_button_id.equals("10")||halt_radio_button_id.equals("11")){
                                 json_object.put("termination_reason", "Contact Termination");
                             }
-                            json_object.put("survey_data", json_array);
+                            json_object.put("survey_data", "");
                             json_object.put("GPS_latitude_mid", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_mid", sharedPrefHelper.getString("LONG", ""));
-                            json_object.put("family_data", json_array_family);
-                            json_object.put("tv_data", json_array_TV);
+                            json_object.put("family_data", "");
+                            json_object.put("tv_data", "");
                             json_object.put("date_time", et_date_time.getText().toString().trim());
                             json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
@@ -609,11 +577,8 @@ public class TerminateActivity extends AppCompatActivity {
 
                             //sqliteHelper.saveSurveyDataInTable(json_object, sharedPrefHelper.getString("survey_id", ""));
                             //update data in to local DB
-                            if(json_array.length()>0){
-                                sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
-                            }else{
-                                sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
-                            }
+                            sqliteHelper.saveSurveyDataInTable(json_object, survey_id);
+                            //sqliteHelper.updateSurveyDataInTable("survey", "survey_id", survey_id, json_object);
                             //call terminate API here
                             if (CommonClass.isInternetOn(context)) {
                                 String data = json_object.toString();
@@ -626,7 +591,7 @@ public class TerminateActivity extends AppCompatActivity {
                                 tv_survey_terminate.setVisibility(View.VISIBLE);
                                 btn_start_new_survey.setVisibility(View.VISIBLE);
                                 sqliteHelper.updateLocalFlag("terminate", "survey",
-                                        sharedPrefHelper.getString("survey_id", ""), 0);
+                                        sharedPrefHelper.getString("survey_id", ""), 1);
                                 Toast.makeText(context, getResources().getString(R.string.no_internet_data_saved_locally), Toast.LENGTH_SHORT).show();
                             }
 
@@ -636,7 +601,9 @@ public class TerminateActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
+                }else{
+                        btn_next.setEnabled(true);
+                    }
                 }
             }
         });

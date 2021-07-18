@@ -1203,14 +1203,14 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                 lenSingle=totalSingle;
                 totalSingle = startPosition;
             }
-            ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
+            /*ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
             if (answerModelList != null) {
                 answerModelListSingle.clear();
                 for (int i = lenSingle; i < totalSingle; i++) {
                     answerModelListSingle.add(answerModelList.get(i));
                 }
-            }
-            if(answerTVtotal.size()>0){
+            }*/
+            /*if(answerTVtotal.size()>0){
                 if(startScreenCount<answerTVtotal.size()){
                     answerTVtotal.set(startScreenCount,answerModelListSingle);
                 }else{
@@ -1218,6 +1218,26 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                 }
             }else{
                 answerTVtotal.add(answerModelListSingle);
+            }*/
+            if (answerModelList != null) {
+                int tv_count=0;
+                int tv_count_total=11;
+                answerTVtotal.clear();
+                outerloop:
+                for (int i = 0; i < answerModelList.size()/11; i++) {
+                    ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
+                    for (int j = tv_count; j <tv_count_total; j++) {
+                        if(answerModelList.get(j).getQuestionID().equals("58") && answerModelList.get(j).getOption_id().equals("")){
+                            Toast.makeText(context, "Please re-check TV-"+(i+1), Toast.LENGTH_SHORT).show();
+                            break outerloop;
+                        }else{
+                            answerModelListSingle.add(answerModelList.get(j));
+                        }
+                    }
+                    tv_count=tv_count+11;
+                    tv_count_total=tv_count_total+11;
+                    answerTVtotal.add(answerModelListSingle);
+                }
             }
             //save tv_data in DB
             if (!survey_id.equals("")) {
@@ -1239,8 +1259,12 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     e.printStackTrace();
                 }
             }
-            activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2,1);
-            doBack();
+            if(answerTVtotal.size()==editFieldValues) {
+                activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,2,1);
+                doBack();
+            }else{
+                Toast.makeText(context,"Please try again",Toast.LENGTH_LONG).show();
+            }
         }else{
             Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
         }
@@ -1334,13 +1358,13 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     lenSingle=startScreenCount*11;
                     totalSingle = startPosition;
                 }
-                ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
+                /*ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
                 if (answerModelList != null) {
                     for (int i = lenSingle; i < totalSingle; i++) {
                         answerModelListSingle.add(answerModelList.get(i));
                     }
-                }
-                if(answerTVtotal.size()>0){
+                }*/
+                /*if(answerTVtotal.size()>0){
                     if(startScreenCount<answerTVtotal.size()){
                         answerTVtotal.set(startScreenCount,answerModelListSingle);
                     }else{
@@ -1348,7 +1372,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     }
                 }else{
                     answerTVtotal.add(answerModelListSingle);
-                }
+                }*/
                 startScreenCount++;
             }
             else if(startScreenPosition==3){

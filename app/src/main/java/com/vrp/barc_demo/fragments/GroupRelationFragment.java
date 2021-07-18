@@ -302,6 +302,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btn_next.setEnabled(false);
                 boolean flag=true;
                 Button b = (Button)view;
                 String buttonText = b.getText().toString();
@@ -584,6 +585,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         arrayScreenWiseQuestionModel.add(screenWiseQuestionModel);
                     }
                     if (endScreenCount<(totalScreen*editFieldValues)-1) {
+                        btn_next.setEnabled(true);
                         btn_next.setText("Next");
                         sharedPrefHelper.setInt("endPosition", endPosition);
                         //save family_data in DB
@@ -638,6 +640,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     questionsPopulate();
                 }
                 else{
+                    btn_next.setEnabled(true);
                     Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
                 }
             }
@@ -677,6 +680,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
             @Override
             public void onClick(View view) {
                 boolean flag=true;
+                btn_stop.setEnabled(false);
                 Button b = (Button)view;
                 String buttonText = b.getText().toString();
                 JSONArray jsonArray = new JSONArray();
@@ -891,14 +895,33 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         lenSingle=totalSingle;
                         totalSingle = startPosition;
                     }
-                    ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
-                    if (answerModelList != null) {
+                    /*if (answerModelList != null) {
                         answerModelListSingle.clear();
                         for (int i = lenSingle; i < totalSingle; i++) {
                             answerModelListSingle.add(answerModelList.get(i));
                         }
+                    }*/
+                    if (answerModelList != null) {
+                        int famiy_count=0;
+                        int family_count_total=12;
+                        answerTVtotal.clear();
+                        outerloop:
+                        for (int i = 0; i < answerModelList.size()/12; i++) {
+                            ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
+                            for (int j = famiy_count; j <family_count_total; j++) {
+                                if(answerModelList.get(j).getQuestionID().equals("33") && answerModelList.get(j).getOption_value().equals("")){
+                                    Toast.makeText(context, "Please re-check member-"+(i+1), Toast.LENGTH_SHORT).show();
+                                    break outerloop;
+                                }else{
+                                    answerModelListSingle.add(answerModelList.get(j));
+                                }
+                            }
+                            famiy_count=famiy_count+12;
+                            family_count_total=family_count_total+12;
+                            answerTVtotal.add(answerModelListSingle);
+                        }
                     }
-                    if(answerTVtotal.size()>0){
+                   /* if(answerTVtotal.size()>0){
                         if(startScreenCount<answerTVtotal.size()){
                             answerTVtotal.set(startScreenCount,answerModelListSingle);
                         }else{
@@ -906,7 +929,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                     }else{
                         answerTVtotal.add(answerModelListSingle);
-                    }
+                    }*/
                     if (!survey_id.equals("")) {
                         Gson gson = new Gson();
                         String listString = gson.toJson(
@@ -925,10 +948,15 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             e.printStackTrace();
                         }
                     }
-                    activityCommunicator.passDataToActivity(answerTVtotal,answerModelList,1,1);
-                    doBack();
+                    if(answerTVtotal.size()==editFieldValues) {
+                        activityCommunicator.passDataToActivity(answerTVtotal, answerModelList, 1, 1);
+                        doBack();
+                    }else{
+                        Toast.makeText(context,"Please try again",Toast.LENGTH_LONG).show();
+                    }
                 }
                 else{
+                    btn_stop.setEnabled(true);
                     Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
                 }
             }
@@ -1057,21 +1085,21 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
             if(startScreenPosition>=totalScreen){
                 startScreenPosition=0;
                 endScreenPosition=1;
-                if(startScreenCount==0){
+                /*if(startScreenCount==0){
                     lenSingle=0;
                     totalSingle = startPosition;
                 }
                 else{
                     lenSingle=totalSingle;
                     totalSingle = startPosition;
-                }
-                ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
+                }*/
+                /*ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
                 if (answerModelList != null) {
                     for (int i = lenSingle; i < totalSingle; i++) {
                         answerModelListSingle.add(answerModelList.get(i));
                     }
-                }
-                if(answerTVtotal.size()>0){
+                }*/
+               /* if(answerTVtotal.size()>0){
                     if(startScreenCount<answerTVtotal.size()){
                         answerTVtotal.set(startScreenCount,answerModelListSingle);
                     }else{
@@ -1079,7 +1107,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     }
                 }else{
                     answerTVtotal.add(answerModelListSingle);
-                }
+                }*/
                 startScreenCount++;
             }
             for(int l=startScreenPosition;l<endScreenPosition;l++){

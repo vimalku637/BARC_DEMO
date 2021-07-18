@@ -57,6 +57,11 @@
     <string name="refused_to_continue_interview_after_some_time">Refused to Continue interview after some time</string>
     <string name="in_eligible_age">In eligible age</string>
     <string name="intro_exit">Intro Exit</string>
+    <string name="household_size">Ineligible Household Size</string>
+    <string name="highest_education">Ineligible Highest Education</string>
+    <string name="ine_mosr">Ineligible MOSR</string>
+    <string name="ine_dth_connection">Ineligible DTH Connection (Free/Paid)</string>
+    <string name="ine_langauage">Ineligible Language</string>
     <string name="age_terminate">Age Terminate</string>
     <string name="terminate">Terminate</string>
     <string name="call_back">Call Back</string>
@@ -91,4 +96,5 @@
     <string name="app_version">App Version :</string>
     <string name="halt_survey">Survey has been Halt successfully.</string>
     <string name="download_new_survey">Download New Survey</string>
+    <string name="comment">Comment</string>
 </resources>

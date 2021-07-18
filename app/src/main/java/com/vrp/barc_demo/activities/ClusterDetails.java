@@ -140,10 +140,10 @@ public class ClusterDetails extends AppCompatActivity {
                     return;
                 }
                 Long aLong = System.currentTimeMillis()/1000;
-                //String uuid = aLong.toString();
-                DateFormat dateFormatUUID = new SimpleDateFormat("yyyyMMddHHmmss");
-                Calendar calUUID = Calendar.getInstance();
-                String uuid = dateFormatUUID.format(calUUID.getTime())+""+sharedPrefHelper.getString("user_id", "");
+                String uuid = aLong.toString()+""+sharedPrefHelper.getString("user_id", "");
+                //DateFormat dateFormatUUID = new SimpleDateFormat("yyyyMMddHHmmss");
+                /*Calendar calUUID = Calendar.getInstance();
+                String uuid = dateFormatUUID.format(calUUID.getTime())+""+sharedPrefHelper.getString("user_id", "");*/
                 sharedPrefHelper.setString("survey_id", uuid);
                 Intent intentSurveyActivity=new Intent(context, HouseholdSurveyActivity.class);
                 intentSurveyActivity.putExtra("survey_id", uuid);
@@ -201,7 +201,7 @@ public class ClusterDetails extends AppCompatActivity {
     }
 
     public void setTerminattion(){
-        Intent intentTerminate=new Intent(context, TerminateActivity.class);
+        Intent intentTerminate=new Intent(context, TerminateActivity2.class);
         intentTerminate.putExtra("screen_type", "terminate");
         startActivity(intentTerminate);
     }
@@ -213,7 +213,7 @@ public class ClusterDetails extends AppCompatActivity {
         /*hide and show toolbar items*/
         if (screen_type.equalsIgnoreCase("survey")) {
             MenuItem item_stop_survey=menu.findItem(R.id.stop_survey);
-            item_stop_survey.setVisible(true);
+            item_stop_survey.setVisible(false);
             MenuItem item_logout=menu.findItem(R.id.logout);
             item_logout.setVisible(false);
         }

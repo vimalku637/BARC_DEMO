@@ -165,15 +165,16 @@ public class MainMenu extends AppCompatActivity {
             //if (count>0){
                 for (int i = 0; i < modelArrayList.size(); i++) {
                     String surveyID=modelArrayList.get(i).getSurvey_id();
+                    String strStatus=modelArrayList.get(i).getStatus();
                     String surveyData=modelArrayList.get(i).getSurvey_data();
                     AudioSavePathInDevice=modelArrayList.get(i).getAudio_recording();
 
                     //Gson gson = new Gson();
-                    String data = surveyData.toString();
+                    //String data = surveyData.toString();
                     MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                    RequestBody body = RequestBody.create(JSON, data);
+                    RequestBody body = RequestBody.create(JSON, surveyData);
                     //send data on server
-                    sendSurveyDataOnServer(body, surveyID, sDialog);
+                    sendSurveyDataOnServer(body, surveyID, sDialog,strStatus);
                 }
             //}
         }else{
@@ -181,7 +182,7 @@ public class MainMenu extends AppCompatActivity {
         }
     }
 
-    private void sendSurveyDataOnServer(RequestBody body, String survey_id, SweetAlertDialog sDialog) {
+    private void sendSurveyDataOnServer(RequestBody body, String survey_id, SweetAlertDialog sDialog,String strStatus) {
         //AlertDialogClass.showProgressDialog(context);
         ProgressDialog mProgressDialog=ProgressDialog.show(context, "", "Please Wait...", true);
         ApiClient.getClient().create(BARC_API.class).sendSurveyData(body).enqueue(new Callback<JsonObject>() {
@@ -198,7 +199,11 @@ public class MainMenu extends AppCompatActivity {
                     if (success.equals("1")) {
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey", survey_id, survey_data_monitoring_id);
-                        sqliteHelper.updateLocalFlag("household_survey","survey", survey_id, 1);
+                        if(strStatus.equals("1")){
+                            sqliteHelper.updateLocalFlag("household_survey","survey", survey_id, 1);
+                        }else{
+                            sqliteHelper.updateLocalFlag("terminate","survey", survey_id, 1);
+                        }
                         if(count>0){
                             count=count-1;
                             //AlertDialogClass.dismissProgressDialog();
