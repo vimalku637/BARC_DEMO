@@ -2764,7 +2764,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             // Start Bluetooth SCO.
             audioManager.setMode(audioManager.MODE_NORMAL);
             audioManager.setBluetoothScoOn(true);
-            audioManager.startBluetoothSco();
+            audioManager.startBluetoothSco(); 
             // Stop Speaker.
             audioManager.setSpeakerphoneOn(false);
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());

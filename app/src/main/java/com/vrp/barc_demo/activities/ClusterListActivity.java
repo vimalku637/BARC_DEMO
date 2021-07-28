@@ -91,8 +91,8 @@ public class ClusterListActivity extends AppCompatActivity {
         /*get intent values here*/
         Bundle bundle=getIntent().getExtras();
         if (bundle!=null) {
-            cityCLU = bundle.getInt("City",0 );
-            CluCode = bundle.getString("clucode","" );
+            cityCLU = bundle.getInt("City",0);
+            CluCode = bundle.getString("clucode","");
         }
 
         setClusterAdapter();

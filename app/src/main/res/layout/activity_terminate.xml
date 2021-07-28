@@ -78,6 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/refused"
+                android:visibility="gone"
                 />
             <RadioButton
                 android:id="@+id/rb_door_lock"
@@ -108,36 +109,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/in_eligible_nccs"
+                android:visibility="gone"
                 />
             <RadioButton
                 android:id="@+id/rb_household_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/household_size"
+                android:visibility="gone"
                 />
             <RadioButton
                 android:id="@+id/rb_highest_education"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/highest_education"
+                android:visibility="gone"
                 />
             <RadioButton
                 android:id="@+id/rb_ine_mosr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ine_mosr"
+                android:visibility="gone"
                 />
             <RadioButton
                 android:id="@+id/rb_ine_dth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ine_dth_connection"
+                android:visibility="gone"
                 />
             <RadioButton
                 android:id="@+id/rb_ine_language"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ine_langauage"
+                android:visibility="gone"
                 />
             <RadioButton
                 android:visibility="gone"

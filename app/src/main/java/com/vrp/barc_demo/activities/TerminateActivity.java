@@ -162,7 +162,7 @@ public class TerminateActivity extends AppCompatActivity {
          if (screen_id.equals("1")||screen_id.equals("2")||screen_id.equals("3")||screen_id.equals("4") ||screen_id.equals("5")||screen_id.equals("6")||screen_id.equals("7")||screen_id.equals("8")||screen_id.equals("9")) {
              rb_in_eligible_nccs.setVisibility(View.GONE);
          } else {
-             rb_in_eligible_nccs.setVisibility(View.VISIBLE);
+             rb_in_eligible_nccs.setVisibility(View.GONE);
          }
 
         //date-time
@@ -190,7 +190,7 @@ public class TerminateActivity extends AppCompatActivity {
                         break;
                     case R.id.rb_door_lock:
                         reason=getResources().getString(R.string.door_locked);
-                        halt_radio_button_id="2";
+                        halt_radio_button_id="1";
                         til_name.setVisibility(View.GONE);
                         til_address.setVisibility(View.GONE);
                         til_comment.setVisibility(View.VISIBLE);
@@ -198,7 +198,7 @@ public class TerminateActivity extends AppCompatActivity {
                         break;
                     case R.id.rb_not_available_at_home:
                         reason=getResources().getString(R.string.hh_cwe_not_available_at_home);
-                        halt_radio_button_id="3";
+                        halt_radio_button_id="2";
                         til_name.setVisibility(View.GONE);
                         til_address.setVisibility(View.GONE);
                         til_comment.setVisibility(View.VISIBLE);
@@ -206,7 +206,7 @@ public class TerminateActivity extends AppCompatActivity {
                         break;
                     case R.id.rb_refused_to_continue:
                         reason=getResources().getString(R.string.refused_to_continue_interview_after_some_time);
-                        halt_radio_button_id="4";
+                        halt_radio_button_id="3";
                         til_name.setVisibility(View.GONE);
                         til_address.setVisibility(View.GONE);
                         til_comment.setVisibility(View.VISIBLE);
@@ -214,7 +214,7 @@ public class TerminateActivity extends AppCompatActivity {
                         break;
                     case R.id.rb_in_eligible_age:
                         reason=getResources().getString(R.string.in_eligible_age);
-                        halt_radio_button_id="5";
+                        halt_radio_button_id="4";
                         til_name.setVisibility(View.GONE);
                         til_address.setVisibility(View.GONE);
                         til_comment.setVisibility(View.VISIBLE);
@@ -549,7 +549,8 @@ public class TerminateActivity extends AppCompatActivity {
                 }
                 if(halt_radio_button_id.equals("1")||halt_radio_button_id.equals("2")||halt_radio_button_id.equals("3")
                    ||halt_radio_button_id.equals("4")||halt_radio_button_id.equals("5")||halt_radio_button_id.equals("6")
-                   ||halt_radio_button_id.equals("7")||halt_radio_button_id.equals("8")||halt_radio_button_id.equals("9")||halt_radio_button_id.equals("10")||halt_radio_button_id.equals("11")){
+                   ||halt_radio_button_id.equals("7")||halt_radio_button_id.equals("8")||halt_radio_button_id.equals("9")
+                   ||halt_radio_button_id.equals("10")||halt_radio_button_id.equals("11")){
                     if (checkValidation()){
                     cl_terminate.setVisibility(View.GONE);
                     //save data in to local DB.

@@ -142,7 +142,6 @@ public class Dashboard extends AppCompatActivity {
         });
 
 
-
         PieData data = new PieData(set);
         data.setValueTextSize(10);
         pieChart.setData(data);
