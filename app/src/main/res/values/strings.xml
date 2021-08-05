@@ -99,4 +99,5 @@
     <string name="halt_survey">Survey has been Halt successfully.</string>
     <string name="download_new_survey">Download New Survey</string>
     <string name="comment">Comment</string>
+    <string name="dark_mode">Enable Dark Mode</string>
 </resources>

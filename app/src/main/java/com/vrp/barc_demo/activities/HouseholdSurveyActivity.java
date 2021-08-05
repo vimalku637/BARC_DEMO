@@ -469,11 +469,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         try {
                             if (childView instanceof EditText) {
                                 EditText editText = (EditText) childView;
+                                EditText editTextSurname=(EditText) childView;
                                 int viewID=editText.getId();
                                 String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
-                                //editFieldValues=editText.getText().toString().trim();
+                                editFieldValues=editText.getText().toString().trim();
                                 groupQuestionID=Integer.parseInt(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                 String text=editText.getText().toString().trim();
+                                String surname=editTextSurname.getText().toString().trim();
                                 text = text.replace("\n", "").replace("\r", "");
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     if(questionID.equals("31")){
@@ -498,7 +500,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id("");
-                                    answerModel.setOption_value(text);
+                                    if (questionID.equals("46")) {
+                                        answerModel.setOption_value(text+" "+surname);
+                                    }else{
+                                        answerModel.setOption_value(text);
+                                    }
                                     //answerModel.setSurveyID(survey_id);
                                     answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
@@ -1280,7 +1286,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         String groupRelationId=null;
                         try {
                             //for(int m=0;m<jsonArrayQuestions.length();m++){
-                                groupRelationId = jsonArrayQuestions.getJSONObject(jsonArrayQuestions.length()-1).getString("group_relation_id");
+                                groupRelationId = jsonArrayQuestions.getJSONObject(jsonArrayQuestions.length()-3).getString("group_relation_id");
                            // }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1338,8 +1344,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
-                String previousButtonText=btn_previous.getText().toString().trim();
-                btnPrevious(previousButtonText);
+                //String previousButtonText=btn_previous.getText().toString().trim();
+                btnPrevious();
             }
         });
         btn_stop.setOnClickListener(new View.OnClickListener() {
@@ -1371,8 +1377,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             questionsPopulate();
         }
     }
-    private void btnPrevious(String previousButtonText){
-        if (previousButtonText.equals("Previous")) {
+    private void btnPrevious(){
+        //if (previousButtonText.equals("Previous")) {
             startScreenPosition = startScreenPosition - 1;
             endScreenPosition = endScreenPosition - 1;
             back_status = true;
@@ -1387,9 +1393,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 invalidateOptionsMenu();
                 questionsPopulate();
             }
-        }else{
+        /*}else{
             showPopupForTerminateSurvey();
-        }
+        }*/
     }
 
     private void sendSurveyDataOnServer(RequestBody body) {
@@ -1511,6 +1517,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        EditText editText=new EditText(this);
                        editText.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                        editText.setTextSize(12);
+                       //add edit text for sur-name
+                       EditText editTextSurname=new EditText(this);
+                       editText.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                       editTextSurname.setTextSize(12);
+                       editTextSurname.setHint("Please enter surname");
+                       editTextSurname.setVisibility(View.GONE);
                        //add terminate button below edit text
                        Button buttonTerminate=new Button(this);
                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -1522,11 +1534,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        buttonTerminate.setBackgroundResource(R.drawable.btn_terminate_background);
                        buttonTerminate.setAllCaps(false);
                        buttonTerminate.setVisibility(View.GONE);
-                       //add edit text for sur-name
-                       EditText editTextSurname=new EditText(this);
-                       editTextSurname.setTextSize(12);
-                       editTextSurname.setHint("Please enter surname");
-                       editTextSurname.setVisibility(View.GONE);
 
                        //pre field for screen 1
                        if (jsonObjectQuesType.getString("field_name").equals("mdl_id")) {
@@ -1584,6 +1591,18 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            editText.setInputType(InputType.TYPE_CLASS_TEXT);
                        }
 
+                       if (jsonObjectQuesType.getString("question_id").equals("30")){
+                           btn_previous.setEnabled(false);
+                           buttonTerminate.setVisibility(View.VISIBLE);
+                           buttonTerminate.setOnClickListener(new View.OnClickListener() {
+                               @Override
+                               public void onClick(View view) {
+                                   showPopupForTerminateSurveyQuestionWise("1", "Ineligible NCCS");
+                               }
+                           });
+                       }else {
+                           btn_previous.setEnabled(true);
+                       }
                        if (jsonObjectQuesType.getString("question_id").equals("46")) {
                            editText.setHint("Please enter first name");
                            editTextSurname.setVisibility(View.VISIBLE);
@@ -1623,10 +1642,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        if (questionID.equals("32")) {
                                            limit = 12;
                                            if (!editText.getText().toString().trim().equals("")) {
-                                               editFieldValues=editText.getText().toString().trim();
+                                               //editFieldValues=editText.getText().toString().trim();
                                                if (value > limit) {
                                                    //if family member greater than 12 terminate popup
                                                    Toast.makeText(context, "Household member can't be greater than 12", Toast.LENGTH_SHORT).show();
+                                                   showPopupForTerminateSurveyQuestionWise("2", "Ineligible Household Size");
                                                } else if (value == 0) {
                                                    Toast.makeText(context, "Household member can't be 0", Toast.LENGTH_SHORT).show();
                                                }
@@ -1700,7 +1720,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                            }));
                        }
-                       if (jsonObjectQuesType.get("question_id").equals("32")){
+                       if (jsonObjectQuesType.getString("question_id").equals("32")){
                            buttonTerminate.setVisibility(View.VISIBLE);
                            buttonTerminate.setOnClickListener(new View.OnClickListener() {
                                @Override
@@ -1786,21 +1806,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        else if (jsonObjectQuesType.getString("field_name").equals("nccs_matrix")) {
                            //editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
                            //String status=sqliteHelper.getNCCMatrix2(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id(),sharedPrefHelper.getString("nccs_matrix", ""));
-                           String status="A2";
+                           sharedPrefHelper.setString("nccs_matrix", "A");
+                           String status=sharedPrefHelper.getString("nccs_matrix", "");
                            if(!status.equals(""))
                                editText.setText(status);
                            sharedPrefHelper.setString("status_nccs_hh", status);
-                           //previous button disabled and terminate button show and not go back from here
-                           /*if (screen_id.equals("9")) {*/
-                               btn_previous.setEnabled(false);
-                               buttonTerminate.setVisibility(View.VISIBLE);
-                               buttonTerminate.setOnClickListener(new View.OnClickListener() {
-                                   @Override
-                                   public void onClick(View view) {
-                                       showPopupForTerminateSurveyQuestionWise("1", "Ineligible NCCS");
-                                   }
-                               });
-                           /*}*/
                            /*else
                                setTerminattion("NCCS Calculator");*/
                        }
@@ -1820,6 +1830,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                    //if question_type->2 then its Radio Button
                    else if (jsonObjectQuesType.getString("question_type").equals("2")) {
                        TextView txtLabel = new TextView(this);
+                       txtLabel.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                        String description=jsonObjectQuesType.getString("question_name");
                        description=description.replaceAll("$name",sharedPrefHelper.getString("name","Ram"));
                        txtLabel.setText(description);
@@ -1977,20 +1988,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             *
                             **/
                            else if(questionID.equals("114")||questionID.equals("115")){
-                               /*if (checkedIdForCheckBox.equals("1")){
-                                   txtLabel.setVisibility(View.VISIBLE);
-                                   radioButton.setVisibility(View.VISIBLE);*/
-                                   buttonTerminate.setVisibility(View.VISIBLE);
-                                   buttonTerminate.setOnClickListener(new View.OnClickListener() {
-                                       @Override
-                                       public void onClick(View view) {
-                                           showPopupForTerminateSurveyQuestionWise("5", "Ineligible DTH Connection (Free/Paid)");
-                                       }
-                                   });
-                               /*} else {
-                                   txtLabel.setVisibility(View.GONE);
-                                   radioButton.setVisibility(View.GONE);
-                               }*/
+                               /*txtLabel.setVisibility(View.GONE);
+                               radioButton.setVisibility(View.GONE);*/
+                               buttonTerminate.setVisibility(View.VISIBLE);
+                               buttonTerminate.setOnClickListener(new View.OnClickListener() {
+                                   @Override
+                                   public void onClick(View view) {
+                                       showPopupForTerminateSurveyQuestionWise("5", "Ineligible DTH Connection (Free/Paid)");
+                                   }
+                               });
                            }
                            else if (jsonObjectQuesType.get("question_id").equals("116")){
                                buttonTerminate.setVisibility(View.VISIBLE);
@@ -2160,16 +2166,20 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                if (String.valueOf(textView1.getId()).equals("115"))
                                                    if (radioID.equals("1")) {
                                                        textView1.setVisibility(View.GONE);
+                                                       buttonTerminate.setVisibility(View.GONE);
                                                    } else if (radioID.equals("2")) {
                                                        textView1.setVisibility(View.VISIBLE);
+                                                       buttonTerminate.setVisibility(View.VISIBLE);
                                                    }
                                            } else if (childView instanceof RadioGroup) {
                                                RadioGroup radioGroup1 = (RadioGroup) childView;
                                                if (String.valueOf(radioGroup1.getId()).equals("115")) {
                                                    if (radioID.equals("1")) {
                                                        radioGroup1.setVisibility(View.GONE);
+                                                       buttonTerminate.setVisibility(View.GONE);
                                                    } else if (radioID.equals("2")) {
                                                        radioGroup1.setVisibility(View.VISIBLE);
+                                                       buttonTerminate.setVisibility(View.VISIBLE);
                                                    }
                                                }
                                            }
@@ -2318,13 +2328,30 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                            String checkBoxText=checkBox.getText().toString().trim();
                                            String iddd=String.valueOf(checkBox.getId());
                                            if (questionID.equals("113")) {
-                                               checkedIdForCheckBox = jsonObject1.getString("option_id");
+                                               if (checkedIdForCheckBox.equals("")) {
+                                                   checkedIdForCheckBox = jsonObject1.getString("option_id");
+                                               }else{
+                                                   if (checkedIdForCheckBox!=null){
+                                                       checkedIdForCheckBox = checkedIdForCheckBox + "" + jsonObject1.getString("option_id");
+                                                   }
+                                               }
                                                //if choose NONE than next button disabled
-                                               if (checkedIdForCheckBox.equals("4")){
+                                               if (checkedIdForCheckBox.contains("4")){
                                                    btn_next.setEnabled(false);
                                                    buttonTerminate.setVisibility(View.VISIBLE);
                                                }else {
                                                    for (int i = 0; i < ll_parent.getChildCount(); i++) {
+                                                       final View childView = ll_parent.getChildAt(i);
+                                                       /*if (childView instanceof TextView) {
+                                                           TextView textView1 = (TextView) childView;
+                                                           if (String.valueOf(textView1.getId()).equals("114"))
+                                                               textView1.setVisibility(View.VISIBLE);
+                                                       } else if (childView instanceof RadioGroup) {
+                                                           RadioGroup radioGroup1 = (RadioGroup) childView;
+                                                           if (String.valueOf(radioGroup1.getId()).equals("114")) {
+                                                               radioGroup1.setVisibility(View.VISIBLE);
+                                                           }
+                                                       }*/
                                                    }
                                                    btn_next.setEnabled(true);
                                                }
@@ -2339,16 +2366,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                            });
                            if (questionID.equals("113")){
-                               /*if (screen_id.equals("10")) {*/
                                    btn_previous.setEnabled(false);
-                                   //buttonTerminate.setVisibility(View.VISIBLE);
                                    buttonTerminate.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View view) {
                                            showPopupForTerminateSurveyQuestionWise("5", "Ineligible DTH Connection (Free/Paid)");
                                        }
                                    });
-                               /*}*/
+                           }else {
+                               btn_previous.setEnabled(true);
                            }
                            if(questionID.equals("54")){
                                checkBox.setEnabled(false);
