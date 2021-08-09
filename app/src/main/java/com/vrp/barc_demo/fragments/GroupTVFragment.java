@@ -855,7 +855,12 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     }else if (questionID.equals("60")){
                         //String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
                         sharedPrefHelper.setString("spinnerOptionIdTV", selectedItem);
-                    }/*else if (questionID.equals("64")){
+                    }
+                    else if (questionID.equals("62")){
+                        //String spinnerOptionIdTV=Long.toString(spinner.getSelectedItemId());
+                        sharedPrefHelper.setString("spinnerTVHD", selectedItem);
+                    }
+                    /*else if (questionID.equals("64")){
                                 String spinnerOptionIdTVConnection=Long.toString(spinner.getSelectedItemId());
                                 sharedPrefHelper.setString("spinnerOptionIdTVConnection", spinnerOptionIdTVConnection);
                             }*/
@@ -1585,10 +1590,26 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                     spinnerAL.add(spinnerOption);
                                 }
                             } else {
-                                for (int k = 0; k < jsonArrayOptions.length(); k++) {
-                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                    spinnerAL.add(spinnerOption);
+                                if(sharedPrefHelper.getString("spinnerOptionId", "").equals("2") && jsonObjectQuesType.getString("question_id").equals("63")){
+                                    for (int k = 0; k <8; k++) {
+                                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                        spinnerAL.add(spinnerOption);
+                                    }
+                                }
+                                else if(sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1") && jsonObjectQuesType.getString("question_id").equals("63")){
+                                    for (int k = 0; k <10; k++) {
+                                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                        spinnerAL.add(spinnerOption);
+                                    }
+                                }
+                                else{
+                                    for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                        spinnerAL.add(spinnerOption);
+                                    }
                                 }
                             }
                             if (jsonObjectQuesType.getString("question_id").equals("62")&&sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1")){
@@ -1599,7 +1620,12 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }
-                            if (jsonObjectQuesType.getString("question_id").equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1") || (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2") && !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")))){
+                            //if (jsonObjectQuesType.getString("question_id").equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1") || (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2") && !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")))){
+                            if (jsonObjectQuesType.getString("question_id").equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2") && (sharedPrefHelper.getString("spinnerTVHD", "").equals("1")))){
+                                txtLabel.setVisibility(View.VISIBLE);
+                                spinner.setVisibility(View.VISIBLE);
+                            }
+                            else{
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }

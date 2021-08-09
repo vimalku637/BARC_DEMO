@@ -145,6 +145,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     private Context context=this;
     private String survey_id="";
     private String screen_type="";
+    private int is_household_tv=0;
     private int length=1;
     private int startPosition;
     private int startScreenPosition=0;
@@ -464,21 +465,42 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                     final JSONObject jsonObject = new JSONObject();
                     int count=0;
                     int nextPosition=startPositionBefore;
+                int occupation_id=0;
                     for (int i = 0; i < ll_parent.getChildCount(); i++) {
                         final View childView = ll_parent.getChildAt(i);
                         try {
                             if (childView instanceof EditText) {
                                 EditText editText = (EditText) childView;
-                                EditText editTextSurname=(EditText) childView;
+                                //EditText editTextSurname=(EditText) childView;
                                 int viewID=editText.getId();
                                 String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
+                                String isec = "None";
+                                if(questionID.equals("122")) {
+                                    String town_village_class = sharedPrefHelper.getString("town_village_class", "");
+                                    if ((town_village_class.equalsIgnoreCase("Urban") && occupation_id == 1) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 3 || occupation_id == 7))) {
+                                        isec = "Labour";
+                                    } else if ((town_village_class.equalsIgnoreCase("Urban") && (occupation_id == 13 || occupation_id == 14)) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 1 || occupation_id == 2 || occupation_id == 6 || occupation_id == 4 || occupation_id == 5))) {
+                                        isec = "Farmer";
+                                    } else if ((town_village_class.equalsIgnoreCase("Urban") && occupation_id == 2) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 8 || occupation_id == 10 || occupation_id == 13 || occupation_id == 14))) {
+                                        isec = "Worker";
+                                    } else if ((town_village_class.equalsIgnoreCase("Urban") && (occupation_id == 3 || occupation_id == 4 || occupation_id == 5 || occupation_id == 6)) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 9 || occupation_id == 15 || occupation_id == 16 || occupation_id == 17 || occupation_id == 18))) {
+                                        isec = "Trader";
+                                    } else if ((town_village_class.equalsIgnoreCase("Urban") && (occupation_id == 9 || occupation_id == 10)) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 11 || occupation_id == 13 || occupation_id == 14 || occupation_id == 21 || occupation_id == 22))) {
+                                        isec = "Clerical/Sales/Supervisory";
+                                    } else if (occupation_id == 7 || occupation_id == 8 || occupation_id == 11 || occupation_id == 12 || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 12 || occupation_id == 13 || occupation_id == 14 || occupation_id == 19 || occupation_id == 20 || occupation_id == 23 || occupation_id == 24))) {
+                                        isec = "Managerial/businessman/professional";
+                                    } else if (occupation_id == 99) {
+                                        isec = "Not Applicable";
+                                    }
+                                }
                                 editFieldValues=editText.getText().toString().trim();
                                 groupQuestionID=Integer.parseInt(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                 String text=editText.getText().toString().trim();
-                                String surname=editTextSurname.getText().toString().trim();
+
                                 text = text.replace("\n", "").replace("\r", "");
+                                is_household_tv=0;
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                                    if(questionID.equals("31")){
+                                    if(questionID.equals("32")){
                                         if(!answerModelList.get(nextPosition).getOption_value().equals(text)){
                                             showPopupForDataEraseEditText(Integer.parseInt(questionID),answerModelList.get(nextPosition).getOption_value(),editText,nextPosition);
                                             flag=false;
@@ -491,7 +513,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
-                                    answerModelList.get(nextPosition).setOption_value(text);
+                                    if(questionID.equals("122")){
+                                        answerModelList.get(nextPosition).setOption_value(isec);
+                                    }else{
+                                        answerModelList.get(nextPosition).setOption_value(text);
+                                    }
+
                                     answerModelList.get(nextPosition).setOption_id("");
                                     answerModelList.get(nextPosition).setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                     answerModelList.get(nextPosition).setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
@@ -500,8 +527,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 else{
                                     AnswerModel answerModel= new AnswerModel();
                                     answerModel.setOption_id("");
-                                    if (questionID.equals("46")) {
-                                        answerModel.setOption_value(text+" "+surname);
+                                    if(questionID.equals("122")){
+                                        answerModel.setOption_value(isec);
                                     }else{
                                         answerModel.setOption_value(text);
                                     }
@@ -553,7 +580,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                         flag=false;
                                         break;
-                                    }else if (questionID.equals("46")) {
+                                    }
+                                    else if (questionID.equals("32")) {
+                                        is_household_tv=1;
+                                    }
+                                    else if (questionID.equals("46")) {
                                         name=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("name", name);
                                         if (name.length()==1){
@@ -562,12 +593,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                         sharedPrefHelper.setString("CWE_Name", name);
-                                    }else if (questionID.equals("47")) {
+                                    }
+                                    else if (questionID.equals("47")) {
                                         ageInYears=Integer.parseInt(editText.getText().toString().trim());
                                         sharedPrefHelper.setInt("ageInYears", ageInYears);
-                                        if(ageInYears<1){
+                                        if(ageInYears<15){
                                             flag=false;
-                                            editText.setError("Age can't be less than 1");
+                                            editText.setError("Age can't be less than 15");
                                             break;
                                         }
                                         else if(ageInYears>120){
@@ -652,13 +684,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             flag=false;
                                             break;
                                         }else{
+                                            is_household_tv=2;
                                             sharedPrefHelper.setString("TvWorkingCondition", TvWorkingCondition);
                                         }
                                     }
                                     else if (questionID.equals("46")){
                                         sharedPrefHelper.setString("CWE_Name",editText.getText().toString().trim());
                                     }
-                                    else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("31") ){
+                                    else if (jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("32") ){
                                         if(Integer.parseInt(editText.getText().toString().trim())>20 || Integer.parseInt(editText.getText().toString().trim())==0){
                                             editText.setError("Member should be between 1-20 and can't be greater than 20");
                                             flag=false;
@@ -765,7 +798,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 }*/
                                 //String spinnerID=Long.toString(spinner.getSelectedItemId());
                                 long spinnerID=spinner.getSelectedItemId();
+                                String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
+                                if(questionID.equals("51")) {
+                                    occupation_id=(int)spinner.getSelectedItemId();
+                                }
                                 JSONArray jsonArrayOptions = jsonArrayQuestions.getJSONObject(count).getJSONArray("question_options");
+
                                 for (int k = 0; k < jsonArrayOptions.length(); k++) {
                                     JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                     String spinnerOptionOptionValue = jsonObjectOptionValues.getString("option_value");
@@ -1049,6 +1087,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                         }
                                     }
                                 }
+                                else if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("113")) {
+                                    if ((selectedOptions.contains("1") || selectedOptions.contains("2") || selectedOptions.contains("3")) && (selectedOptions.contains("4"))){
+                                        showPopupForError("You can't choose none with other options");
+                                        flag = false;
+                                        break;
+                                    }else{
+                                        sharedPrefHelper.setString("rq3e_selected",""+selectedOptions);
+                                    }
+                                }
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     answerModelList.get(nextPosition).setOption_id(selectedOptions);
                                     answerModelList.get(nextPosition).setOption_value("");
@@ -1286,8 +1333,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         String groupRelationId=null;
                         try {
                             //for(int m=0;m<jsonArrayQuestions.length();m++){
-                                groupRelationId = jsonArrayQuestions.getJSONObject(jsonArrayQuestions.length()-3).getString("group_relation_id");
-                           // }
+                            //String object=jsonArrayQuestions.getJSONObject(jsonArrayQuestions.length()-2).toString();
+                            if(is_household_tv==1){
+                                groupRelationId = jsonArrayQuestions.getJSONObject(jsonArrayQuestions.length()-2).getString("group_relation_id");
+                            }else{
+                                groupRelationId = jsonArrayQuestions.getJSONObject(jsonArrayQuestions.length()-1).getString("group_relation_id");
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1344,6 +1395,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
+                btn_next.setEnabled(true);
                 //String previousButtonText=btn_previous.getText().toString().trim();
                 btnPrevious();
             }
@@ -1518,16 +1570,20 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        editText.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                        editText.setTextSize(12);
                        //add edit text for sur-name
-                       EditText editTextSurname=new EditText(this);
+                       /*EditText editTextSurname=new EditText(this);
                        editText.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                        editTextSurname.setTextSize(12);
                        editTextSurname.setHint("Please enter surname");
-                       editTextSurname.setVisibility(View.GONE);
+                       editTextSurname.setVisibility(View.GONE);*/
+                       //add terminate button below edit text
+                       LinearLayout layout2 = new LinearLayout(context);
+                       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                       params.gravity = Gravity.RIGHT;
+                       params.weight = 1.0f;
+                       layout2.setLayoutParams(params);
+                       layout2.setOrientation(LinearLayout.HORIZONTAL);
                        //add terminate button below edit text
                        Button buttonTerminate=new Button(this);
-                       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                       params.weight = 1.0f;
-                       params.gravity = Gravity.RIGHT;
                        buttonTerminate.setLayoutParams(params);
                        buttonTerminate.setText("Terminate");
                        buttonTerminate.setTextColor(Color.parseColor("#FFFFFF"));
@@ -1592,7 +1648,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        }
 
                        if (jsonObjectQuesType.getString("question_id").equals("30")){
-                           btn_previous.setEnabled(false);
+                           //btn_previous.setEnabled(false);
                            buttonTerminate.setVisibility(View.VISIBLE);
                            buttonTerminate.setOnClickListener(new View.OnClickListener() {
                                @Override
@@ -1601,11 +1657,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                            });
                        }else {
-                           btn_previous.setEnabled(true);
+                         //  btn_previous.setEnabled(true);
                        }
                        if (jsonObjectQuesType.getString("question_id").equals("46")) {
                            editText.setHint("Please enter first name");
-                           editTextSurname.setVisibility(View.VISIBLE);
+                           //editTextSurname.setVisibility(View.VISIBLE);
                            int maxLength=50;
                            editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
                                @Override
@@ -1806,8 +1862,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        else if (jsonObjectQuesType.getString("field_name").equals("nccs_matrix")) {
                            //editText.setText(sharedPrefHelper.getString("nccs_matrix", ""));
                            //String status=sqliteHelper.getNCCMatrix2(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id(),sharedPrefHelper.getString("nccs_matrix", ""));
-                           sharedPrefHelper.setString("nccs_matrix", "A");
-                           String status=sharedPrefHelper.getString("nccs_matrix", "");
+                           String status=sqliteHelper.getNCCMatrix2(answerModelList.get(startPosition-2).getOption_id(),answerModelList.get(startPosition-1).getOption_id());
+                           //sharedPrefHelper.setString("nccs_matrix", "A");
+                           //String status=sharedPrefHelper.getString("nccs_matrix", "");
                            if(!status.equals(""))
                                editText.setText(status);
                            sharedPrefHelper.setString("status_nccs_hh", status);
@@ -1820,11 +1877,19 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        txtLabel.setText(description);
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        txtLabel.setTextSize(14);
+                       if(questionID.equals("122")){
+                           editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(50)});
+                           txtLabel.setVisibility(View.GONE);
+                           editText.setVisibility(View.GONE);
+                           editText.setText("ISEC CWE");
+                       }
                        startPosition++;
                        endPosition++;
                        ll_parent.addView(txtLabel);
                        ll_parent.addView(editText);
-                       ll_parent.addView(buttonTerminate);
+                       layout2.addView(buttonTerminate);
+                       ll_parent.addView(layout2);
+                       //ll_parent.addView(buttonTerminate);
                        //onAddEditField(jsonObjectQuesType);
                    }
                    //if question_type->2 then its Radio Button
@@ -1836,22 +1901,39 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        txtLabel.setText(description);
                        txtLabel.setTextSize(14);
                        //add terminate button below edit text
-                       Button buttonTerminate=new Button(this);
-                       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                       params.weight = 1.0f;
+                       LinearLayout layout2 = new LinearLayout(context);
+                       layout2.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                        params.gravity = Gravity.RIGHT;
+                       params.weight = 1.0f;
+                       layout2.setLayoutParams(params);
+                       layout2.setOrientation(LinearLayout.HORIZONTAL);
+                       //add terminate button below edit text
+                       Button buttonTerminate=new Button(this);
                        buttonTerminate.setLayoutParams(params);
                        buttonTerminate.setText("Terminate");
                        buttonTerminate.setTextColor(Color.parseColor("#FFFFFF"));
                        buttonTerminate.setBackgroundResource(R.drawable.btn_terminate_background);
                        buttonTerminate.setAllCaps(false);
                        buttonTerminate.setVisibility(View.GONE);
+                       buttonTerminate.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
 
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        ll_parent.addView(txtLabel);
+                       layout2.addView(buttonTerminate);
                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                        RadioGroup radioGroup=new RadioGroup(this);
                        radioGroup.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
+                       if(jsonObjectQuesType.getString("question_id").equals("114")){
+                           txtLabel.setVisibility(View.GONE);
+                           radioGroup.setVisibility(View.GONE);
+                           layout2.setVisibility(View.GONE);
+                       }
+                       else if(jsonObjectQuesType.getString("question_id").equals("115")){
+                           txtLabel.setVisibility(View.GONE);
+                           radioGroup.setVisibility(View.GONE);
+                           layout2.setVisibility(View.GONE);
+                       }
                        for (int j = 0; j <jsonArrayOptions.length() ; j++) {
                            RadioButton radioButton=new RadioButton(this);
                            radioButton.setLayoutParams(new LinearLayout.LayoutParams
@@ -1946,6 +2028,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    }*/
                                }
                            }
+
                            if(jsonObjectQuesType.getString("question_id").equals("83")){
                                String type_of_mobile=sharedPrefHelper.getString("type_of_mobile","");
                                if(type_of_mobile.equals("4")) {
@@ -2007,7 +2090,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    }
                                });
                            }
-
                            if (radioGroup != null) {
                                if(questionID.equals("53")){
                                    String selectedOptionsSpinner=sharedPrefHelper.getString("CWE_Status","");
@@ -2040,7 +2122,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        startPosition++;
                        endPosition++;
                        ll_parent.addView(radioGroup);
-                       ll_parent.addView(buttonTerminate);
+                       ll_parent.addView(layout2);
+                       //ll_parent.addView(buttonTerminate);
                        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
                        {
                            @Override
@@ -2171,7 +2254,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                        textView1.setVisibility(View.VISIBLE);
                                                        buttonTerminate.setVisibility(View.VISIBLE);
                                                    }
-                                           } else if (childView instanceof RadioGroup) {
+                                           }
+                                           else if (childView instanceof RadioGroup) {
                                                RadioGroup radioGroup1 = (RadioGroup) childView;
                                                if (String.valueOf(radioGroup1.getId()).equals("115")) {
                                                    if (radioID.equals("1")) {
@@ -2244,10 +2328,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        txtLabel.setText(description);
                        txtLabel.setTextSize(14);
                        //add terminate button below edit text
-                       Button buttonTerminate=new Button(this);
-                       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                       params.weight = 1.0f;
+                       LinearLayout layout2 = new LinearLayout(context);
+                       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                        params.gravity = Gravity.RIGHT;
+                       params.weight = 1.0f;
+                       layout2.setLayoutParams(params);
+                       layout2.setOrientation(LinearLayout.HORIZONTAL);
+                       //add terminate button below edit text
+                       Button buttonTerminate=new Button(this);
                        buttonTerminate.setLayoutParams(params);
                        buttonTerminate.setText("Terminate");
                        buttonTerminate.setTextColor(Color.parseColor("#FFFFFF"));
@@ -2275,6 +2363,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
                            });
                        }
+                       if(questionID.equals("113")){
+                           buttonTerminate.setVisibility(View.VISIBLE);
+                           buttonTerminate.setOnClickListener(new View.OnClickListener() {
+                               @Override
+                               public void onClick(View view) {
+                                   showPopupForTerminateSurveyQuestionWise("6", "Ineligible MOSR");
+                               }
+                           });
+                       }
+
                        if(questionID.equals("55")){
                            selectedOptions=sharedPrefHelper.getString("selectedDurables","");
                            String[] arraySelectedOptions = selectedOptions.split(",");
@@ -2332,17 +2430,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                    checkedIdForCheckBox = jsonObject1.getString("option_id");
                                                }else{
                                                    if (checkedIdForCheckBox!=null){
-                                                       checkedIdForCheckBox = checkedIdForCheckBox + "" + jsonObject1.getString("option_id");
+                                                       checkedIdForCheckBox = checkedIdForCheckBox + ", " + jsonObject1.getString("option_id");
                                                    }
                                                }
-                                               //if choose NONE than next button disabled
-                                               if (checkedIdForCheckBox.contains("4")){
-                                                   btn_next.setEnabled(false);
-                                                   buttonTerminate.setVisibility(View.VISIBLE);
-                                               }else {
+                                               if(iddd.equals("1")) {
                                                    for (int i = 0; i < ll_parent.getChildCount(); i++) {
                                                        final View childView = ll_parent.getChildAt(i);
-                                                       /*if (childView instanceof TextView) {
+                                                       if (childView instanceof TextView) {
                                                            TextView textView1 = (TextView) childView;
                                                            if (String.valueOf(textView1.getId()).equals("114"))
                                                                textView1.setVisibility(View.VISIBLE);
@@ -2351,21 +2445,53 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                            if (String.valueOf(radioGroup1.getId()).equals("114")) {
                                                                radioGroup1.setVisibility(View.VISIBLE);
                                                            }
-                                                       }*/
+                                                       }
+                                                       if (childView instanceof LinearLayout) {
+                                                           LinearLayout LinearLayout1 = (LinearLayout) childView;
+                                                           if (String.valueOf(LinearLayout1.getId()).equals("114"))
+                                                               LinearLayout1.setVisibility(View.VISIBLE);
+                                                       }
                                                    }
-                                                   btn_next.setEnabled(true);
+                                               }
+                                               else if(iddd.equals("4"))
+                                               {
+                                                   btn_next.setEnabled(false);
                                                }
                                            }
                                        }catch (Exception e){
                                            e.printStackTrace();
                                        }
                                    }else {
-                                       btn_next.setEnabled(true);
-                                       buttonTerminate.setVisibility(View.GONE);
+                                       if (questionID.equals("113")) {
+                                           String checkBoxText = checkBox.getText().toString().trim();
+                                           String iddd = String.valueOf(checkBox.getId());
+                                           if (iddd.equals("1")) {
+                                               for (int i = 0; i < ll_parent.getChildCount(); i++) {
+                                                   final View childView = ll_parent.getChildAt(i);
+                                                   if (childView instanceof TextView) {
+                                                       TextView textView1 = (TextView) childView;
+                                                       if (String.valueOf(textView1.getId()).equals("114") || String.valueOf(textView1.getId()).equals("115"))
+                                                           textView1.setVisibility(View.GONE);
+                                                   } else if (childView instanceof RadioGroup) {
+                                                       RadioGroup radioGroup1 = (RadioGroup) childView;
+                                                       if (String.valueOf(radioGroup1.getId()).equals("114") || String.valueOf(radioGroup1.getId()).equals("115")) {
+                                                           radioGroup1.setVisibility(View.GONE);
+                                                       }
+                                                   }
+                                                   if (childView instanceof LinearLayout) {
+                                                       LinearLayout LinearLayout1 = (LinearLayout) childView;
+                                                       if (String.valueOf(LinearLayout1.getId()).equals("114") || String.valueOf(LinearLayout1.getId()).equals("115"))
+                                                           LinearLayout1.setVisibility(View.GONE);
+                                                   }
+                                               }
+                                           } else if (iddd.equals("4")) {
+                                               btn_next.setEnabled(true);
+                                           }
+                                       }
                                    }
                                }
                            });
-                           if (questionID.equals("113")){
+                           /*if (questionID.equals("113")){
                                    btn_previous.setEnabled(false);
                                    buttonTerminate.setOnClickListener(new View.OnClickListener() {
                                        @Override
@@ -2375,7 +2501,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    });
                            }else {
                                btn_previous.setEnabled(true);
-                           }
+                           }*/
                            if(questionID.equals("54")){
                                checkBox.setEnabled(false);
                            }
@@ -2444,7 +2570,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        startPosition++;
                        endPosition++;
                        ll_parent.addView(linearLayoutCheckbox);
-                       ll_parent.addView(buttonTerminate);
+                       layout2.addView(buttonTerminate);
+                       ll_parent.addView(layout2);
+                       //ll_parent.addView(buttonTerminate);
                        // onAddCheckBox(jsonObjectQuesType);
                    }
                    //if question_type->4 then its Spinner
@@ -2454,20 +2582,23 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
                        txtLabel.setText(description);
                        txtLabel.setTextSize(14);
+                       LinearLayout layout2 = new LinearLayout(context);
+                       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                       params.gravity = Gravity.RIGHT;
+                       params.weight = 1.0f;
+                       layout2.setLayoutParams(params);
+                       layout2.setOrientation(LinearLayout.HORIZONTAL);
                        //add terminate button below edit text
                        Button buttonTerminate=new Button(this);
-                       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                       params.weight = 1.0f;
-                       params.gravity = Gravity.RIGHT;
                        buttonTerminate.setLayoutParams(params);
                        buttonTerminate.setText("Terminate");
                        buttonTerminate.setTextColor(Color.parseColor("#FFFFFF"));
                        buttonTerminate.setBackgroundResource(R.drawable.btn_terminate_background);
                        buttonTerminate.setAllCaps(false);
                        buttonTerminate.setVisibility(View.GONE);
-
                        txtLabel.setTypeface(null, Typeface.BOLD);
                        ll_parent.addView(txtLabel);
+
                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                        Spinner spinner=new Spinner(this);
                        spinner.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
@@ -2636,7 +2767,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("49") && sharedPrefHelper.getInt("ageInYears", 0) >=5
                                    && sharedPrefHelper.getInt("ageInYears", 0) <10) {
-                               for (int k = 0; k < 4; k++) {
+                               for (int k = 0; k < 3; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
@@ -2644,7 +2775,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("49") && sharedPrefHelper.getInt("ageInYears", 0) >=10
                                    && sharedPrefHelper.getInt("ageInYears", 0) <11) {
-                               for (int k = 0; k < 5; k++) {
+                               for (int k = 0; k < 4; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
@@ -2652,7 +2783,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("49") && sharedPrefHelper.getInt("ageInYears", 0) >=11
                                    && sharedPrefHelper.getInt("ageInYears", 0) <15) {
-                               for (int k = 0; k < 6; k++) {
+                               for (int k = 0; k < 5; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
@@ -2660,7 +2791,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("49") && sharedPrefHelper.getInt("ageInYears", 0) >=15
                                    && sharedPrefHelper.getInt("ageInYears", 0) <17) {
-                               for (int k = 0; k < 8; k++) {
+                               for (int k = 0; k < 7; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
@@ -2668,7 +2799,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("49") && sharedPrefHelper.getInt("ageInYears", 0) >=17
                                    && sharedPrefHelper.getInt("ageInYears", 0) <20) {
-                               for (int k = 0; k < 9; k++) {
+                               for (int k = 0; k < 8; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
@@ -2676,14 +2807,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("49") && sharedPrefHelper.getInt("ageInYears", 0) >=20
                                    && sharedPrefHelper.getInt("ageInYears", 0) <23) {
-                               for (int k = 0; k < 10; k++) {
+                               for (int k = 0; k < 9; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
                                }
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("49") && sharedPrefHelper.getInt("ageInYears", 0) >=23) {
-                               for (int k = 0; k < 12; k++) {
+                               for (int k = 0; k < 11; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
@@ -2698,7 +2829,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("50") && sharedPrefHelper.getInt("ageInYears", 0) >=5
                                    && sharedPrefHelper.getInt("ageInYears", 0) <10) {
-                               for (int k = 0; k < 3; k++) {
+                               for (int k = 0; k < 2; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
@@ -2706,7 +2837,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("50") && sharedPrefHelper.getInt("ageInYears", 0) >=10
                                    && sharedPrefHelper.getInt("ageInYears", 0) <16) {
-                               for (int k = 0; k < 5; k++) {
+                               for (int k = 2; k < 4; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
@@ -2714,14 +2845,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("50") && sharedPrefHelper.getInt("ageInYears", 0) >=16
                                    && sharedPrefHelper.getInt("ageInYears", 0) <25) {
-                               for (int k = 0; k < 7; k++) {
+                               for (int k = 2; k < 6; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
                                }
                            }
                            else if (jsonObjectQuesType.getString("question_id").equals("50") && sharedPrefHelper.getInt("ageInYears", 0) >=25) {
-                               for (int k = 0; k < 8; k++) {
+                               for (int k = 2; k < 7; k++) {
                                    JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                    spinnerAL.add(spinnerOption);
@@ -2859,7 +2990,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        startPosition++;
                        endPosition++;
                        ll_parent.addView(spinner);
-                       ll_parent.addView(buttonTerminate);
+                       layout2.addView(buttonTerminate);
+                       ll_parent.addView(layout2);
+                       //ll_parent.addView(buttonTerminate);
                        // onAddSpinner(jsonObjectQuesType);
                    }
                    ////if question_type->5 then its Button
@@ -2914,7 +3047,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
 
     private void showPopupForDataEraseEditText(int questionid,String value,EditText editText,int position) {
         String msg="";
-        if(questionid==31){
+        if(questionid==32){
             msg="If you change no. of members then all members data will remove and you have to submit again";
         }
         else if(questionid==57){
@@ -2930,7 +3063,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
-                        if(questionid==31){
+                        if(questionid==32){
                             answerModelHouseholdMemberList.clear();
                             answerModelHouseholdMemberListTotal.clear();
                             sharedPrefHelper.setString("CWE_Yes","0");

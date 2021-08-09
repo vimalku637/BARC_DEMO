@@ -1,7 +1,5 @@
 <resources>
-    <!--<string name="app_name">BI Local</string>-->
-    <string name="app_name">BI Live</string>
-    <!--<string name="app_name">BI Stage</string>-->
+    <string name="app_name">BI Stage</string>
     <string name="submit">Submit</string>
     <string name="select_option">Select Option</string>
     <string name="start_survey">Start Survey</string>
@@ -99,5 +97,4 @@
     <string name="halt_survey">Survey has been Halt successfully.</string>
     <string name="download_new_survey">Download New Survey</string>
     <string name="comment">Comment</string>
-    <string name="dark_mode">Enable Dark Mode</string>
 </resources>

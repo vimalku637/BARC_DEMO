@@ -310,6 +310,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                 final JSONObject jsonObject = new JSONObject();
                 int count=0;
                 int nextPosition=startPositionBefore;
+                int occupation_id=0;
                 for (int i = 0; i < ll_parent.getChildCount(); i++) {
                     final View childView = ll_parent.getChildAt(i);
                     try {
@@ -317,13 +318,40 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             EditText editText = (EditText) childView;
                             int viewID=editText.getId();
                             String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
+                            String isec = "None";
+                            if(questionID.equals("121")) {
+                                String town_village_class = sharedPrefHelper.getString("town_village_class", "");
+                                if ((town_village_class.equalsIgnoreCase("Urban") && occupation_id == 1) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 3 || occupation_id == 7))) {
+                                    isec = "Labour";
+                                } else if ((town_village_class.equalsIgnoreCase("Urban") && (occupation_id == 13 || occupation_id == 14)) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 1 || occupation_id == 2 || occupation_id == 6 || occupation_id == 4 || occupation_id == 5))) {
+                                    isec = "Farmer";
+                                } else if ((town_village_class.equalsIgnoreCase("Urban") && occupation_id == 2) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 8 || occupation_id == 10 || occupation_id == 13 || occupation_id == 14))) {
+                                    isec = "Worker";
+                                } else if ((town_village_class.equalsIgnoreCase("Urban") && (occupation_id == 3 || occupation_id == 4 || occupation_id == 5 || occupation_id == 6)) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 9 || occupation_id == 15 || occupation_id == 16 || occupation_id == 17 || occupation_id == 18))) {
+                                    isec = "Trader";
+                                } else if ((town_village_class.equalsIgnoreCase("Urban") && (occupation_id == 9 || occupation_id == 10)) || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 11 || occupation_id == 13 || occupation_id == 14 || occupation_id == 21 || occupation_id == 22))) {
+                                    isec = "Clerical/Sales/Supervisory";
+                                } else if (occupation_id == 7 || occupation_id == 8 || occupation_id == 11 || occupation_id == 12 || (town_village_class.equalsIgnoreCase("Rural") && (occupation_id == 12 || occupation_id == 13 || occupation_id == 14 || occupation_id == 19 || occupation_id == 20 || occupation_id == 23 || occupation_id == 24))) {
+                                    isec = "Managerial/businessman/professional";
+                                } else if (occupation_id == 99) {
+                                    isec = "Not Applicable";
+                                }
+                            }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
-                                answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
+                                if(questionID.equals("121")){
+                                    answerModelList.get(nextPosition).setOption_value(isec);
+                                }else{
+                                    answerModelList.get(nextPosition).setOption_value(editText.getText().toString().trim());
+                                }
                             }
                             else{
                                 AnswerModel answerModel= new AnswerModel();
                                 answerModel.setOption_id("");
-                                answerModel.setOption_value(editText.getText().toString().trim());
+                                if(questionID.equals("121")){
+                                    answerModel.setOption_value(isec);
+                                }else{
+                                    answerModel.setOption_value(editText.getText().toString().trim());
+                                }
                                 //answerModel.setSurveyID(survey_id);
                                 answerModel.setQuestionID(jsonArrayQuestions.getJSONObject(count).getString("question_id"));
                                 answerModel.setPre_field(jsonArrayQuestions.getJSONObject(count).getString("pre_field"));
@@ -469,6 +497,10 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         else if (childView instanceof Spinner) {
                             Spinner spinner = (Spinner) childView;
                             String selectedItem=Long.toString(spinner.getSelectedItemId());
+                            String questionID=jsonArrayQuestions.getJSONObject(count).getString("question_id");
+                            if(questionID.equals("38")) {
+                                occupation_id=(int)spinner.getSelectedItemId();
+                            }
                             if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("41")) {
                                 if (ageInYears <= 12) {
                                     int sepPosID = spinner.getSelectedItem().toString().indexOf("-");
@@ -1122,11 +1154,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         editText.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                         editText.setTextSize(12);
 
-                        //add edit text for sur-name
+                        /*//add edit text for sur-name
                         EditText editTextSurname=new EditText(getActivity());
                         editTextSurname.setTextSize(12);
                         editTextSurname.setHint("Please enter surname");
-                        editTextSurname.setVisibility(View.GONE);
+                        editTextSurname.setVisibility(View.GONE);*/
                         //pre field for screen 1
                         if (jsonObjectQuesType.getString("field_name").equals("mdl_id")) {
                             editText.setText(sharedPrefHelper.getString("mdl_id", ""));
@@ -1168,7 +1200,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }
                         if (jsonObjectQuesType.getString("question_id").equals("33")) {
                             editText.setHint("Please enter first name");
-                            editTextSurname.setVisibility(View.VISIBLE);
+                            //editTextSurname.setVisibility(View.VISIBLE);
                             int maxLength=50;
                             editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
                                 @Override
@@ -1235,13 +1267,18 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         }else{
                             txtLabel.setText(description);
                         }
+                        if(jsonObjectQuesType.getString("question_id").equals("121")){
+                            txtLabel.setVisibility(View.GONE);
+                            editText.setVisibility(View.GONE);
+                            editText.setText("ISEC");
+                        }
                         txtLabel.setTypeface(null, Typeface.BOLD);
                         txtLabel.setTextSize(14);
                         startPosition++;
                         endPosition++;
                         ll_parent.addView(txtLabel);
                         ll_parent.addView(editText);
-                        ll_parent.addView(editTextSurname);
+                        //ll_parent.addView(editTextSurname);
                         //onAddEditField(jsonObjectQuesType);
                     }
                     else if (jsonObjectQuesType.getString("question_type").equals("2")) {
@@ -1462,7 +1499,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=5
                                         && sharedPrefHelper.getInt("ageInYears", 0) <10) {
-                                    for (int k = 0; k < 4; k++) {
+                                    for (int k = 0; k < 3; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
@@ -1470,7 +1507,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=10
                                         && sharedPrefHelper.getInt("ageInYears", 0) <11) {
-                                    for (int k = 0; k < 5; k++) {
+                                    for (int k = 0; k < 4; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
@@ -1478,7 +1515,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=11
                                         && sharedPrefHelper.getInt("ageInYears", 0) <15) {
-                                    for (int k = 0; k < 6; k++) {
+                                    for (int k = 0; k < 5; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
@@ -1486,7 +1523,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=15
                                         && sharedPrefHelper.getInt("ageInYears", 0) <17) {
-                                    for (int k = 0; k < 8; k++) {
+                                    for (int k = 0; k < 7; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
@@ -1494,7 +1531,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=17
                                         && sharedPrefHelper.getInt("ageInYears", 0) <20) {
-                                    for (int k = 0; k < 9; k++) {
+                                    for (int k = 0; k < 8; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
@@ -1502,14 +1539,14 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=20
                                         && sharedPrefHelper.getInt("ageInYears", 0) <23) {
-                                    for (int k = 0; k < 10; k++) {
+                                    for (int k = 0; k < 9; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=23) {
-                                    for (int k = 0; k < 12; k++) {
+                                    for (int k = 0; k < 11; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
@@ -1524,7 +1561,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("37") && sharedPrefHelper.getInt("ageInYears", 0) >=5
                                         && sharedPrefHelper.getInt("ageInYears", 0) <10) {
-                                    for (int k = 0; k < 3; k++) {
+                                    for (int k = 0; k < 2; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
@@ -1532,7 +1569,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("37") && sharedPrefHelper.getInt("ageInYears", 0) >=10
                                         && sharedPrefHelper.getInt("ageInYears", 0) <16) {
-                                    for (int k = 0; k < 5; k++) {
+                                    for (int k = 0; k < 4; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
@@ -1540,14 +1577,14 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("37") && sharedPrefHelper.getInt("ageInYears", 0) >=16
                                         && sharedPrefHelper.getInt("ageInYears", 0) <25) {
-                                    for (int k = 0; k < 7; k++) {
+                                    for (int k = 0; k < 6; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("37") && sharedPrefHelper.getInt("ageInYears", 0) >=25) {
-                                    for (int k = 0; k < 8; k++) {
+                                    for (int k = 0; k < 7; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);

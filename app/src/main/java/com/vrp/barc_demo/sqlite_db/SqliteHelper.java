@@ -177,7 +177,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return status;
     }
-    public String getNCCMatrix2(String education_id,String durables_id,String NCC_catagory) {
+    public String getNCCMatrix2(String education_id,String durables_id) {
         //boolean status=false;
         String status="";
         String[]  arraydurables = durables_id.split(",");
@@ -186,8 +186,8 @@ public class SqliteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         try {
             if (db != null && db.isOpen() && !db.isReadOnly()) {
-                //String query = "Select nccs_category from nccs_matrix where nccs_education_id="+nccs_education_id+" AND durables_id in("+durableLength+")";
-                String query = "Select nccs_category from nccs_matrix where durables_id in("+durableLength+")";
+                String query = "Select nccs_category from nccs_matrix where nccs_education_id="+nccs_education_id+" AND durables_id in("+durableLength+")";
+                //String query = "Select nccs_category from nccs_matrix where durables_id in("+durableLength+")";
                 Cursor cursor = db.rawQuery(query, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
