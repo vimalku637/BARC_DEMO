@@ -193,6 +193,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     int isGPSClicked=0;
     SurveyModel surveyModel;
     private String checkedIdForCheckBox="";
+    boolean isBack_disable=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,6 +274,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         sharedPrefHelper.setString("HH_Name","");
                         sharedPrefHelper.setString("CWE_Status","");
                         sharedPrefHelper.setString("last_time_access_internet", "");
+                        sharedPrefHelper.setString("rq3e_selected","");
                     }
                 }
                 /*if (jsonQuestions.has("group")) {
@@ -1345,6 +1347,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         if (groupRelationId!=null&&!groupRelationId.equalsIgnoreCase("0")) {
                            if (groupRelationId.equalsIgnoreCase("1")) {
                                btn_next.setEnabled(false);
+                               isBack_disable=true;
                                familyTotalGroup=Integer.parseInt(editFieldValues);
                                 Bundle bundle=new Bundle();
                                 bundle.putInt("editFieldValues", Integer.parseInt(editFieldValues));
@@ -1924,12 +1927,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        JSONArray jsonArrayOptions = jsonObjectQuesType.getJSONArray("question_options");
                        RadioGroup radioGroup=new RadioGroup(this);
                        radioGroup.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
-                       if(jsonObjectQuesType.getString("question_id").equals("114")){
+                       if(jsonObjectQuesType.getString("question_id").equals("114") && !sharedPrefHelper.getString("rq3e_selected","").contains("1")){
                            txtLabel.setVisibility(View.GONE);
                            radioGroup.setVisibility(View.GONE);
                            layout2.setVisibility(View.GONE);
                        }
-                       else if(jsonObjectQuesType.getString("question_id").equals("115")){
+                       else if(jsonObjectQuesType.getString("question_id").equals("115") && !sharedPrefHelper.getString("rq3e_selected","").contains("1")){
                            txtLabel.setVisibility(View.GONE);
                            radioGroup.setVisibility(View.GONE);
                            layout2.setVisibility(View.GONE);
@@ -2240,8 +2243,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    }
                                }
                                //hide/show question condition for DTH connection free/paid
-                               else if(group.getId()==114){
-                                   if(questionID.equals("114")) {
+                               /*else if(group.getId()==115){
+                                   if(questionID.equals("115")) {
                                        for (int i = 0; i < ll_parent.getChildCount(); i++) {
                                            final View childView = ll_parent.getChildAt(i);
                                            if (childView instanceof TextView) {
@@ -2249,10 +2252,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                if (String.valueOf(textView1.getId()).equals("115"))
                                                    if (radioID.equals("1")) {
                                                        textView1.setVisibility(View.GONE);
-                                                       buttonTerminate.setVisibility(View.GONE);
                                                    } else if (radioID.equals("2")) {
                                                        textView1.setVisibility(View.VISIBLE);
-                                                       buttonTerminate.setVisibility(View.VISIBLE);
                                                    }
                                            }
                                            else if (childView instanceof RadioGroup) {
@@ -2260,16 +2261,24 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                if (String.valueOf(radioGroup1.getId()).equals("115")) {
                                                    if (radioID.equals("1")) {
                                                        radioGroup1.setVisibility(View.GONE);
-                                                       buttonTerminate.setVisibility(View.GONE);
                                                    } else if (radioID.equals("2")) {
                                                        radioGroup1.setVisibility(View.VISIBLE);
-                                                       buttonTerminate.setVisibility(View.VISIBLE);
+                                                   }
+                                               }
+                                           }
+                                           if (childView instanceof LinearLayout) {
+                                               LinearLayout LinearLayout1 = (LinearLayout) childView;
+                                               if (String.valueOf(LinearLayout1.getId()).equals("115")){
+                                                   if (radioID.equals("1")) {
+                                                       LinearLayout1.setVisibility(View.VISIBLE);
+                                                   }else{
+                                                       LinearLayout1.setVisibility(View.GONE);
                                                    }
                                                }
                                            }
                                        }
                                    }
-                               }
+                               }*/
                                else if(group.getId()==101){
                                    if (radioID.equals("1")){
                                        //sharedPrefHelper.setString("2100f_radio_ids", radioID);
@@ -2455,7 +2464,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                }
                                                else if(iddd.equals("4"))
                                                {
-                                                   btn_next.setEnabled(false);
+                                                   //btn_next.setEnabled(false);
                                                }
                                            }
                                        }catch (Exception e){
@@ -2553,6 +2562,9 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                    }
                                }
                                else if(contains){
+                                   if(questionID.equals("113")){
+                                       sharedPrefHelper.setString("rq3e_selected",selectedOptions);
+                                   }
                                    checkBox.setChecked(true);
                                }
                            }
@@ -3038,6 +3050,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        ll_parent.addView(textView);
                    }
                }
+           }
+           if(isBack_disable==true && Integer.parseInt(screen_id)<11){
+                btn_previous.setEnabled(false);
+           }else{
+               btn_previous.setEnabled(true);
            }
         } catch (JSONException e) {
             e.printStackTrace();
