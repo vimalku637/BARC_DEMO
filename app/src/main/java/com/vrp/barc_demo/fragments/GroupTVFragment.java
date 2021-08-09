@@ -1625,7 +1625,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 txtLabel.setVisibility(View.VISIBLE);
                                 spinner.setVisibility(View.VISIBLE);
                             }
-                            else{
+                            else if (jsonObjectQuesType.getString("question_id").equals("67")){
                                 txtLabel.setVisibility(View.GONE);
                                 spinner.setVisibility(View.GONE);
                             }

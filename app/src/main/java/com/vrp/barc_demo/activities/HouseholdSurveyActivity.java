@@ -2447,17 +2447,17 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                        final View childView = ll_parent.getChildAt(i);
                                                        if (childView instanceof TextView) {
                                                            TextView textView1 = (TextView) childView;
-                                                           if (String.valueOf(textView1.getId()).equals("114"))
+                                                           if (String.valueOf(textView1.getId()).equals("114") || String.valueOf(textView1.getId()).equals("115"))
                                                                textView1.setVisibility(View.VISIBLE);
                                                        } else if (childView instanceof RadioGroup) {
                                                            RadioGroup radioGroup1 = (RadioGroup) childView;
-                                                           if (String.valueOf(radioGroup1.getId()).equals("114")) {
+                                                           if (String.valueOf(radioGroup1.getId()).equals("114") || String.valueOf(radioGroup1.getId()).equals("115")) {
                                                                radioGroup1.setVisibility(View.VISIBLE);
                                                            }
                                                        }
                                                        if (childView instanceof LinearLayout) {
                                                            LinearLayout LinearLayout1 = (LinearLayout) childView;
-                                                           if (String.valueOf(LinearLayout1.getId()).equals("114"))
+                                                           if (String.valueOf(LinearLayout1.getId()).equals("114") || String.valueOf(LinearLayout1.getId()).equals("114"))
                                                                LinearLayout1.setVisibility(View.VISIBLE);
                                                        }
                                                    }
