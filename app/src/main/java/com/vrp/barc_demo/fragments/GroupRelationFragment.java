@@ -144,6 +144,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
     private static final String STRING_VALUE ="stringValue";
     public Context context;
     private String name="";
+    private String surname="";
     private int ageInYears=0;
     ArrayList<String> nameAL=new ArrayList<>();
     HashMap<Integer,String> nameVL=new HashMap<>();
@@ -375,7 +376,12 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 String hashMapString = gson.toJson(nameVL);
                                 //JSONObject objMember=new JSONObject(nameVL);
                                 sharedPrefHelper.setString("householdMember",hashMapString);
-                            }else if (questionID.equals("35")) {
+                            }
+                            else if (questionID.equals("120")) {
+                                surname=editText.getText().toString().trim();
+                                sharedPrefHelper.setString("surname", surname);
+                            }
+                            else if (questionID.equals("35")) {
                                 ageInYears=Integer.parseInt(editText.getText().toString().trim());
                                 sharedPrefHelper.setInt("ageInYears", ageInYears);
                                 if(ageInYears<1){
@@ -751,6 +757,9 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     break;
                                 }
                                 nameVL.put(totalScreenCount,""+name);
+                            }else if (questionID.equals("120")) {
+                                surname=editText.getText().toString().trim();
+                                sharedPrefHelper.setString("surname", surname);
                             }else if (questionID.equals("35")) {
                                 ageInYears=Integer.parseInt(editText.getText().toString().trim());
                                 sharedPrefHelper.setInt("ageInYears", ageInYears);
@@ -1260,7 +1269,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             editText.setText(answerModelList.get(startPosition).getOption_value());
                         }
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","")+" "+sharedPrefHelper.getString("surname", ""));
                         if(jsonObjectQuesType.getString("question_id").equals("33")){
                             int member_count=startScreenCount+1;
                             txtLabel.setText(description+"- Member-"+member_count);
@@ -1284,7 +1293,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     else if (jsonObjectQuesType.getString("question_type").equals("2")) {
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","")+" "+sharedPrefHelper.getString("surname", ""));
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
@@ -1395,7 +1404,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     else if (jsonObjectQuesType.getString("question_type").equals("3")) {
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","")+" "+sharedPrefHelper.getString("surname", ""));
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
@@ -1437,7 +1446,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     else if (jsonObjectQuesType.getString("question_type").equals("4")) {
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","")+" "+sharedPrefHelper.getString("surname", ""));
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
@@ -1818,7 +1827,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         TextView textView=new TextView(getActivity());
                         textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","")+" "+sharedPrefHelper.getString("surname", ""));
                         description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name",""));
                         if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                         }

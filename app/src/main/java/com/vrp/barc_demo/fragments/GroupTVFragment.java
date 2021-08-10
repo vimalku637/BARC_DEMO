@@ -1453,7 +1453,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             editText.setText(answerModelList.get(startPosition).getOption_value());
                         }
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram")+" "+sharedPrefHelper.getString("surname", ""));
                         txtLabel.setText(description);
                         txtLabel.setTypeface(null, Typeface.BOLD);
                         txtLabel.setTextSize(14);
@@ -1466,7 +1466,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     else if (jsonObjectQuesType.getString("question_type").equals("2")) {
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram")+" "+sharedPrefHelper.getString("surname", ""));
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
@@ -1518,7 +1518,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     else if (jsonObjectQuesType.getString("question_type").equals("3")) {
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram")+" "+sharedPrefHelper.getString("surname", ""));
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
@@ -1548,6 +1548,15 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                     checkBox.setChecked(true);
                                 }
                             }
+                            if(jsonObjectQuesType.getString("question_id").equals("64")){
+                                selectedOptions=sharedPrefHelper.getString("rq3e_selected","");
+                                String[] arraySelectedOptionsn = selectedOptions.split(",");
+                                boolean containsn = Arrays.asList(arraySelectedOptionsn).contains(jsonObject1.getString("option_id"));
+                                if(containsn){
+                                    checkBox.setChecked(true);
+                                    checkBox.setEnabled(false);
+                                }
+                            }
                             row.addView(checkBox);
                             linearLayoutCheckbox.addView(row);
                             if (jsonObjectQuesType.getString("question_id").equals("68")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("6")){
@@ -1565,7 +1574,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                     else if (jsonObjectQuesType.getString("question_type").equals("4")) {
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram"));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","Ram")+" "+sharedPrefHelper.getString("surname", ""));
                         if(jsonObjectQuesType.getString("question_id").equals("58")){
                             int member_count=startScreenCount+1;
                             description=description.replaceAll("each "," "+member_count+" ");
@@ -1698,7 +1707,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         TextView textView=new TextView(getActivity());
                         textView.setId(Integer.parseInt(jsonObjectQuesType.getString("question_id")));
                         String description=jsonObjectQuesType.getString("question_name");
-                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name",""));
+                        description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","")+" "+sharedPrefHelper.getString("surname", ""));
                         description=description.replaceAll("\\$agency",sharedPrefHelper.getString("agency_name",""));
                         if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>i){
                         }
