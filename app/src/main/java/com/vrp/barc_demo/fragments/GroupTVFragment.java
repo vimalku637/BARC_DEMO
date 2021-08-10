@@ -1550,11 +1550,15 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             }
                             if(jsonObjectQuesType.getString("question_id").equals("64")){
                                 selectedOptions=sharedPrefHelper.getString("rq3e_selected","");
-                                String[] arraySelectedOptionsn = selectedOptions.split(",");
-                                boolean containsn = Arrays.asList(arraySelectedOptionsn).contains(jsonObject1.getString("option_id"));
-                                if(containsn){
-                                    checkBox.setChecked(true);
-                                    checkBox.setEnabled(false);
+                               // String[] arraySelectedOptionsn = selectedOptions.split(",");
+                                //boolean containsn = Arrays.asList(arraySelectedOptionsn).contains(jsonObject1.getString("option_id"));
+                                if(Integer.parseInt(sharedPrefHelper.getString("TvWorkingCondition",""))==1){
+                                    if(jsonObject1.getString("option_id").equals("1") || jsonObject1.getString("option_id").equals("2") || jsonObject1.getString("option_id").equals("3")){
+                                        checkBox.setEnabled(false);
+                                        if(selectedOptions.contains(jsonObject1.getString("option_id"))){
+                                            checkBox.setChecked(true);
+                                        }
+                                    }
                                 }
                             }
                             row.addView(checkBox);

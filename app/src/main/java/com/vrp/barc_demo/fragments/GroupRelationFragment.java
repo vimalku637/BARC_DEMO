@@ -1447,6 +1447,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                         TextView txtLabel = new TextView(getActivity());
                         String description=jsonObjectQuesType.getString("question_name");
                         description=description.replaceAll("\\$name",sharedPrefHelper.getString("name","")+" "+sharedPrefHelper.getString("surname", ""));
+                        if(sharedPrefHelper.getString("currentWorkingStatus","").equals("3") && jsonObjectQuesType.getString("question_id").equals("38")){
+                            description=description.replaceAll("\\$current","last");
+                        }else if (jsonObjectQuesType.getString("question_id").equals("38")){
+                            description=description.replaceAll("\\$current","current");
+                        }
                         txtLabel.setText(description);
                         txtLabel.setTextSize(14);
                         txtLabel.setTypeface(null, Typeface.BOLD);
@@ -1508,50 +1513,62 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=5
                                         && sharedPrefHelper.getInt("ageInYears", 0) <10) {
-                                    for (int k = 0; k < 3; k++) {
+                                    for (int k = 0; k < 11; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                        spinnerAL.add(spinnerOption);
+                                        if(jsonObjectOptionValues.getString("option_id").equals("1") || jsonObjectOptionValues.getString("option_id").equals("2") || jsonObjectOptionValues.getString("option_id").equals("3")) {
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=10
                                         && sharedPrefHelper.getInt("ageInYears", 0) <11) {
-                                    for (int k = 0; k < 4; k++) {
+                                    for (int k = 0; k < 11; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                        spinnerAL.add(spinnerOption);
+                                        if(jsonObjectOptionValues.getString("option_id").equals("1") || jsonObjectOptionValues.getString("option_id").equals("2") || jsonObjectOptionValues.getString("option_id").equals("3") || jsonObjectOptionValues.getString("option_id").equals("11")) {
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=11
                                         && sharedPrefHelper.getInt("ageInYears", 0) <15) {
-                                    for (int k = 0; k < 5; k++) {
+                                    for (int k = 0; k < 11; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                        spinnerAL.add(spinnerOption);
+                                        if(jsonObjectOptionValues.getString("option_id").equals("1") || jsonObjectOptionValues.getString("option_id").equals("2") || jsonObjectOptionValues.getString("option_id").equals("3") || jsonObjectOptionValues.getString("option_id").equals("11") || jsonObjectOptionValues.getString("option_id").equals("4")) {
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=15
                                         && sharedPrefHelper.getInt("ageInYears", 0) <17) {
-                                    for (int k = 0; k < 7; k++) {
+                                    for (int k = 0; k < 11; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                        spinnerAL.add(spinnerOption);
+                                        if(!jsonObjectOptionValues.getString("option_id").equals("7") && !jsonObjectOptionValues.getString("option_id").equals("8") && !jsonObjectOptionValues.getString("option_id").equals("9") && !jsonObjectOptionValues.getString("option_id").equals("10")) {
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=17
                                         && sharedPrefHelper.getInt("ageInYears", 0) <20) {
-                                    for (int k = 0; k < 8; k++) {
+                                    for (int k = 0; k < 11; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                        spinnerAL.add(spinnerOption);
+                                        if(!jsonObjectOptionValues.getString("option_id").equals("8") && !jsonObjectOptionValues.getString("option_id").equals("9") && !jsonObjectOptionValues.getString("option_id").equals("10")) {
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=20
                                         && sharedPrefHelper.getInt("ageInYears", 0) <23) {
-                                    for (int k = 0; k < 9; k++) {
+                                    for (int k = 0; k < 11; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                        spinnerAL.add(spinnerOption);
+                                        if(!jsonObjectOptionValues.getString("option_id").equals("9") && !jsonObjectOptionValues.getString("option_id").equals("10")) {
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("36") && sharedPrefHelper.getInt("ageInYears", 0) >=23) {
@@ -1570,26 +1587,32 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("37") && sharedPrefHelper.getInt("ageInYears", 0) >=5
                                         && sharedPrefHelper.getInt("ageInYears", 0) <10) {
-                                    for (int k = 0; k < 2; k++) {
+                                    for (int k = 0; k < 7; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                        spinnerAL.add(spinnerOption);
+                                        if(jsonObjectOptionValues.getString("option_id").equals("1") || jsonObjectOptionValues.getString("option_id").equals("2")) {
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("37") && sharedPrefHelper.getInt("ageInYears", 0) >=10
                                         && sharedPrefHelper.getInt("ageInYears", 0) <16) {
-                                    for (int k = 0; k < 4; k++) {
+                                    for (int k = 0; k < 7; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                        spinnerAL.add(spinnerOption);
+                                        if(!jsonObjectOptionValues.getString("option_id").equals("3") && !jsonObjectOptionValues.getString("option_id").equals("4") && !jsonObjectOptionValues.getString("option_id").equals("5")) {
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("37") && sharedPrefHelper.getInt("ageInYears", 0) >=16
                                         && sharedPrefHelper.getInt("ageInYears", 0) <25) {
-                                    for (int k = 0; k < 6; k++) {
+                                    for (int k = 0; k < 7; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                        String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                        spinnerAL.add(spinnerOption);
+                                        if(!jsonObjectOptionValues.getString("option_id").equals("3")) {
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
                                     }
                                 }
                                 else if (jsonObjectQuesType.getString("question_id").equals("37") && sharedPrefHelper.getInt("ageInYears", 0) >=25) {
@@ -1604,9 +1627,8 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     String town_village_class = sharedPrefHelper.getString("town_village_class", "");
                                     if (town_village_class.equalsIgnoreCase("Urban")) {
                                         for (int k = 0; k < 15; k++) {
-                                            if (!currentWorkingStatus.equals("3") && !currentWorkingStatus.equals("4")
-                                                    && !currentWorkingStatus.equals("6") && !currentWorkingStatus.equals("7")) {
-                                                String currentOccupation = "99";
+                                            String currentOccupation = "99";
+                                            if (currentWorkingStatus.equals("1") || currentWorkingStatus.equals("2")) {
                                                 JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                                 if(jsonObjectOptionValues.getString("option_id").equals(currentOccupation)) {
                                                     String spinnerOption = jsonObjectOptionValues.getString("option_value");
@@ -1614,16 +1636,17 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                                 }
                                             }else{
                                                 JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                                String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                                spinnerAL.add(spinnerOption);
+                                                if(!jsonObjectOptionValues.getString("option_id").equals(currentOccupation)) {
+                                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                                    spinnerAL.add(spinnerOption);
+                                                }
                                             }
                                         }
                                     }
                                     else {
                                         for (int k = 15; k < 40; k++) {
-                                            if (!currentWorkingStatus.equals("3") && !currentWorkingStatus.equals("4")
-                                                    && !currentWorkingStatus.equals("6") && !currentWorkingStatus.equals("7")) {
-                                                String currentOccupation = "99";
+                                            String currentOccupation = "99";
+                                            if (currentWorkingStatus.equals("1") || currentWorkingStatus.equals("2")) {
                                                 JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                                 if(jsonObjectOptionValues.getString("option_id").equals(currentOccupation)) {
                                                     String spinnerOption = jsonObjectOptionValues.getString("option_value");
@@ -1631,8 +1654,10 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                                 }
                                             }else{
                                                 JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                                String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                                spinnerAL.add(spinnerOption);
+                                                if(!jsonObjectOptionValues.getString("option_id").equals(currentOccupation)) {
+                                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                                    spinnerAL.add(spinnerOption);
+                                                }
                                             }
                                         }
                                     }
