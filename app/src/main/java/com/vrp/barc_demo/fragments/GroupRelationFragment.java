@@ -299,6 +299,35 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
         pDialog.setCancelable(false);
     }
 
+    private void showPopupForSurveyOnRadio(String radioButtonText,
+                                                    RadioGroup radiogroup) {
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        //new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        pDialog.setTitleText("Are you sure?")
+                .setContentText(radioButtonText)
+                .setConfirmText("Yes")
+                .setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        try {
+                            radiogroup.clearCheck();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .show();
+        pDialog.setCancelable(false);
+    }
     private void setButtonClick() {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -371,15 +400,15 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     editText.setError("Name can't be blank or only one character");
                                     break;
                                 }
-                                nameVL.put(totalScreenCount,""+name);
-                                Gson gson = new Gson();
-                                String hashMapString = gson.toJson(nameVL);
-                                //JSONObject objMember=new JSONObject(nameVL);
-                                sharedPrefHelper.setString("householdMember",hashMapString);
                             }
                             else if (questionID.equals("120")) {
                                 surname=editText.getText().toString().trim();
                                 sharedPrefHelper.setString("surname", surname);
+                                nameVL.put(totalScreenCount,""+sharedPrefHelper.getString("name", "")+" "+surname);
+                                Gson gson = new Gson();
+                                String hashMapString = gson.toJson(nameVL);
+                                //JSONObject objMember=new JSONObject(nameVL);
+                                sharedPrefHelper.setString("householdMember",hashMapString);
                             }
                             else if (questionID.equals("35")) {
                                 ageInYears=Integer.parseInt(editText.getText().toString().trim());
@@ -756,10 +785,10 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     flag=false;
                                     break;
                                 }
-                                nameVL.put(totalScreenCount,""+name);
                             }else if (questionID.equals("120")) {
                                 surname=editText.getText().toString().trim();
                                 sharedPrefHelper.setString("surname", surname);
+                                nameVL.put(totalScreenCount,""+sharedPrefHelper.getString("name", "")+" "+surname);
                             }else if (questionID.equals("35")) {
                                 ageInYears=Integer.parseInt(editText.getText().toString().trim());
                                 sharedPrefHelper.setInt("ageInYears", ageInYears);
@@ -944,10 +973,10 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                     }*/
                     if (answerModelList != null) {
                         int famiy_count=0;
-                        int family_count_total=12;
+                        int family_count_total=14;
                         answerTVtotal.clear();
                         outerloop:
-                        for (int i = 0; i < answerModelList.size()/12; i++) {
+                        for (int i = 0; i < answerModelList.size()/14; i++) {
                             ArrayList<AnswerModel> answerModelListSingle=new ArrayList<>();
                             for (int j = famiy_count; j <family_count_total; j++) {
                                 if(answerModelList.get(j).getQuestionID().equals("33") && answerModelList.get(j).getOption_value().equals("")){
@@ -957,8 +986,8 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     answerModelListSingle.add(answerModelList.get(j));
                                 }
                             }
-                            famiy_count=famiy_count+12;
-                            family_count_total=family_count_total+12;
+                            famiy_count=famiy_count+14;
+                            family_count_total=family_count_total+14;
                             answerTVtotal.add(answerModelListSingle);
                         }
                     }
@@ -1384,6 +1413,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 String id=rbTag.substring(sepPos+1);
                                 String radioID = rbTag.substring(0, sepPos);
                                 String radioGroupID=String.valueOf(group.getId());
+                                if(radioGroupID.equals("40") && radioID.equals("1")){
+                                    if(rb.isChecked()) {
+                                        showPopupForSurveyOnRadio("Want to confirm CWE Member", radioGroup);
+                                    }
+                                }
                                /* if(radioGroupID.equals("40") && radioID.equals("1")){
                                     sharedPrefHelper.setString("CWE_Yes","1");
                                 }else if(radioGroupID.equals("40") && radioID.equals("2")){
@@ -1625,35 +1659,17 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 else if (jsonObjectQuesType.getString("question_id").equals("38")) {
                                     String currentWorkingStatus=sharedPrefHelper.getString("currentWorkingStatus","");
                                     String town_village_class = sharedPrefHelper.getString("town_village_class", "");
-                                    if (town_village_class.equalsIgnoreCase("Urban")) {
-                                        for (int k = 0; k < 15; k++) {
-                                            String currentOccupation = "99";
+                                    for (int k = 0; k < 40; k++) {
+                                        String currentOccupation = "99";
+                                        JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                        if (jsonObjectOptionValues.getString("option_type").equalsIgnoreCase(town_village_class)) {
                                             if (currentWorkingStatus.equals("1") || currentWorkingStatus.equals("2")) {
-                                                JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                                 if(jsonObjectOptionValues.getString("option_id").equals(currentOccupation)) {
-                                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                                    spinnerAL.add(spinnerOption);
-                                                }
-                                            }else{
-                                                JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                                if(!jsonObjectOptionValues.getString("option_id").equals(currentOccupation)) {
                                                     String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                                     spinnerAL.add(spinnerOption);
                                                 }
                                             }
-                                        }
-                                    }
-                                    else {
-                                        for (int k = 15; k < 40; k++) {
-                                            String currentOccupation = "99";
-                                            if (currentWorkingStatus.equals("1") || currentWorkingStatus.equals("2")) {
-                                                JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
-                                                if(jsonObjectOptionValues.getString("option_id").equals(currentOccupation)) {
-                                                    String spinnerOption = jsonObjectOptionValues.getString("option_value");
-                                                    spinnerAL.add(spinnerOption);
-                                                }
-                                            }else{
-                                                JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                            else{
                                                 if(!jsonObjectOptionValues.getString("option_id").equals(currentOccupation)) {
                                                     String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                                     spinnerAL.add(spinnerOption);

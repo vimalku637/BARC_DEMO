@@ -190,7 +190,7 @@ public class TerminateActivity extends AppCompatActivity {
                         break;
                     case R.id.rb_door_lock:
                         reason=getResources().getString(R.string.door_locked);
-                        halt_radio_button_id="1";
+                        halt_radio_button_id="2";
                         til_name.setVisibility(View.GONE);
                         til_address.setVisibility(View.GONE);
                         til_comment.setVisibility(View.VISIBLE);
@@ -198,7 +198,7 @@ public class TerminateActivity extends AppCompatActivity {
                         break;
                     case R.id.rb_not_available_at_home:
                         reason=getResources().getString(R.string.hh_cwe_not_available_at_home);
-                        halt_radio_button_id="2";
+                        halt_radio_button_id="3";
                         til_name.setVisibility(View.GONE);
                         til_address.setVisibility(View.GONE);
                         til_comment.setVisibility(View.VISIBLE);
@@ -206,7 +206,7 @@ public class TerminateActivity extends AppCompatActivity {
                         break;
                     case R.id.rb_refused_to_continue:
                         reason=getResources().getString(R.string.refused_to_continue_interview_after_some_time);
-                        halt_radio_button_id="3";
+                        halt_radio_button_id="4";
                         til_name.setVisibility(View.GONE);
                         til_address.setVisibility(View.GONE);
                         til_comment.setVisibility(View.VISIBLE);
@@ -214,7 +214,7 @@ public class TerminateActivity extends AppCompatActivity {
                         break;
                     case R.id.rb_in_eligible_age:
                         reason=getResources().getString(R.string.in_eligible_age);
-                        halt_radio_button_id="4";
+                        halt_radio_button_id="5";
                         til_name.setVisibility(View.GONE);
                         til_address.setVisibility(View.GONE);
                         til_comment.setVisibility(View.VISIBLE);

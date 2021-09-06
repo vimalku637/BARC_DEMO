@@ -69,6 +69,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -139,6 +142,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
     int lenSingle=0;
     int totalSingle=0;
     private int startScreenCount=0;
+    HashMap<Integer,String> connectionType=new HashMap<>();
 
     public GroupTVFragment() {
         // Required empty public constructor
@@ -826,25 +830,27 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                         answerModelList.add(answerModel);
                     }
-                    if (questionID.equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1") || (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2") && !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")))){
-                        flag=true;
-                    }
-                    else if (questionID.equals("66") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("4")){
+                    if (questionID.equals("66") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("4")){
                         flag=true;
                     }
                     else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
                             && (questionID.equals("62")||questionID.equals("65")) &&spinner.getSelectedItemId()==0){
-                        if (questionID.equals("62")&&sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1")){
-                            flag=true;
+                        if (questionID.equals("62")&&sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2")){
+                            flag=false;
+                            break;
                         }
-                        else if (questionID.equals("65")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("1")){
-                            flag=true;
-                        }else{
+                        else if (questionID.equals("65") && sharedPrefHelper.getString("selectedTVConnection","").contains("1")){
                             flag=false;
                             break;
                         }
                     } else {
-                       if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
+                        if (questionID.equals("67") && spinner.getSelectedItemId() == 0){
+                            if(sharedPrefHelper.getString("spinnerTVHD", "").equals("1") && (sharedPrefHelper.getString("selectedTVConnection","").contains("1") || sharedPrefHelper.getString("selectedTVConnection","").contains("3") || sharedPrefHelper.getString("selectedTVConnection","").contains("5"))){
+                                flag = false;
+                                break;
+                            }
+                        }
+                       else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
                             flag = false;
                             break;
                         }
@@ -884,25 +890,6 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                             }
                         }
                     }
-                    if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("64")){
-                                /*if(selectedOptions.contains("1")||selectedOptions.contains("3")
-                                        ||selectedOptions.contains("5"))*/
-                        sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
-                        String tvConnection=sharedPrefHelper.getString("selectedTVConnection","");//30-01-2021
-                        if (tvConnection.contains("1") || tvConnection.contains("2") || tvConnection.contains("3") || tvConnection.contains("4") || tvConnection.contains("5") || tvConnection.contains("6")){
-                            if (tvConnection.contains("7") || tvConnection.contains("8")){
-                                showPopupForError("if you choose 'DK/CS' or 'None' option then you are not allow to choose any other options.");
-                                flag = false;
-                                break;
-                            }
-                        }else if(tvConnection.contains("7") || tvConnection.contains("8")){
-                            if (tvConnection.contains("1") || tvConnection.contains("2") || tvConnection.contains("3") || tvConnection.contains("4") || tvConnection.contains("5") || tvConnection.contains("6")){
-                                showPopupForError("if you choose 'DK/CS' or 'None' option then you are not allow to choose any other options.");
-                                flag = false;
-                                break;
-                            }
-                        }//
-                    }
                     if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                         answerModelList.get(nextPosition).setOption_id(selectedOptions);
                     }else{
@@ -915,7 +902,48 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                         answerModelList.add(answerModel);
                     }
-                    if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("")){
+                    if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("64")){
+                                /*if(selectedOptions.contains("1")||selectedOptions.contains("3")
+                                        ||selectedOptions.contains("5"))*/
+                        if(selectedOptions.equals("")){
+                            flag = false;
+                            break;
+                        }else{
+                            sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
+                            connectionType.put(startScreenCount,selectedOptions);
+                            int total_tv_count=startScreenCount+1;
+                            if(sharedPrefHelper.getString("TvWorkingCondition","").equals(""+total_tv_count)){
+                                String rq3e_selected=sharedPrefHelper.getString("rq3e_selected","");
+                                String[] rq3eArray = rq3e_selected.split(",");
+                                Map<Integer, String> treeMapName = new TreeMap<>(connectionType);
+                                String selected_q3e_n="";
+                                for (Map.Entry<Integer, String> entry : treeMapName.entrySet()) {
+                                    selected_q3e_n=selected_q3e_n+","+entry.getValue();
+                                }
+                                for(int k=0;k<rq3eArray.length;k++){
+                                    if(!selected_q3e_n.contains(rq3eArray[k].trim())){
+                                        showPopupForError("TV connections are not matching with with QRQ3e");
+                                        flag = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        /*if (tvConnection.contains("1") || tvConnection.contains("2") || tvConnection.contains("3") || tvConnection.contains("4") || tvConnection.contains("5") || tvConnection.contains("6")){
+                            if (tvConnection.contains("7") || tvConnection.contains("8")){
+                                showPopupForError("if you choose 'DK/CS' or 'None' option then you are not allow to choose any other options.");
+                                flag = false;
+                                break;
+                            }
+                        }else if(tvConnection.contains("7") || tvConnection.contains("8")){
+                            if (tvConnection.contains("1") || tvConnection.contains("2") || tvConnection.contains("3") || tvConnection.contains("4") || tvConnection.contains("5") || tvConnection.contains("6")){
+                                showPopupForError("if you choose 'DK/CS' or 'None' option then you are not allow to choose any other options.");
+                                flag = false;
+                                break;
+                            }
+                        }//*/
+                    }
+                    else if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && selectedOptions.equals("")){
                         if(jsonArrayQuestions.getJSONObject(count).getString("question_id").equals("68")){
                             String selectedTVConnection=sharedPrefHelper.getString("selectedTVConnection",selectedOptions);
                             if(selectedTVConnection.contains("6")){
@@ -1103,25 +1131,27 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         answerModel.setField_name(jsonArrayQuestions.getJSONObject(count).getString("field_name"));
                         answerModelList.add(answerModel);
                     }
-                    if (questionID.equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1") || (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2") && !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")))){
-                        flag=true;
-                    }
-                    else if (questionID.equals("66") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("4")){
+                    if (questionID.equals("66") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("4")){
                         flag=true;
                     }
                     else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
                             && (questionID.equals("62")||questionID.equals("65")) &&spinner.getSelectedItemId()==0){
-                        if (questionID.equals("62")&&sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1")){
-                            flag=true;
+                        if (questionID.equals("62")&&sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2")){
+                            flag=false;
+                            break;
                         }
-                        else if (questionID.equals("65")&& !sharedPrefHelper.getString("selectedTVConnection","").contains("1")){
-                            flag=true;
-                        }else{
+                        else if (questionID.equals("65")&& sharedPrefHelper.getString("selectedTVConnection","").contains("1")){
                             flag=false;
                             break;
                         }
                     } else {
-                        if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
+                        if (questionID.equals("67") && spinner.getSelectedItemId() == 0){
+                            if(sharedPrefHelper.getString("spinnerTVHD", "").equals("1") && (sharedPrefHelper.getString("selectedTVConnection","").contains("1") || sharedPrefHelper.getString("selectedTVConnection","").contains("3") || sharedPrefHelper.getString("selectedTVConnection","").contains("5"))){
+                                flag = false;
+                                break;
+                            }
+                        }
+                        else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && spinner.getSelectedItemId() == 0) {
                             flag = false;
                             break;
                         }
@@ -1160,6 +1190,20 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 /*if(selectedOptions.contains("1")||selectedOptions.contains("3")
                                         ||selectedOptions.contains("5"))*/
                         sharedPrefHelper.setString("selectedTVConnection",selectedOptions);
+                        String selected_q3e=sharedPrefHelper.getString("selected_q3e","");
+                        sharedPrefHelper.setString("selected_q3e",selected_q3e+","+selectedOptions);
+                        if(sharedPrefHelper.getString("TvWorkingCondition","").equals(startScreenCount+1)){
+                            String rq3e_selected=sharedPrefHelper.getString("rq3e_selected","");
+                            String[] rq3eArray = rq3e_selected.split(",");
+                            String selected_q3e_n=sharedPrefHelper.getString("selected_q3e","");
+                            for(int k=0;k<rq3eArray.length;k++){
+                                if(!selected_q3e_n.contains(rq3eArray[k].trim())){
+                                    showPopupForError("TV connections are not matching with with QRQ3e");
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                        }
                     }
                     if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                         answerModelList.get(nextPosition).setOption_id(selectedOptions);
@@ -1634,7 +1678,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                 spinner.setVisibility(View.GONE);
                             }
                             //if (jsonObjectQuesType.getString("question_id").equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("1") || (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2") && !sharedPrefHelper.getString("selectedTVConnection","").contains("1") && !sharedPrefHelper.getString("selectedTVConnection","").contains("3") && !sharedPrefHelper.getString("selectedTVConnection","").contains("5")))){
-                            if (jsonObjectQuesType.getString("question_id").equals("67") && (sharedPrefHelper.getString("spinnerOptionIdTV", "").equals("2") && (sharedPrefHelper.getString("spinnerTVHD", "").equals("1")))){
+                            if (jsonObjectQuesType.getString("question_id").equals("67") && sharedPrefHelper.getString("spinnerTVHD", "").equals("1") && (sharedPrefHelper.getString("selectedTVConnection","").contains("1") || sharedPrefHelper.getString("selectedTVConnection","").contains("3") || sharedPrefHelper.getString("selectedTVConnection","").contains("5"))){
                                 txtLabel.setVisibility(View.VISIBLE);
                                 spinner.setVisibility(View.VISIBLE);
                             }
@@ -1696,9 +1740,12 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                         button.setTypeface(null, Typeface.BOLD);
                         button.setTextColor(Color.WHITE);
                         button.setBackgroundResource(R.drawable.btn_background);
-
+                        button.setVisibility(View.GONE);
+                        textView.setVisibility(View.GONE);
                         ll_parent.addView(button);
                         ll_parent.addView(textView);
+                        textView.setText("Latitude: "+sharedPrefHelper.getString("LAT", "") +"\n"+
+                                "Longitude: "+sharedPrefHelper.getString("LONG", ""));
                         button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -1706,6 +1753,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                         "Longitude: "+sharedPrefHelper.getString("LONG", ""));
                             }
                         });
+
                     }
                     else if (jsonObjectQuesType.getString("question_type").equals("6")) {
                         TextView textView=new TextView(getActivity());

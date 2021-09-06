@@ -78,7 +78,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/refused"
-                android:visibility="gone"
                 />
             <RadioButton
                 android:id="@+id/rb_door_lock"
