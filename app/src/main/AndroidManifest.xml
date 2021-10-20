@@ -20,7 +20,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-
     <application
         android:allowBackup="false"
         android:icon="@drawable/app_logo"
@@ -31,6 +30,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
+        <activity android:name=".adapters.AudioAdapter"></activity>
+        <activity android:name=".activities.SyncAudio" />
         <activity android:name=".activities.UpdateAppActivity" />
         <activity
             android:name=".activities.TerminateActivity"

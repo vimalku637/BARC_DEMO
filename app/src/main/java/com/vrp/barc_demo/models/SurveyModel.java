@@ -30,6 +30,7 @@ public class SurveyModel {
     public static final String COLUMN_FAMILY_DATA="family_data";
     public static final String COLUMN_ADDRESS_TYPE="address_type";
     public static final String COLUMN_REASON_OF_CHANGE="reason_of_change";
+    public static final String COLUMN_IS_AUDIO_SYNC="is_audio_sync";
     public static final String COLUMN_FLAG="flag";
     public static final String COLUMN_STATUS="status";
 
@@ -54,6 +55,7 @@ public class SurveyModel {
                     + COLUMN_FAMILY_DATA + " TEXT ,"
                     + COLUMN_ADDRESS_TYPE+ " TEXT ,"
                     + COLUMN_REASON_OF_CHANGE+ " TEXT ,"
+                    + COLUMN_IS_AUDIO_SYNC + " INTEGER DEFAULT 0 ,"
                     + COLUMN_FLAG + " INTEGER DEFAULT 0 ,"
                     + COLUMN_STATUS + " INTEGER DEFAULT 0 "
                     + ")";
@@ -78,6 +80,24 @@ public class SurveyModel {
     private String family_data;
     private String address_type;
     private String reason_of_change;
+    private String id;
+    private String is_audio_sync;
+
+    public String getIs_audio_sync() {
+        return is_audio_sync;
+    }
+
+    public void setIs_audio_sync(String is_audio_sync) {
+        this.is_audio_sync = is_audio_sync;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAudio_recording() {
         return audio_recording;

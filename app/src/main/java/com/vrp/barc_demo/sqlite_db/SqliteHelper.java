@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "barc.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 9;
     private static final String TAG = "SqLiteHelper";
     String DB_PATH_SUFFIX = "/databases/";
     int version;
@@ -57,13 +57,16 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(TAG, "onUpgrade() from " + oldVersion + " to " + newVersion);
+        Log.d(TAG, "onUpgrade() from Version" + oldVersion + " to " + newVersion);
         if(oldVersion<2){
             db.execSQL("ALTER TABLE cluster ADD completed_record INTEGER DEFAULT '0'");
         }
         if(oldVersion<3){
             db.execSQL("ALTER TABLE cluster ADD tot_rejected INTEGER DEFAULT 0");
             db.execSQL("ALTER TABLE cluster ADD tot_terminated INTEGER DEFAULT 0");
+        }
+        if(newVersion>oldVersion){
+            db.execSQL("ALTER TABLE survey ADD is_audio_sync INTEGER DEFAULT 0");
         }
     }
 
@@ -73,6 +76,17 @@ public class SqliteHelper extends SQLiteOpenHelper {
         File dbFile = ctx.getDatabasePath(DATABASE_NAME);
         //  checkDbVersion(dbFile);
         return SQLiteDatabase.openDatabase(dbFile.getPath(), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.CREATE_IF_NECESSARY);
+    }
+    public void getDBVersion() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            int version =db.getVersion();
+            Log.e("DB Version","version"+version);
+;        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("DB Version Exception","version"+e.getMessage());
+            db.close();
+        }
     }
 
     public void dropTable(String tablename) {
@@ -580,6 +594,25 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
         return inserted_id;
     }
+    public long updateSyncAudio(String table, String survey_id, int isAudioSync) {
+        long inserted_id = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                ContentValues values = new ContentValues();
+                values.put("is_audio_sync", isAudioSync);
+
+                inserted_id = db.update(table, values, "survey_id" + " = '" + survey_id + "'", null);
+
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return inserted_id;
+    }
     public long updateStatus(String table, String survey_id, int surveyID) {
         long inserted_id = 0;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -814,5 +847,35 @@ public class SqliteHelper extends SQLiteOpenHelper {
             db.close();
         }
         return surveyID;
+    }
+
+    public ArrayList<SurveyModel> getAudioList() {
+        ArrayList<SurveyModel> arrayList = new ArrayList<>();
+        SurveyModel surveyModel;
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            if (db != null && db.isOpen() && !db.isReadOnly()) {
+                String query = "select id, survey_id, audio_recording, flag from survey where flag=1 and is_audio_sync=0";
+                Cursor cursor = db.rawQuery(query, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        surveyModel=new SurveyModel();
+                        surveyModel.setId(cursor.getString(cursor.getColumnIndex("id")));
+                        surveyModel.setSurvey_id(cursor.getString(cursor.getColumnIndex("survey_id")));
+                        surveyModel.setAudio_recording(cursor.getString(cursor.getColumnIndex("audio_recording")));
+                        surveyModel.setFlag(cursor.getString(cursor.getColumnIndex("flag")));
+
+                        cursor.moveToNext();
+                        arrayList.add(surveyModel);
+                    }
+                    db.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.close();
+        }
+        return arrayList;
     }
 }

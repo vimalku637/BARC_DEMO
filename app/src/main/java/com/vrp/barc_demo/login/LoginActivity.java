@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -132,11 +133,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setTitle(R.string.login);
         initialization();
         sqliteHelper.openDataBase();
+        sqliteHelper.getDBVersion();
         // /get intent values here/
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
         }
         setValues();
+        getDeviceDetails();
 
         if (Build.VERSION.SDK_INT >= 23) {
             Log.d("TAG", "@@@ IN IF Build.VERSION.SDK_INT >= 23");
@@ -355,6 +358,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivity(intentForgotPassword);
             }
         });
+    }
+
+    private void getDeviceDetails() {
+        String deviceDetails="deviceDetails:\n";
+        deviceDetails += "OS Version: " + System.getProperty("os.version") + "(" + android.os.Build.VERSION.INCREMENTAL + ")\n";
+        deviceDetails += "OS API Level: " + android.os.Build.VERSION.RELEASE + "(" + android.os.Build.VERSION.SDK_INT + ")\n";
+        deviceDetails += "Device: " + android.os.Build.DEVICE + "\n";
+        deviceDetails += "Model (and Product): " + android.os.Build.MODEL + " ("+ android.os.Build.PRODUCT + ")\n";
+        Log.e(TAG, "getDeviceDetails: "+deviceDetails);
     }
 
     private void setAllDataInPreferences(String user_id, String interviewer_id, String interviewer_name,

@@ -25,6 +25,7 @@ public class ApiClient {
     public static final String BASE_URL_APK = "https://barc.indevconsultancy.com/apk/";*/
     /*public static final String BASE_URL = "https://lsurvey.barcindia.in/api/";
     public static final String BASE_URL_APK = "https://lsurvey.barcindia.in/apk/";*/
+    //Raju@8888/nikesh
 
 
     private static Retrofit retrofit = null;

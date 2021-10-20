@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (c)  2020. Indev Consultancy Private Limited,
  * Auther : Vimal Kumar
  * Date : 2020/12/15
@@ -22,22 +22,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.vrp.barc_demo.Dashboard;
 import com.vrp.barc_demo.R;
 import com.vrp.barc_demo.login.LoginActivity;
-import com.vrp.barc_demo.models.AnswerModel;
 import com.vrp.barc_demo.models.SurveyModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
 import com.vrp.barc_demo.sqlite_db.SqliteHelper;
-import com.vrp.barc_demo.utils.AlertDialogClass;
 import com.vrp.barc_demo.utils.CommonClass;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
@@ -62,10 +58,14 @@ public class MainMenu extends AppCompatActivity {
     MaterialCardView cv_dashboard;
     @BindView(R.id.cv_synchronise)
     MaterialCardView cv_synchronise;
+    @BindView(R.id.cv_synchronise_audio)
+    MaterialCardView cv_synchronise_audio;
     @BindView(R.id.tv_person_name)
     MaterialTextView tv_person_name;
     @BindView(R.id.tv_synchronise)
     MaterialTextView tv_synchronise;
+    @BindView(R.id.tv_synchronise_audio)
+    MaterialTextView tv_synchronise_audio;
 
     /*normal widgets*/
     private Context context=this;
@@ -158,6 +158,13 @@ public class MainMenu extends AppCompatActivity {
                 }
             }
         });
+        cv_synchronise_audio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentSyncAudio = new Intent(MainMenu.this, SyncAudio.class);
+                startActivity(intentSyncAudio);
+            }
+        });
     }
 
     private void sendDataOnServer(SweetAlertDialog sDialog) {
@@ -219,7 +226,7 @@ public class MainMenu extends AppCompatActivity {
                         }*/
 
                         //send audio here
-                        if(!AudioSavePathInDevice.equals("")) {
+                        /*if(!AudioSavePathInDevice.equals("")) {
                             Uri imageUri = Uri.parse(AudioSavePathInDevice);
                             File file = new File(imageUri.getPath());
                             RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
@@ -240,7 +247,7 @@ public class MainMenu extends AppCompatActivity {
                                         String name = jsonObject.optString("name");
                                         String file_status = jsonObject.optString("file_status");
                                         if (success.equalsIgnoreCase("1")) {
-                                            /*if(count>0){
+                                            *//*if(count>0){
                                                 //AlertDialogClass.dismissProgressDialog();
                                                 mProgressDialog.dismiss();
                                                 cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
@@ -250,7 +257,7 @@ public class MainMenu extends AppCompatActivity {
                                                 mProgressDialog.dismiss();
                                                 cv_synchronise.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4285F4")));
                                                 tv_synchronise.setText(getResources().getString(R.string.synchronise) + " (" +count+ ")");
-                                            }*/
+                                            }*//*
                                         }
 
                                     } catch (JSONException e) {
@@ -264,7 +271,7 @@ public class MainMenu extends AppCompatActivity {
                                     //AlertDialogClass.dismissProgressDialog();
                                 }
                             });
-                        }
+                        }*/
                         /*else{
                             if(count>0){
                                 //AlertDialogClass.dismissProgressDialog();

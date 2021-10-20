@@ -97,4 +97,9 @@
     <string name="halt_survey">Survey has been Halt successfully.</string>
     <string name="download_new_survey">Download New Survey</string>
     <string name="comment">Comment</string>
+    <string name="synchronize_audio">Synchronize Audio</string>
+    <string name="select_all">Select All</string>
+    <string name="survey_name">Survey Name</string>
+    <string name="audio_file">Audio File</string>
+    <string name="oops_no_data_pending_for_sync">Oops! No data pending for sync.</string>
 </resources>

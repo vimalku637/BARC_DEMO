@@ -18,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -202,6 +203,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
     private String checkedIdForCheckBoxLanguage="";
     boolean isBack_disable=false;
     HashMap<Integer,Integer> mapEducation=new HashMap<Integer, Integer>();
+    LocationManager manager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -477,6 +479,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
         answerModelHouseholdMemberListTotal=new ArrayList<>();
         answerModelTVListTotal=new ArrayList<>();
         surveyModel=new SurveyModel();
+        manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
     private void btnNext() {
@@ -1745,7 +1748,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             Toast.makeText(context,"Please clicked on GPS location button",Toast.LENGTH_LONG).show();
                         else if(isGPS==true)
                         Toast.makeText(context,"Please fill all required correct fields/values",Toast.LENGTH_LONG).show();
-                    }
+                        else if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                            buildAlertMessageNoGps();                    }
                 }
             }
         });
@@ -1771,6 +1775,25 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
             }
         });*/
     }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     private void btnPreviousFragment(){
         startScreenPosition=startScreenPosition-1;
         endScreenPosition=endScreenPosition-1;
@@ -1824,8 +1847,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                         sqliteHelper.updateLocalFlag("household_survey","survey", survey_id, 1);
                         sqliteHelper.updateClusterTable(sharedPrefHelper.getString("cluster_no", ""));
 
+                        Intent intentSurveyActivity1 = new Intent(context, NextSurvey.class);
+                        startActivity(intentSurveyActivity1);
+                        finish();
                         //send audio here
-                        if(sharedPrefHelper.getBoolean("isRecording", false)==true) {
+                        /*if(sharedPrefHelper.getBoolean("isRecording", false)==true) {
                             Uri imageUri = Uri.parse(AudioSavePathInDevice);
                             File file = new File(imageUri.getPath());
                             RequestBody fileReqBody = RequestBody.create(MediaType.parse("Image/*"), file);
@@ -1869,7 +1895,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             Intent intentSurveyActivity1 = new Intent(context, NextSurvey.class);
                             startActivity(intentSurveyActivity1);
                             finish();
-                        }
+                        }*/
                     } else {
                         AlertDialogClass.dismissProgressDialog();
                         CommonClass.showPopupForNoInternet(context);
