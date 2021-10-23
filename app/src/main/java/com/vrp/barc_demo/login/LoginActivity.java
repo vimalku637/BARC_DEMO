@@ -29,9 +29,11 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -103,6 +105,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     ProgressDialog mprogressDialog;
     @BindView(R.id.tv_app_version)
     MaterialTextView tv_app_version;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     // /normal widgets/
     private Context context = this;
@@ -124,6 +128,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     String version = "";
     boolean is_downloaded;
     private static final Pattern p = Pattern.compile("[^\\d]*[\\d]+[^\\d]+([\\d]+)");
+    /*
+     *here make progress if user already login
+    */
+    private boolean isProgressBar=false;
+    private final int SPLASH_DISPLAY_LENGTH = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +195,25 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if(isInternetOn()) {
             downlaodVersionCode();
         }
+
+        /**
+         * if user already login then run this code otherwise not
+         * **/
+        if (sharedPrefHelper.getString("isLogin", "").equals("1")) {
+            isProgressBar=true;
+            progressBar.setVisibility(View.VISIBLE);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isProgressBar) {
+                        Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
+                        startActivity(intentMainActivity);
+                        finish();
+                    }
+                }
+            }, SPLASH_DISPLAY_LENGTH);
+        }
+
     }
     private void setValues() {
         PackageInfo pInfo = null;

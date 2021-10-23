@@ -1788,6 +1788,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
+                        //exit form app while choosing 'No'
+                        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                        homeIntent.addCategory( Intent.CATEGORY_HOME );
+                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(homeIntent);
+                        finish();
                     }
                 });
         final AlertDialog alert = builder.create();
