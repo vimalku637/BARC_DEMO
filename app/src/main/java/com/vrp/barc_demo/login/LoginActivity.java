@@ -29,6 +29,7 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -75,6 +76,7 @@ import com.vrp.barc_demo.utils.SharedPrefHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -153,6 +155,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (Build.VERSION.SDK_INT >= 23) {
             Log.d("TAG", "@@@ IN IF Build.VERSION.SDK_INT >= 23");
             String[] PERMISSIONS = {
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.ACCESS_FINE_LOCATION
             };
             if (!hasPermissions(this, PERMISSIONS)) {

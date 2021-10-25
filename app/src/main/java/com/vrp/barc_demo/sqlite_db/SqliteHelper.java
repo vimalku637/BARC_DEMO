@@ -18,10 +18,12 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.vrp.barc_demo.activities.MainMenu;
 import com.vrp.barc_demo.login.DataDownloadInput;
 import com.vrp.barc_demo.models.ClusterModel;
 import com.vrp.barc_demo.models.NccsMatrixModel;
 import com.vrp.barc_demo.models.SurveyModel;
+import com.vrp.barc_demo.utils.FinalVars;
 import com.vrp.barc_demo.utils.SharedPrefHelper;
 
 import org.json.JSONArray;
@@ -877,5 +879,10 @@ public class SqliteHelper extends SQLiteOpenHelper {
             db.close();
         }
         return arrayList;
+    }
+
+    public static File getDBFile(MainMenu activitySettings) {
+        File dbFile = activitySettings.getDatabasePath(FinalVars.DATABASE_FILE_NAME);
+        return dbFile;
     }
 }

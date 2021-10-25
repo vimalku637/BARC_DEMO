@@ -18,6 +18,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,6 +42,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -60,6 +66,8 @@ public class MainMenu extends AppCompatActivity {
     MaterialCardView cv_synchronise;
     @BindView(R.id.cv_synchronise_audio)
     MaterialCardView cv_synchronise_audio;
+    @BindView(R.id.cv_export_db)
+    MaterialCardView cv_export_db;
     @BindView(R.id.tv_person_name)
     MaterialTextView tv_person_name;
     @BindView(R.id.tv_synchronise)
@@ -165,6 +173,52 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(intentSyncAudio);
             }
         });
+        cv_export_db.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File filePath=SqliteHelper.getDBFile(MainMenu.this);
+                try {
+                    copyFileUsingStream(filePath, copyToSDcard("barc.db"));
+                    Toast.makeText(MainMenu.this, "DB Exported", Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private static void copyFileUsingStream(File source, File dest) throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            if(is != null)
+                is.close();
+            if(os != null)
+                os.close();
+        }
+    }
+
+    public File copyToSDcard(String sFileName) {
+        File root = new File(Environment.getExternalStorageDirectory(), "barc_backup");
+        if (!root.exists()) {
+            root.mkdirs();
+        } else {
+            root.delete();
+            File root2 = new File(Environment.getExternalStorageDirectory(), "barc_backup");
+            root2.mkdirs();
+            Toast.makeText(MainMenu.this, "File Replaced", Toast.LENGTH_LONG).show();
+        }
+        File gpxfile = new File(root, sFileName);
+        return gpxfile;
     }
 
     private void sendDataOnServer(SweetAlertDialog sDialog) {
