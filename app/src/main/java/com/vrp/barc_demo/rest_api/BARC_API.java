@@ -44,6 +44,7 @@ public interface BARC_API {
     @POST("survey_data_upload_v2.php")
     Call<JsonObject> sendSurveyData(@Body RequestBody body);
 
+
     @POST("download_general.php")
     Call<JsonArray> saveCities(@Body RequestBody body);
 

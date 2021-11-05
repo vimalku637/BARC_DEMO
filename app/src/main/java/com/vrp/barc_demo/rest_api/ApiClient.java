@@ -19,12 +19,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    public static final String BASE_URL = "https://stglsurvey.barcindia.in/api/";
-    public static final String BASE_URL_APK = "https://stglsurvey.barcindia.in/apk/";
+    /*public static final String BASE_URL = "https://stglsurvey.barcindia.in/api/";
+    public static final String BASE_URL_APK = "https://stglsurvey.barcindia.in/apk/";*/
    /* public static final String BASE_URL = "https://barc.indevconsultancy.com/api/";
     public static final String BASE_URL_APK = "https://barc.indevconsultancy.com/apk/";*/
-    /*public static final String BASE_URL = "https://lsurvey.barcindia.in/api/";
-    public static final String BASE_URL_APK = "https://lsurvey.barcindia.in/apk/";*/
+    public static final String BASE_URL = "https://lsurvey.barcindia.in/api/";
+    public static final String BASE_URL_APK = "https://lsurvey.barcindia.in/apk/";
     //Raju@8888/nikesh
 
 

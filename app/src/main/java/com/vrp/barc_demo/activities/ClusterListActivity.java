@@ -200,7 +200,7 @@ public class ClusterListActivity extends AppCompatActivity {
 
                             } else {
                                 new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText("Cluster already locker by different user")
+                                        .setTitleText("Cluster already locked by different user")
                                         .setContentText("Cluster No." + "\n" + clusterModelAL.get(position).getCluster_no())
                                         .setConfirmText("OK")
                                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {

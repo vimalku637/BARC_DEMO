@@ -203,7 +203,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         /**
          * if user already login then run this code otherwise not
          * **/
-        if (sharedPrefHelper.getString("isLogin", "").equals("1")) {
+        /*if (sharedPrefHelper.getString("isLogin", "").equals("1")) {
             isProgressBar=true;
             progressBar.setVisibility(View.VISIBLE);
             new Handler().postDelayed(new Runnable() {
@@ -216,7 +216,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 }
             }, SPLASH_DISPLAY_LENGTH);
-        }
+        }*/
 
     }
     private void setValues() {
