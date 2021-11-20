@@ -9,12 +9,15 @@
 package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -101,6 +104,7 @@ public class SurveyListActivity extends AppCompatActivity {
             next_address="", previous_address="";
     int sampleSize=0;
     int totalSurveyForCluster=0;
+    LocationManager manager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +162,11 @@ public class SurveyListActivity extends AppCompatActivity {
                 if (totalSurveyForCluster>=sampleSize){
                     Toast.makeText(context, "You have completed all survey for this cluster.", Toast.LENGTH_SHORT).show();
                     return;
-                }else{
+                }
+                else if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    buildAlertMessageNoGps();
+                }
+                else{
                 Intent intentAddressSelection=new Intent(context, AddressSelection.class);
                 /*intentAddressSelection.putExtra("original_address", original_address);
                 intentAddressSelection.putExtra("previous_address", previous_address);
@@ -170,6 +178,30 @@ public class SurveyListActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        //exit form app while choosing 'No'
+                        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                        homeIntent.addCategory( Intent.CATEGORY_HOME );
+                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(homeIntent);
+                        finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void setSurveyAdapter() {
@@ -292,6 +324,7 @@ public class SurveyListActivity extends AppCompatActivity {
         answerModelList=new ArrayList<>();
         answerModelHouseholdMemberList=new ArrayList<>();
         answerModelTVList=new ArrayList<>();
+        manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override

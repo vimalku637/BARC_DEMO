@@ -11,8 +11,6 @@ package com.vrp.barc_demo.rest_api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -22,7 +20,6 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 public interface BARC_API {
     @POST("loginv2.php")
@@ -34,7 +31,6 @@ public interface BARC_API {
     @GET("questions_v3.php")
     Call<JsonObject> getBarcDemoJson();
 
-    //@POST("download_cluster_v2.php")
     @POST("download_cluster_v3.php")
     Call<JsonArray> getClusterList(@Body RequestBody body);
 
@@ -43,7 +39,6 @@ public interface BARC_API {
 
     @POST("survey_data_upload_v2.php")
     Call<JsonObject> sendSurveyData(@Body RequestBody body);
-
 
     @POST("download_general.php")
     Call<JsonArray> saveCities(@Body RequestBody body);

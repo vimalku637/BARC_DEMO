@@ -941,6 +941,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else if (questionID.equals("118")) {
                                         surname=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("surname", surname);
+                                        if (surname.length()==1){
+                                            flag=false;
+                                            editText.setError("Surname can't be blank or only one character");
+                                            break;
+                                        }
                                         sharedPrefHelper.setString("CWE_Name", ""+sharedPrefHelper.getString("name", "")+" "+surname);
                                     }
                                     else if (questionID.equals("47")) {
@@ -1555,6 +1560,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             json_object.put("date_time", sharedPrefHelper.getString("dateTime", ""));
                             json_object.put("GPS_latitude_end", sharedPrefHelper.getString("LAT", ""));
                             json_object.put("GPS_longitude_end", sharedPrefHelper.getString("LONG", ""));
+                            json_object.put("device_name", sharedPrefHelper.getString("deviceName", ""));
+                            json_object.put("os_version", sharedPrefHelper.getString("deviceOSVersion",""));
                             Log.e(TAG, "onClick: " + json_object.toString());
 
                             if (screen_type.equals("survey_list")) {
@@ -1584,8 +1591,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 if (CommonClass.isInternetOn(context)) {
                                     //get all data from survey table
                                     //sqliteHelper.getAllSurveyDataFromTable(survey_id);
-                                /*Gson gson = new Gson();
-                                String data = gson.toJson(clusterModel);*/
+                                    /*Gson gson = new Gson();
+                                    String data = gson.toJson(clusterModel);*/
                                     String data = json_object.toString();
                                     MediaType JSON = MediaType.parse("application/json; charset=utf-8");
                                     RequestBody body = RequestBody.create(JSON, data);
@@ -1743,13 +1750,15 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                             questionsPopulate();
                         }
                         Log.e(TAG, "onNextClick- " + jsonObject.toString());
-                    }else{
+                    }
+                    else{
                         if(isGPSClicked==1)
                             Toast.makeText(context,"Please clicked on GPS location button",Toast.LENGTH_LONG).show();
                         else if(isGPS==true)
                         Toast.makeText(context,"Please fill all required correct fields/values",Toast.LENGTH_LONG).show();
                         else if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                            buildAlertMessageNoGps();                    }
+                            buildAlertMessageNoGps();
+                    }
                 }
             }
         });

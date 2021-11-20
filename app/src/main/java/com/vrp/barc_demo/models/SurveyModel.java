@@ -82,6 +82,24 @@ public class SurveyModel {
     private String reason_of_change;
     private String id;
     private String is_audio_sync;
+    private String device_name;
+    private String os_version;
+
+    public String getDevice_name() {
+        return device_name;
+    }
+
+    public void setDevice_name(String device_name) {
+        this.device_name = device_name;
+    }
+
+    public String getOs_version() {
+        return os_version;
+    }
+
+    public void setOs_version(String os_version) {
+        this.os_version = os_version;
+    }
 
     public String getIs_audio_sync() {
         return is_audio_sync;

@@ -1,7 +1,9 @@
 package com.vrp.barc_demo.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -44,6 +47,7 @@ public class NextSurvey extends AppCompatActivity {
     int sampleSize=0;
     int totalSurveyForCluster=0;
     private SqliteHelper sqliteHelper;
+    LocationManager manager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,20 +71,44 @@ public class NextSurvey extends AppCompatActivity {
         cv_dashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               /* if (totalSurveyForCluster>=sampleSize){
-                    Toast.makeText(context, "You have completed all survey for this cluster.", Toast.LENGTH_SHORT).show();
-                    return;
-                }else {*/
+                if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    buildAlertMessageNoGps();
+                }else {
                     Intent intent = new Intent(NextSurvey.this, ClusterListActivity.class);
                     startActivity(intent);
-                //}
+                }
             }
         });
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        //exit form app while choosing 'No'
+                        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                        homeIntent.addCategory( Intent.CATEGORY_HOME );
+                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(homeIntent);
+                        finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void initialization() {
         sqliteHelper=new SqliteHelper(this);
         sharedPrefHelper=new SharedPrefHelper(this);
+        manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override

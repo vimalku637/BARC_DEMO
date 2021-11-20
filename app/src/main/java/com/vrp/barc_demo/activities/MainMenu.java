@@ -10,13 +10,18 @@ package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -84,6 +89,7 @@ public class MainMenu extends AppCompatActivity {
     MultipartBody.Part part;
     ProgressDialog mProgressDialog=null;
     int count=0;
+    private static final int REQUEST = 112;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,15 +183,63 @@ public class MainMenu extends AppCompatActivity {
         cv_export_db.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File filePath=SqliteHelper.getDBFile(MainMenu.this);
-                try {
-                    copyFileUsingStream(filePath, copyToSDcard("barc.db"));
-                    Toast.makeText(MainMenu.this, "DB Exported", Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (doPermissionFirst()) {
+                    File filePath = SqliteHelper.getDBFile(MainMenu.this);
+                    try {
+                        copyFileUsingStream(filePath, copyToSDcard("barc.db"));
+                        Toast.makeText(MainMenu.this, "DB Exported", Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
+    }
+
+    private boolean doPermissionFirst() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            Log.d("TAG", "@@@ IN IF Build.VERSION.SDK_INT >= 23");
+            String[] PERMISSIONS = {
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            };
+            if (!hasPermissions(this, PERMISSIONS)) {
+                Log.d("TAG", "@@@ IN IF hasPermissions");
+                ActivityCompat.requestPermissions((Activity) this, PERMISSIONS, REQUEST);
+            } else {
+                Log.d("TAG", "@@@ IN ELSE hasPermissions");
+            }
+        } else {
+            Log.d("TAG", "@@@ IN ELSE  Build.VERSION.SDK_INT >= 23");
+        }
+        return true;
+    }
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("TAG", "@@@ PERMISSIONS grant");
+                } else {
+                    Log.d("TAG", "@@@ PERMISSIONS Denied");
+                    Toast.makeText(this, "PERMISSIONS Denied", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     private static void copyFileUsingStream(File source, File dest) throws IOException {
@@ -257,9 +311,9 @@ public class MainMenu extends AppCompatActivity {
                     //AlertDialogClass.dismissProgressDialog();
                     //mProgressDialog.dismiss();
                     String success=jsonObject.getString("success");
-                    String message=jsonObject.getString("message");
                     int survey_data_monitoring_id=jsonObject.getInt("survey_data_monitoring_id");
                     if (success.equals("1")) {
+                        String message=jsonObject.getString("message");
                         //update id on the bases of survey id
                         sqliteHelper.updateServerId("survey", survey_id, survey_data_monitoring_id);
                         if(strStatus.equals("1")){

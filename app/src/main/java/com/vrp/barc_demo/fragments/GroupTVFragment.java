@@ -10,9 +10,11 @@ package com.vrp.barc_demo.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -40,7 +42,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -143,6 +147,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
     int totalSingle=0;
     private int startScreenCount=0;
     HashMap<Integer,String> connectionType=new HashMap<>();
+    LocationManager manager = null;
 
     public GroupTVFragment() {
         // Required empty public constructor
@@ -252,6 +257,7 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
     private void initialization() {
         sqliteHelper=new SqliteHelper(getActivity());
         sharedPrefHelper=new SharedPrefHelper(getActivity());
+        manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         //answerModelList=new ArrayList<>();
     }
 
@@ -1037,8 +1043,35 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
             questionsPopulate();
 
         }else{
+            if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                buildAlertMessageNoGps();
+            else
             Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        //exit form app while choosing 'No'
+                        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                        homeIntent.addCategory( Intent.CATEGORY_HOME );
+                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(homeIntent);
+                        getActivity().finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public void btnStop(){

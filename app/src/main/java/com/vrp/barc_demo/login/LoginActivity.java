@@ -399,6 +399,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         deviceDetails += "Device: " + android.os.Build.DEVICE + "\n";
         deviceDetails += "Model (and Product): " + android.os.Build.MODEL + " ("+ android.os.Build.PRODUCT + ")\n";
         Log.e(TAG, "getDeviceDetails: "+deviceDetails);
+
+        String deviceName=android.os.Build.MODEL;
+        sharedPrefHelper.setString("deviceName", deviceName);
+        String deviceOSVersion=android.os.Build.VERSION.RELEASE;
+        sharedPrefHelper.setString("deviceOSVersion", deviceOSVersion);
     }
 
     private void setAllDataInPreferences(String user_id, String interviewer_id, String interviewer_name,

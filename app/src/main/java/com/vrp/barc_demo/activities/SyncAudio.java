@@ -71,8 +71,9 @@ public class SyncAudio extends AppCompatActivity {
     public static String AudioSavePathInDevice="";
     MultipartBody.Part part;
 
-    HashMap<Integer,ArrayList<String>> listHashMap = new    HashMap<Integer,ArrayList<String>>();
+    HashMap<Integer,ArrayList<String>> listHashMap = new HashMap<Integer,ArrayList<String>>();
     int sendDataCount=0;
+    SyncAudioModel syncAudioModel=new SyncAudioModel();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,26 +95,28 @@ public class SyncAudio extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //get list data here
-                SyncAudioModel syncAudioModel=new SyncAudioModel();
+                ArrayList<SyncAudioModel> syncAudioModelsAL=new ArrayList<>();
                 listHashMap.clear();
                 listHashMap=audioAdapter.getSelectedValues();
                 if (listHashMap.size()>0){
-                    ArrayList<String> mapValues = new ArrayList<>();
                     int i = 0;
                     // iterating over a map
                     for(Map.Entry<Integer, ArrayList<String>> listEntry : listHashMap.entrySet()){
                         System.out.println("Iterating list number >>> " + ++i);
+                        SyncAudioModel syncAudioModel=new SyncAudioModel();
                         int key = listEntry.getKey();
+                        ArrayList<String> mapValues = new ArrayList<>();
                         // iterating over a list
                         for(String values : listEntry.getValue()){
                             System.out.println("City >>> " + values);
                             mapValues.add(values);
                         }
-                    }
-                    for (int j = 0; j < mapValues.size(); j++) {
                         syncAudioModel.setSurvey_data_monitoring_id(mapValues.get(0));
                         syncAudioModel.setSurvey_id(mapValues.get(1));
                         syncAudioModel.setAudio_recording(mapValues.get(2));
+
+                    }
+                    for (int j = 0; j < syncAudioModelsAL.size(); j++) {
                         AudioSavePathInDevice=syncAudioModel.getAudio_recording();
 
                         if (CommonClass.isInternetOn(context)){
@@ -124,10 +127,10 @@ public class SyncAudio extends AppCompatActivity {
                                 part = MultipartBody.Part.createFormData("audio_name", file.getName(), fileReqBody);
                                 Log.e("audio_params-", "audio_params- "
                                         + "\n" + sharedPrefHelper.getString("user_id", "")
-                                        + "\n" + syncAudioModel.getSurvey_id() + "\n" + syncAudioModel.getId() + "\n" + part);
-                                String survey_id=syncAudioModel.getSurvey_id();
+                                        + "\n" + syncAudioModelsAL.get(j).getSurvey_id() + "\n" + syncAudioModelsAL.get(j).getId() + "\n" + part);
+                                String survey_id=syncAudioModelsAL.get(j).getSurvey_id();
                                 ProgressDialog mProgressDialog = ProgressDialog.show(context, "", "Please Wait...", true);
-                                ApiClient.getClient().create(BARC_API.class).sendAudio(sharedPrefHelper.getString("user_id", ""), syncAudioModel.getSurvey_id(), Integer.parseInt(syncAudioModel.getId()), part).enqueue(new Callback<JsonObject>() {
+                                ApiClient.getClient().create(BARC_API.class).sendAudio(sharedPrefHelper.getString("user_id", ""), syncAudioModelsAL.get(j).getSurvey_id(), Integer.parseInt(syncAudioModelsAL.get(j).getId()), part).enqueue(new Callback<JsonObject>() {
                                     @Override
                                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                                         try {

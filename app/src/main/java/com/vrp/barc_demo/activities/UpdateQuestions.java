@@ -9,16 +9,19 @@
 package com.vrp.barc_demo.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -54,6 +57,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -82,6 +86,7 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
     private String latitude;
     private String longitude;
     private boolean isGPS;
+    LocationManager manager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,10 +159,41 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
         btn_start_survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(UpdateQuestions.this, MainMenu.class);
-                startActivity(intent);
+                if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    buildAlertMessageNoGps();
+                }else if(sharedPrefHelper.getString("download_survey", "").equals("download_survey")){
+                    showPopupDownloadSurvey();
+                }
+                else {
+                    Intent intent = new Intent(UpdateQuestions.this, MainMenu.class);
+                    startActivity(intent);
+                }
             }
         });
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        //exit form app while choosing 'No'
+                        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                        homeIntent.addCategory( Intent.CATEGORY_HOME );
+                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(homeIntent);
+                        finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void getGPS() {
@@ -275,6 +311,7 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
     private void initialization() {
         sharedPrefHelper=new SharedPrefHelper(this);
         surveySpnAL=new ArrayList<>();
+        manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
     private void callDownloadSurveyApi() {
@@ -288,6 +325,7 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
                     String surveyJSON=jsonObject.toString();
                     //to save all JSON into json file
                     if (surveyJSON.length()>0) {
+                        sharedPrefHelper.setString("download_survey", "done");
                         AlertDialogClass.dismissProgressDialog();
                         MyJSON.saveJSONToAsset(context, surveyJSON);
                         Intent intent=new Intent(UpdateQuestions.this, MainMenu.class);
@@ -335,5 +373,28 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
+    }
+
+    private void showPopupDownloadSurvey() {
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        pDialog.setTitleText("Download Survey!!")
+                .setContentText("Download survey first before start the survey.")
+                .setConfirmText("Ok")
+                //.setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                    }
+                })
+                .show();
+        pDialog.setCancelable(false);
     }
 }

@@ -39,7 +39,7 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.ViewHolder> 
         return valuesId;
     }
 
-    HashMap<Integer,ArrayList<String>> listHashMap = new    HashMap<Integer,ArrayList<String>>();
+    HashMap<Integer,ArrayList<String>> listHashMap = new HashMap<Integer,ArrayList<String>>();
 
     public HashMap<Integer, ArrayList<String>> getSelectedValues() {
         return listHashMap;

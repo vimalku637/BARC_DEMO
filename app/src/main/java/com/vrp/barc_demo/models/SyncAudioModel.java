@@ -1,6 +1,8 @@
 package com.vrp.barc_demo.models;
 
-public class SyncAudioModel {
+import java.io.Serializable;
+
+public class SyncAudioModel implements Serializable {
     private String user_id="",
             survey_id="",
             survey_data_monitoring_id="",

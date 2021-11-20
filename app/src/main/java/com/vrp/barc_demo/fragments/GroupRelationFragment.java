@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -155,6 +156,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
     int totalSingle=0;
     private int startScreenCount=0;
     private ArrayList<String> spinnerAL2=new ArrayList<>();
+    LocationManager manager = null;
 
     public GroupRelationFragment() {
         // Required empty public constructor
@@ -266,6 +268,7 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
         sqliteHelper=new SqliteHelper(getActivity());
         sharedPrefHelper=new SharedPrefHelper(getActivity());
         //answerModelList=new ArrayList<>();
+        manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
     }
     private void startRecordingAnimation() {
         Animation animation = new AlphaAnimation((float) 0.5, 0); //to change visibility from visible to invisible
@@ -404,6 +407,11 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                             else if (questionID.equals("120")) {
                                 surname=editText.getText().toString().trim();
                                 sharedPrefHelper.setString("surname", surname);
+                                if (surname.length()==1){
+                                    flag=false;
+                                    editText.setError("Surname can't be blank or only one character");
+                                    break;
+                                }
                                 nameVL.put(totalScreenCount,""+sharedPrefHelper.getString("name", "")+" "+surname);
                                 Gson gson = new Gson();
                                 String hashMapString = gson.toJson(nameVL);
@@ -708,6 +716,9 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                 }
                 else{
                     btn_next.setEnabled(true);
+                    if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                        buildAlertMessageNoGps();
+                    else
                     Toast.makeText(getActivity(),"Please fill all required fields",Toast.LENGTH_LONG).show();
                 }
             }
@@ -1031,6 +1042,30 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                 }
             }
         });
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        //exit form app while choosing 'No'
+                        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                        homeIntent.addCategory( Intent.CATEGORY_HOME );
+                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(homeIntent);
+                        getActivity().finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void openDialogForAgeConfirmation(EditText editText, int ageInYear) {

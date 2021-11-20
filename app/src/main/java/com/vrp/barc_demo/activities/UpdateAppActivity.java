@@ -17,20 +17,22 @@ import static com.vrp.barc_demo.rest_api.ApiClient.BASE_URL_APK;
 public class UpdateAppActivity extends AppCompatActivity {
     Button btn_update_app;
     SharedPrefHelper sharedPrefHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_app);
         setTitle("Update Application");
-        btn_update_app=findViewById(R.id.btn_update_app);
-        sharedPrefHelper=new SharedPrefHelper(this);
+        btn_update_app = findViewById(R.id.btn_update_app);
+        sharedPrefHelper = new SharedPrefHelper(this);
         btn_update_app.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    String url = BASE_URL_APK+"bi.apk";
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
+                sharedPrefHelper.setString("download_survey", "download_survey");
+                String url = BASE_URL_APK + "bi.apk";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }
         });
     }
