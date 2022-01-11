@@ -80,6 +80,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -402,6 +404,15 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     flag=false;
                                     editText.setError("Name can't be blank or only one character");
                                     break;
+                                }else{
+                                    Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+                                    Matcher ms = ps.matcher(name);
+                                    boolean bs = ms.matches();
+                                    if (!bs) {
+                                        flag=false;
+                                        editText.setError("Only alphabets are allowed in name");
+                                        break;
+                                    }
                                 }
                             }
                             else if (questionID.equals("120")) {
@@ -411,6 +422,16 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                     flag=false;
                                     editText.setError("Surname can't be blank or only one character");
                                     break;
+                                }
+                                else{
+                                    Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+                                    Matcher ms = ps.matcher(surname);
+                                    boolean bs = ms.matches();
+                                    if (!bs) {
+                                        flag=false;
+                                        editText.setError("Only alphabets are allowed in surname");
+                                        break;
+                                    }
                                 }
                                 nameVL.put(totalScreenCount,""+sharedPrefHelper.getString("name", "")+" "+surname);
                                 Gson gson = new Gson();

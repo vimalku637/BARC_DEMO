@@ -28,6 +28,7 @@ public class LoginModel {
     private  String user_name;
     private  String user_password;
     private  String firebase_token;
+    private  String login_time;
 
     public String getFirebase_token() {
         return firebase_token;
@@ -35,5 +36,12 @@ public class LoginModel {
 
     public void setFirebase_token(String firebase_token) {
         this.firebase_token = firebase_token;
+    }
+    public String getlogin_time() {
+        return login_time;
+    }
+
+    public void setlogin_time(String login_time) {
+        this.login_time = login_time;
     }
 }

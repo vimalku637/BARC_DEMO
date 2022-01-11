@@ -820,6 +820,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 String text=editText.getText().toString().trim();
 
                                 text = text.replace("\n", "").replace("\r", "");
+                                if(questionID.equals("123")){
+                                    sharedPrefHelper.setString("isAccompanyingName",editText.getText().toString().trim());
+                                }
+                                else if(questionID.equals("124")){
+                                    sharedPrefHelper.setString("isAccompanyingSurName",editText.getText().toString().trim());
+                                }
 
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                     if(questionID.equals("32")){
@@ -937,6 +943,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             editText.setError("Name can't be blank or only one character");
                                             break;
                                         }
+                                        else{
+                                            Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+                                            Matcher ms = ps.matcher(name);
+                                            boolean bs = ms.matches();
+                                            if (!bs) {
+                                                flag=false;
+                                                editText.setError("Only alphabets are allowed in name");
+                                                break;
+                                            }
+                                        }
                                     }
                                     else if (questionID.equals("118")) {
                                         surname=editText.getText().toString().trim();
@@ -945,6 +961,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             flag=false;
                                             editText.setError("Surname can't be blank or only one character");
                                             break;
+                                        }
+                                        else{
+                                            Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+                                            Matcher ms = ps.matcher(surname);
+                                            boolean bs = ms.matches();
+                                            if (!bs) {
+                                                flag=false;
+                                                editText.setError("Only alphabets are allowed in surname");
+                                                break;
+                                            }
                                         }
                                         sharedPrefHelper.setString("CWE_Name", ""+sharedPrefHelper.getString("name", "")+" "+surname);
                                     }
@@ -1050,6 +1076,32 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             editText.setError("Member should be between 1-12 and can't be greater than 12");
                                             flag=false;
                                             break;
+                                        }
+                                    }
+                                    else if (questionID.equals("93")) {
+                                        String valueText =editText.getText().toString().trim();
+                                        if (valueText.length()>1){
+                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ]+$");
+                                            Matcher ms = ps.matcher(valueText);
+                                            boolean bs = ms.matches();
+                                            if (!bs) {
+                                                flag=false;
+                                                editText.setError("Special characters are not allowed in "+jsonArrayQuestions.getJSONObject(count).getString("question_name"));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else if (questionID.equals("94")) {
+                                        String valueText =editText.getText().toString().trim();
+                                        if (valueText.length()>1){
+                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ]+$");
+                                            Matcher ms = ps.matcher(valueText);
+                                            boolean bs = ms.matches();
+                                            if (!bs) {
+                                                flag=false;
+                                                editText.setError("Special characters are not allowed in "+jsonArrayQuestions.getJSONObject(count).getString("question_name"));
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -2639,6 +2691,21 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                        if (radioID.equals("1")||radioID.equals("2")||radioID.equals("3")
                                            ||radioID.equals("4")||radioID.equals("5")||radioID.equals("6")
                                            ||radioID.equals("7")) {
+                                           if(radioID.equals("1")){
+                                               radioButtonText="Marketing/Market Research";
+                                           }else if(radioID.equals("2")){
+                                               radioButtonText="Broadcasting Agency";
+                                           }else if(radioID.equals("3")){
+                                               radioButtonText="Working with DTH/IPTV/Cable Operator";
+                                           }else if(radioID.equals("4")){
+                                               radioButtonText="Advertising/Public Relations/Media Planning Agency";
+                                           }else if(radioID.equals("5")){
+                                               radioButtonText="Media (Print & TV)";
+                                           }else if(radioID.equals("6")){
+                                               radioButtonText="TV Channel Network";
+                                           }else if(radioID.equals("7")){
+                                               radioButtonText="Journalist/Anchor (Full time or Part time)";
+                                           }
                                            showPopupForTerminateSurveyOnRadio(radioID,radioButtonText,radioGroup,groupID);
                                        }
                                            //Toast.makeText(context,"Termination true"+rb.getText()+"group.getId()"+group.getId(),Toast.LENGTH_LONG).show();
@@ -2792,6 +2859,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                EditText editText1 = (EditText) childView;
                                                if (String.valueOf(editText1.getId()).equals("123") || String.valueOf(editText1.getId()).equals("124")) {
                                                    if (radioID.equals("1")) {
+                                                       if(questionID.equals("123")){
+                                                           editText1.setText(sharedPrefHelper.getString("isAccompanyingName",""));
+                                                       }
+                                                       else if(questionID.equals("124")){
+                                                           editText1.setText(sharedPrefHelper.getString("isAccompanyingSurName",""));
+                                                       }
                                                        editText1.setVisibility(View.VISIBLE);
                                                    } else if (radioID.equals("2")) {
                                                        editText1.setVisibility(View.GONE);

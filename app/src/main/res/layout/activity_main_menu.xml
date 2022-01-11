@@ -134,6 +134,7 @@
                     app:contentPadding="@dimen/margin10"
                     android:layout_marginTop="@dimen/margin25"
                     app:cardPreventCornerOverlap="true"
+                    android:visibility="gone"
                     app:cardUseCompatPadding="false">
 
                     <com.google.android.material.textview.MaterialTextView

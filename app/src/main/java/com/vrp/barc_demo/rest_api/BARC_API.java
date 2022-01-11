@@ -22,8 +22,13 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface BARC_API {
-    @POST("loginv2.php")
+    //@POST("loginv2.php")
+    @POST("loginv3.php")
     Call<JsonObject> callLogin(@Body RequestBody body);
+    @POST("check_status.php")
+    Call<JsonObject> callCheckStatus(@Body RequestBody body);
+    @POST("logout.php")
+    Call<JsonObject> callLogout(@Body RequestBody body);
 
     @POST("forget_password.php")
     Call<JsonObject> getForgetPassword(@Body RequestBody body);

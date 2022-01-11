@@ -59,6 +59,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.vrp.barc_demo.Dashboard;
 import com.vrp.barc_demo.activities.UpdateAppActivity;
 import com.vrp.barc_demo.forgot_password.ForgotPassword;
 import com.vrp.barc_demo.R;
@@ -66,6 +67,7 @@ import com.vrp.barc_demo.activities.UpdateQuestions;
 import com.vrp.barc_demo.location_gps.AppConstants;
 import com.vrp.barc_demo.location_gps.GpsUtils;
 import com.vrp.barc_demo.models.LoginModel;
+import com.vrp.barc_demo.models.LogoutModel;
 import com.vrp.barc_demo.rest_api.ApiClient;
 import com.vrp.barc_demo.rest_api.BARC_API;
 import com.vrp.barc_demo.service.Config;
@@ -77,6 +79,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -134,7 +139,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
      *here make progress if user already login
     */
     private boolean isProgressBar=false;
-    private final int SPLASH_DISPLAY_LENGTH = 1000;
+    private final int SPLASH_DISPLAY_LENGTH = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,8 +160,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (Build.VERSION.SDK_INT >= 23) {
             Log.d("TAG", "@@@ IN IF Build.VERSION.SDK_INT >= 23");
             String[] PERMISSIONS = {
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    /*Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,*/
                     Manifest.permission.ACCESS_FINE_LOCATION
             };
             if (!hasPermissions(this, PERMISSIONS)) {
@@ -203,7 +208,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         /**
          * if user already login then run this code otherwise not
          * **/
-        /*if (sharedPrefHelper.getString("isLogin", "").equals("1")) {
+        if (sharedPrefHelper.getString("isLogin", "").equals("1")) {
             isProgressBar=true;
             progressBar.setVisibility(View.VISIBLE);
             new Handler().postDelayed(new Runnable() {
@@ -216,7 +221,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 }
             }, SPLASH_DISPLAY_LENGTH);
-        }*/
+        }
 
     }
     private void setValues() {
@@ -277,6 +282,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 loginModel.setUser_name(et_user_name.getText().toString());
                 loginModel.setUser_password(et_password.getText().toString());
                 loginModel.setFirebase_token(sharedPrefHelper.getString("Token", ""));
+                loginModel.setlogin_time(sharedPrefHelper.getString("Token", ""));
                 user_name = et_user_name.getText().toString().trim();
                 password = et_password.getText().toString().trim();
                 if (user_name.equalsIgnoreCase("") || (password.equalsIgnoreCase(""))) {
@@ -292,6 +298,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String password = sharedPrefHelper.getString("user_name_password", "");
 
                     if (et_user_name.getText().toString().trim().equalsIgnoreCase(userName) && et_password.getText().toString().trim().equalsIgnoreCase(password)) {
+                        sharedPrefHelper.setString("isLogin", "1");
                         Intent intentMainActivity = new Intent(context, UpdateQuestions.class);
                         startActivity(intentMainActivity);
                         finish();
@@ -311,15 +318,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             alert.show();
 
                         } else if (isInternetOn()) {
-
+                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Calendar cal = Calendar.getInstance();
                             loginModel.setUser_name(et_user_name.getText().toString());
                             loginModel.setUser_password(et_password.getText().toString());
-                            //    loginModel.setFirebase_token(sharedPrefHelper.getString("Token",""));
+                            loginModel.setFirebase_token(sharedPrefHelper.getString("Token",""));
+                            loginModel.setlogin_time(dateFormat.format(cal.getTime()));
                             Gson gson = new Gson();
                             String data = gson.toJson(loginModel);
                             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
                             RequestBody body = RequestBody.create(JSON, data);
-
 
                             mprogressDialog = ProgressDialog.show(context, "", getString(R.string.Please_wait), true);
                             ApiClient.getClient().create(BARC_API.class).callLogin(body).enqueue(new Callback<JsonObject>() {
@@ -352,7 +360,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                             startActivity(intentMainActivity);
                                             finish();
 
-                                        } else {
+                                        }
+                                        else if (Integer.valueOf(success) == 3) {
+                                            Snackbar.make(findViewById(android.R.id.content), "You have already logged in other device. Please logout first then you will be able to login", Snackbar.LENGTH_LONG).show();
+                                            mprogressDialog.dismiss();
+                                        }
+                                        else {
                                             Snackbar.make(findViewById(android.R.id.content), "Please Enter Valid User & Password ", Snackbar.LENGTH_LONG).show();
 
                                             mprogressDialog.dismiss();
@@ -392,6 +405,93 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
+    private void Logout(String user_id){
+        if (isInternetOn()) {
+            LogoutModel logoutModel = new LogoutModel();
+            logoutModel.setUser_id(user_id);
+            loginModel.setFirebase_token(sharedPrefHelper.getString("Token",""));
+            Gson gson = new Gson();
+            String data = gson.toJson(loginModel);
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            RequestBody body = RequestBody.create(JSON, data);
+            ProgressDialog mprogressDialogN = ProgressDialog.show(context, "", getString(R.string.Please_wait), true);
+            ApiClient.getClient().create(BARC_API.class).callLogin(body).enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().toString().trim());
+                        Log.e(TAG, "onResponse: " + jsonObject.toString());
+                        String success = jsonObject.optString("success");
+                        if (Integer.valueOf(success) == 1) {
+                            sharedPrefHelper.setString("isLogin", "");
+                            sharedPrefHelper.setString("user_id", "");
+                            Intent i = new Intent(LoginActivity.this, LoginActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(i);
+                            finish();
+                        } else {
+                            Snackbar.make(findViewById(android.R.id.content), "Please Enter Valid User & Password ", Snackbar.LENGTH_LONG).show();
+                            mprogressDialogN.dismiss();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    if (mprogressDialog.isShowing()) {
+                        mprogressDialog.dismiss();
+                    }
+                }
+            });
+        }
+    }
+    private void checkStatus(String user_id){
+        if (isInternetOn()) {
+            LogoutModel logoutModel = new LogoutModel();
+            logoutModel.setUser_id(user_id);
+            loginModel.setFirebase_token(sharedPrefHelper.getString("Token",""));
+            Gson gson = new Gson();
+            String data = gson.toJson(loginModel);
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            RequestBody body = RequestBody.create(JSON, data);
+            ProgressDialog mprogressDialogN = ProgressDialog.show(context, "", getString(R.string.Please_wait), true);
+            ApiClient.getClient().create(BARC_API.class).callCheckStatus(body).enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().toString().trim());
+                        Log.e(TAG, "onResponse: " + jsonObject.toString());
+                        String success = jsonObject.optString("success");
+                        if (Integer.valueOf(success) == 2) {
+                            sharedPrefHelper.setString("isLogin", "");
+                            sharedPrefHelper.setString("user_id", "");
+                            Intent i = new Intent(LoginActivity.this, LoginActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(i);
+                            finish();
+                        } else {
+                            Snackbar.make(findViewById(android.R.id.content), "Please Enter Valid User & Password ", Snackbar.LENGTH_LONG).show();
+                            mprogressDialogN.dismiss();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    if (mprogressDialog.isShowing()) {
+                        mprogressDialog.dismiss();
+                    }
+                }
+            });
+        }
+    }
+
     private void getDeviceDetails() {
         String deviceDetails="deviceDetails:\n";
         deviceDetails += "OS Version: " + System.getProperty("os.version") + "(" + android.os.Build.VERSION.INCREMENTAL + ")\n";
@@ -420,6 +520,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         sharedPrefHelper.setString("agency_name", agency_name);
         sharedPrefHelper.setString("isLogin", "1");
         sharedPrefHelper.setString("user_name_password", et_password.getText().toString().trim());
+        sharedPrefHelper.setString("download_survey", "download_survey");
     }
 
     public void download_city(String table, String user_id) {
@@ -465,7 +566,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
-
     private boolean isInternetOn() {
 
         ConnectivityManager connec = (ConnectivityManager) getSystemService(getBaseContext().CONNECTIVITY_SERVICE);
@@ -483,7 +583,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
         return false;
     }
-
     synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
@@ -493,7 +592,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         //mGoogleApiClient.connect();
 
     }
-
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = LocationRequest.create();
@@ -521,12 +619,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             sharedPrefHelper.setString("ALTI", altitude);
         }
     }
-
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
+    public void onConnectionSuspended(int i) { }
     @Override
     public void onLocationChanged(Location location) {
         latitude = String.valueOf(location.getLatitude());
@@ -568,25 +662,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         //Log.v("speed", String.valueOf(thespeed));
 
     }
-
     @Override
     protected void onStart() {
         super.onStart();
         if (!mGoogleApiClient.isConnected())
             mGoogleApiClient.connect();
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         // mGoogleApiClient.disconnect();
     }
-
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -602,7 +690,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         }
     }
-
     private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
@@ -613,7 +700,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
         return true;
     }
-
     public String downlaodVersionCode() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, BASE_URL_APK+"rmappversion.php",
