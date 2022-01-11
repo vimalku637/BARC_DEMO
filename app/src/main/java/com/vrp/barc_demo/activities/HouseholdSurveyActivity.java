@@ -920,8 +920,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
                                         && (questionID.equals("123")||questionID.equals("124"))
                                         && editText.getText().toString().trim().equals("")){
-                                        String isAccompanying = sharedPrefHelper.getString("isAccompanying", "");
-                                        if ((questionID.equals("123") || questionID.equals("124")) && isAccompanying.equals("1")) {
+                                    String isAccompanying = sharedPrefHelper.getString("isAccompanying", "");
+                                    if ((questionID.equals("123") || questionID.equals("124")) && isAccompanying.equals("1")) {
                                             flag = false;
                                             break;
                                         }
@@ -1081,7 +1081,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else if (questionID.equals("93")) {
                                         String valueText =editText.getText().toString().trim();
                                         if (valueText.length()>1){
-                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ]+$");
+                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ,/\\-]+$");
                                             Matcher ms = ps.matcher(valueText);
                                             boolean bs = ms.matches();
                                             if (!bs) {
@@ -1094,7 +1094,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else if (questionID.equals("94")) {
                                         String valueText =editText.getText().toString().trim();
                                         if (valueText.length()>1){
-                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ]+$");
+                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ,/\\-]+$");
                                             Matcher ms = ps.matcher(valueText);
                                             boolean bs = ms.matches();
                                             if (!bs) {
@@ -2094,6 +2094,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                editText.setText(sharedPrefHelper.getString("name", ""));
                            }
                        }
+                       //pre field if entered first for accompanying
+                       else if (questionID.equals("123") && !sharedPrefHelper.getString("isAccompanyingName", "").equals("")){
+                           editText.setText(sharedPrefHelper.getString("isAccompanyingName", ""));
+                       }
+                       else if (questionID.equals("124") && !sharedPrefHelper.getString("isAccompanyingSurName", "").equals("")){
+                           editText.setText(sharedPrefHelper.getString("isAccompanyingSurName", ""));
+                       }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
                        }else{
@@ -2867,13 +2874,16 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                                        }
                                                        editText1.setVisibility(View.VISIBLE);
                                                    } else if (radioID.equals("2")) {
+                                                       editText1.setText("");
+                                                       sharedPrefHelper.setString("isAccompanyingName", "");
+                                                       sharedPrefHelper.setString("isAccompanyingSurName", "");
                                                        editText1.setVisibility(View.GONE);
                                                    }
                                                }
                                            }
                                        }
                                    }
-                               }
+                                                                     }
                                else if(group.getId()==101){
                                    if (radioID.equals("1")){
                                        //sharedPrefHelper.setString("2100f_radio_ids", radioID);

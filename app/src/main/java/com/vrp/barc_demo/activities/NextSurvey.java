@@ -143,7 +143,7 @@ public class NextSurvey extends AppCompatActivity {
            /* sharedPrefHelper.setString("user_name_password", "");
             sharedPrefHelper.setString("user_name", "");
             Intent i = new Intent(NextSurvey.this, LoginActivity.class);
-// set the new task and clear flags
+            // set the new task and clear flags
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);*/
             Logout(sharedPrefHelper.getString("user_id", ""));
