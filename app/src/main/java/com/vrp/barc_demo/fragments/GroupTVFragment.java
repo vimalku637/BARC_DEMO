@@ -1679,7 +1679,8 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                     String spinnerOption=jsonObjectOptionValues.getString("option_value");
                                     spinnerAL.add(spinnerOption);
                                 }
-                            } else {
+                            }
+                            else {
                                 if(sharedPrefHelper.getString("spinnerOptionId", "").equals("2") && jsonObjectQuesType.getString("question_id").equals("63")){
                                     for (int k = 0; k <8; k++) {
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
@@ -1692,6 +1693,24 @@ public class GroupTVFragment extends Fragment implements HouseholdSurveyActivity
                                         JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
                                         String spinnerOption = jsonObjectOptionValues.getString("option_value");
                                         spinnerAL.add(spinnerOption);
+                                    }
+                                }
+                                else if (jsonObjectQuesType.getString("question_id").equals("65") && sharedPrefHelper.getString("TvWorkingCondition", "").equals("1")){
+                                    String DTH_Status=sharedPrefHelper.getString("DTH_Connection_FreeOrPaid", "");
+                                    if (DTH_Status.equals("1")) {
+                                        for (int k = 2; k < 3; k++) {
+                                            JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
+                                    }
+                                    else if(DTH_Status.equals("2")) {
+                                        for (int k = 0; k < jsonArrayOptions.length(); k++) {
+                                            JSONObject jsonObjectOptionValues = jsonArrayOptions.getJSONObject(k);
+                                            String spinnerOption = jsonObjectOptionValues.getString("option_value");
+                                            spinnerAL.add(spinnerOption);
+                                        }
+                                        spinnerAL.remove(2);
                                     }
                                 }
                                 else{

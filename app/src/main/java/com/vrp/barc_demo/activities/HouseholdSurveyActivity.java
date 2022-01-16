@@ -926,6 +926,42 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                 }
+                                else if(sharedPrefHelper.getString("isAccompanying", "").equals("1")&&questionID.equals("123")){
+                                    String firstName=editText.getText().toString().trim();
+                                    if (firstName.length()==1){
+                                        flag=false;
+                                        editText.setError("Name can't be blank or only one character");
+                                        break;
+                                    }
+                                    else{
+                                        Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+                                        Matcher ms = ps.matcher(firstName);
+                                        boolean bs = ms.matches();
+                                        if (!bs) {
+                                            flag=false;
+                                            editText.setError("Only alphabets are allowed in name");
+                                            break;
+                                        }
+                                    }
+                                }
+                                else if(sharedPrefHelper.getString("isAccompanying", "").equals("1")&&questionID.equals("124")){
+                                    String surnameName=editText.getText().toString().trim();
+                                    if (surnameName.length()==1){
+                                        flag=false;
+                                        editText.setError("Surname can't be blank or only one character");
+                                        break;
+                                    }
+                                    else{
+                                        Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+                                        Matcher ms = ps.matcher(surnameName);
+                                        boolean bs = ms.matches();
+                                        if (!bs) {
+                                            flag=false;
+                                            editText.setError("Only alphabets are allowed in surname");
+                                            break;
+                                        }
+                                    }
+                                }
                                 else {
                                     if(jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1") && editText.getText().toString().trim().equals("")){
                                         flag=false;
@@ -1025,6 +1061,21 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                             break;
                                         }
                                     }
+                                    else if(questionID.equals("90")){
+                                        String confirmMobileNo=editText.getText().toString().trim();
+                                        Pattern ps = Pattern.compile("^[6-9][0-9]{9}+$");
+                                        Matcher ms = ps.matcher(confirmMobileNo);
+                                        boolean bs = ms.matches();
+                                        if (confirmMobileNo.length()<10){
+                                            flag=false;
+                                            editText.setError("Mobile can't be less than 10 digit");
+                                            break;
+                                        }else if (!bs) {
+                                            flag=false;
+                                            editText.setError("Mobile no. should be start from 6-9 and maximum length should be 10");
+                                            break;
+                                        }
+                                    }
                                     else if(questionID.equals("108")){
                                         reMobileNo=editText.getText().toString().trim();
                                         sharedPrefHelper.setString("confirm_mobile_no", reMobileNo);
@@ -1081,7 +1132,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else if (questionID.equals("93")) {
                                         String valueText =editText.getText().toString().trim();
                                         if (valueText.length()>1){
-                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ,/\\-]+$");
+                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ./]+$");
                                             Matcher ms = ps.matcher(valueText);
                                             boolean bs = ms.matches();
                                             if (!bs) {
@@ -1094,7 +1145,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     else if (questionID.equals("94")) {
                                         String valueText =editText.getText().toString().trim();
                                         if (valueText.length()>1){
-                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ,/\\-]+$");
+                                            Pattern ps = Pattern.compile("^[a-zA-Z0-9 ./]+$");
                                             Matcher ms = ps.matcher(valueText);
                                             boolean bs = ms.matches();
                                             if (!bs) {
@@ -2221,7 +2272,6 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                            editText.setSingleLine(true);
                            editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                           int maxLength=10;
                            editText.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
 
                                public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -2237,11 +2287,13 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                }
 
                                public void onDestroyActionMode(ActionMode actionMode) {
+
                                }
                            });
 
                            editText.setLongClickable(false);
                            editText.setTextIsSelectable(false);
+                           int maxLength=10;
                            editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
                                @Override
                                public void callback(int left) {
@@ -2252,7 +2304,8 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }));
 
                        }
-                       if (jsonObjectQuesType.getString("question_id").equals("108")){
+                       if (jsonObjectQuesType.getString("question_id").equals("108")||
+                               jsonObjectQuesType.getString("question_id").equals("90")){
                            int maxLength=10;
                            editText.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
 
@@ -2812,6 +2865,7 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                else if(group.getId()==114){
                                    if(questionID.equals("114")) {
                                        sharedPrefHelper.setString("DTH_Status",radioID);
+                                       sharedPrefHelper.setString("DTH_Connection_FreeOrPaid", radioID);
                                        for (int i = 0; i < ll_parent.getChildCount(); i++) {
                                            final View childView = ll_parent.getChildAt(i);
                                            if (childView instanceof TextView) {
