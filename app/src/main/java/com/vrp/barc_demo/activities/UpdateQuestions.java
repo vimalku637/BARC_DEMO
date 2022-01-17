@@ -374,13 +374,14 @@ public class UpdateQuestions extends AppCompatActivity implements GoogleApiClien
             }
         }
         if (item.getItemId()==R.id.logout){
-            /*sharedPrefHelper.setString("user_name_password", "");
-            sharedPrefHelper.setString("user_name", "");*/
-            /*sharedPrefHelper.setString("isLogin", "");
-            Intent intentLoginActivity=new Intent(context, LoginActivity.class);
-            intentLoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentLoginActivity);*/
-            Logout(sharedPrefHelper.getString("user_id", ""));
+            sharedPrefHelper.setString("user_name_password", "");
+            sharedPrefHelper.setString("user_name", "");
+            sharedPrefHelper.setString("isLogin", "");
+            Intent i=new Intent(context, LoginActivity.class);
+            // set the new task and clear flags
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            //Logout(sharedPrefHelper.getString("user_id", ""));
         }
         return super.onOptionsItemSelected(item);
     }

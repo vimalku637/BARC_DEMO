@@ -12,7 +12,7 @@
         android:icon="@drawable/ic_power"
         android:title="@string/logout"
         app:showAsAction="always"
-        android:visible="false"/>
+        />
     <item
         android:id="@+id/stop_survey"
         android:icon="@drawable/stop_survey"
