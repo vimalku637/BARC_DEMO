@@ -822,9 +822,11 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                 text = text.replace("\n", "").replace("\r", "");
                                 if(questionID.equals("123")){
                                     sharedPrefHelper.setString("isAccompanyingName",editText.getText().toString().trim());
+                                    sharedPrefHelper.setString("isClusterSame", sharedPrefHelper.getString("cluster_no", ""));
                                 }
                                 else if(questionID.equals("124")){
                                     sharedPrefHelper.setString("isAccompanyingSurName",editText.getText().toString().trim());
+                                    sharedPrefHelper.setString("isClusterSame", sharedPrefHelper.getString("cluster_no", ""));
                                 }
 
                                 if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
@@ -915,6 +917,42 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                     }
                                     else{
                                         flag=true;
+                                    }
+                                }
+                                else if(sharedPrefHelper.getString("selectedAsRented", "").equals("2")&&questionID.equals("117")){
+                                    String firstName=editText.getText().toString().trim();
+                                    if (firstName.length()==1){
+                                        flag=false;
+                                        editText.setError("Name can't be blank or only one character");
+                                        break;
+                                    }
+                                    else{
+                                        Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+                                        Matcher ms = ps.matcher(firstName);
+                                        boolean bs = ms.matches();
+                                        if (!bs) {
+                                            flag=false;
+                                            editText.setError("Only alphabets are allowed in name");
+                                            break;
+                                        }
+                                    }
+                                }
+                                else if(sharedPrefHelper.getString("selectedAsRented", "").equals("2")&&questionID.equals("119")){
+                                    String surnameName=editText.getText().toString().trim();
+                                    if (surnameName.length()==1){
+                                        flag=false;
+                                        editText.setError("Surname can't be blank or only one character");
+                                        break;
+                                    }
+                                    else{
+                                        Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+                                        Matcher ms = ps.matcher(surnameName);
+                                        boolean bs = ms.matches();
+                                        if (!bs) {
+                                            flag=false;
+                                            editText.setError("Only alphabets are allowed in surname");
+                                            break;
+                                        }
                                     }
                                 }
                                 else if (jsonArrayQuestions.getJSONObject(count).getString("validation_id").equals("1")
@@ -2147,10 +2185,14 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                        }
                        //pre field if entered first for accompanying
                        else if (questionID.equals("123") && !sharedPrefHelper.getString("isAccompanyingName", "").equals("")){
-                           editText.setText(sharedPrefHelper.getString("isAccompanyingName", ""));
+                           if (sharedPrefHelper.getString("isClusterSame", "").equals(sharedPrefHelper.getString("cluster_no", ""))) {
+                               editText.setText(sharedPrefHelper.getString("isAccompanyingName", ""));
+                           }
                        }
                        else if (questionID.equals("124") && !sharedPrefHelper.getString("isAccompanyingSurName", "").equals("")){
-                           editText.setText(sharedPrefHelper.getString("isAccompanyingSurName", ""));
+                           if (sharedPrefHelper.getString("isClusterSame", "").equals(sharedPrefHelper.getString("cluster_no", ""))) {
+                               editText.setText(sharedPrefHelper.getString("isAccompanyingSurName", ""));
+                           }
                        }
                        if(jsonObjectQuesType.getString("question_input_type").equals("2")){
                            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
@@ -2304,8 +2346,38 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                            }));
 
                        }
-                       if (jsonObjectQuesType.getString("question_id").equals("108")||
-                               jsonObjectQuesType.getString("question_id").equals("90")){
+                       if (jsonObjectQuesType.getString("question_id").equals("108")){
+                           int maxLength=10;
+                           editText.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+                               public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                                   return false;
+                               }
+
+                               public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                                   return false;
+                               }
+
+                               public boolean onActionItemClicked(ActionMode actionMode, MenuItem item) {
+                                   return false;
+                               }
+
+                               public void onDestroyActionMode(ActionMode actionMode) {
+                               }
+                           });
+
+                           editText.setLongClickable(false);
+                           editText.setTextIsSelectable(false);
+                           editText.addTextChangedListener(new LimitTextWatcher(editText, maxLength, new LimitTextWatcher.IF_callback() {
+                               @Override
+                               public void callback(int left) {
+                                   if(left <= 0) {
+                                       Toast.makeText(context, "Please enter correct value", Toast.LENGTH_SHORT).show();
+                                   }
+                               }
+                           }));
+                       }
+                       if (jsonObjectQuesType.getString("question_id").equals("90")){
                            int maxLength=10;
                            editText.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
 
