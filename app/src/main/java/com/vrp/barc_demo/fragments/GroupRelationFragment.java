@@ -333,6 +333,36 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                 .show();
         pDialog.setCancelable(false);
     }
+
+    private void showPopupForCWEEducationNotMatched(String radioButtonText,
+                                           RadioGroup radiogroup) {
+        final SweetAlertDialog pDialog = new SweetAlertDialog(
+                context, SweetAlertDialog.WARNING_TYPE);
+        pDialog.setTitleText("You can't make CWE")
+                .setContentText(radioButtonText)
+                .setConfirmText("Ok")
+                //.setCancelText("No")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        sDialog.dismiss();
+                        try {
+                            radiogroup.clearCheck();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                    }
+                })
+                .show();
+        pDialog.setCancelable(false);
+    }
     private void setButtonClick() {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -594,6 +624,10 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 String currentWorkingStatus=selectedItem;
                                 //if currentWorkingStatus=3 or 4 or 6 or 7 then auto populate the occupation spinner option 'Not Applicable'
                                 sharedPrefHelper.setString("currentWorkingStatus", currentWorkingStatus);
+                            }
+                            else if (questionID.equals("36")){
+                                sharedPrefHelper.setString("highest_education_of_MEMBER", selectedItem);
+                                //Toast.makeText(getActivity(), ""+selectedItem, Toast.LENGTH_SHORT).show();
                             }
                             if((back_status==true || screen_type.equals("survey_list")) && answerModelList.size()>nextPosition){
                                 answerModelList.get(nextPosition).setOption_id(selectedItem);
@@ -1471,7 +1505,13 @@ public class GroupRelationFragment extends Fragment implements HouseholdSurveyAc
                                 String radioGroupID=String.valueOf(group.getId());
                                 if(radioGroupID.equals("40") && radioID.equals("1")){
                                     if(rb.isChecked()) {
-                                        showPopupForSurveyOnRadio("Want to confirm CWE Member", radioGroup);
+                                        String highest_education_of_HOUSEHOLD=sharedPrefHelper.getString("highest_education_of_HOUSEHOLD", "");
+                                        String highest_education_of_MEMBER=sharedPrefHelper.getString("highest_education_of_MEMBER", "");
+                                        if (highest_education_of_HOUSEHOLD.equals(highest_education_of_MEMBER)) {
+                                            showPopupForSurveyOnRadio("Want to confirm CWE Member", radioGroup);
+                                        }else {
+                                            showPopupForCWEEducationNotMatched("CWE member education not matched with NCCS highest eduction of CWE.", radioGroup);
+                                        }
                                     }
                                 }
                                /* if(radioGroupID.equals("40") && radioID.equals("1")){

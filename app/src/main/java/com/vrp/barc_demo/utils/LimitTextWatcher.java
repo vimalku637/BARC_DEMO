@@ -66,7 +66,12 @@ public class LimitTextWatcher implements TextWatcher {
                 if_callback.callback(left);
             }
         }
-
+        else if(s.toString().length()==maxLength){
+            int left = maxLength - s.toString().length();
+            if (if_callback != null) {
+                if_callback.callback(left);
+            }
+        }
     }
 }
 

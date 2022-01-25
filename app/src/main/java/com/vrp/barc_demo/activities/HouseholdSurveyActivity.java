@@ -2183,6 +2183,12 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                editText.setText(sharedPrefHelper.getString("name", ""));
                            }
                        }
+                       else if(jsonObjectQuesType.getString("question_id").equals("108")){
+                           if (editText.getText().toString().trim().equals(""))
+                               editText.setEnabled(false);
+                           else
+                               editText.setEnabled(true);
+                       }
                        //pre field if entered first for accompanying
                        else if (questionID.equals("123") && !sharedPrefHelper.getString("isAccompanyingName", "").equals("")){
                            if (sharedPrefHelper.getString("isClusterSame", "").equals(sharedPrefHelper.getString("cluster_no", ""))) {
@@ -2341,6 +2347,23 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                public void callback(int left) {
                                    if(left <= 0) {
                                        Toast.makeText(context, "Please enter correct value", Toast.LENGTH_SHORT).show();
+                                   }
+                                   if(left==0){
+                                       for (int i = 0; i < ll_parent.getChildCount(); i++) {
+                                           final View childView = ll_parent.getChildAt(i);
+                                           if (childView instanceof TextView) {
+                                               TextView textView1 = (TextView) childView;
+                                               if (String.valueOf(textView1.getId()).equals("108")) {
+                                                   textView1.setEnabled(true);
+                                               }
+                                           }
+                                           else if (childView instanceof EditText) {
+                                               EditText editText1 = (EditText) childView;
+                                               if (String.valueOf(editText1.getId()).equals("108")) {
+                                                   editText1.setEnabled(true);
+                                               }
+                                           }
+                                       }
                                    }
                                }
                            }));
@@ -3055,6 +3078,10 @@ public class HouseholdSurveyActivity extends AppCompatActivity implements Activi
                                            }
                                        }
                                    }*/
+                               }
+                               else if(group.getId()==28){
+                                   sharedPrefHelper.setString("highest_education_of_HOUSEHOLD", radioID);
+                                   //Toast.makeText(context, ""+radioID, Toast.LENGTH_SHORT).show();
                                }
                            }
                        });
